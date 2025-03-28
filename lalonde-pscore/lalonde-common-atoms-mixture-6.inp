@@ -6,19 +6,17 @@ VARIABLE:
 NAMES = re78 treat marr nodegree black hispanic q1 q2 q3 q4; 
 USEV = treat-hispanic q1-q4;
 CATEGORICAL = marr-hispanic;
-CLASSES = A(2) C(3);
+CLASSES = A(2) C(6);
 KNOWNCLASS = A(treat=0 treat = 1);
 MISSING=.;
 AUXILIARY = re78;
-
 
 ANALYSIS:
 TYPE = mixture;
 ESTIMATOR = MLR;
 PARAMETERIZATION = PROBABILITY;
 PROCESSORS = 8;
-STARTS = 32 8;
-
+STARTS = 64 16;
 
 MODEL:
 
@@ -30,37 +28,67 @@ q1 with q2-q4@0;
 q2 with q3-q4@0;
 q3 with q4@0;
 
-q1-q4*;
+q1-q4* (v1-v4);
 
 %A#1.C#1%
 [marr$1-hispanic$1*] (at1-at4);
 [q1-q4*] (am1-am4);
-q1-q4* (av1-av4);
+
 
 %A#2.C#1%
 [marr$1-hispanic$1*] (at1-at4);
 [q1-q4*] (am1-am4);
-q1-q4* (av1-av4);
+
 
 %A#1.C#2%
 [marr$1-hispanic$1*] (bt1-bt4);
 [q1-q4*] (bm1-bm4);
-q1-q4* (bv1-bv4);
+
 
 %A#2.C#2%
 [marr$1-hispanic$1*] (bt1-bt4);
 [q1-q4*] (bm1-bm4);
-q1-q4* (bv1-bv4);
+
 
 %A#1.C#3%
 [marr$1-hispanic$1*] (ct1-ct4);
 [q1-q4*] (cm1-cm4);
-q1-q4* (cv1-cv4);
+
 
 %A#2.C#3%
 [marr$1-hispanic$1*] (ct1-ct4);
 [q1-q4*] (cm1-cm4);
-q1-q4* (cv1-cv4);
+
+
+%A#1.C#4%
+[marr$1-hispanic$1*] (dt1-dt4);
+[q1-q4*] (dm1-dm4);
+
+
+%A#2.C#4%
+[marr$1-hispanic$1*] (dt1-dt4);
+[q1-q4*] (dm1-dm4);
+
+
+%A#1.C#5%
+[marr$1-hispanic$1*] (et1-et4);
+[q1-q4*] (em1-em4);
+
+
+%A#2.C#5%
+[marr$1-hispanic$1*] (et1-et4);
+[q1-q4*] (em1-em4);
+
+
+%A#1.C#6%
+[marr$1-hispanic$1*] (ft1-ft4);
+[q1-q4*] (fm1-fm4);
+
+
+%A#2.C#6%
+[marr$1-hispanic$1*] (ft1-ft4);
+[q1-q4*] (fm1-fm4);
+
 
 
 OUTPUT: 

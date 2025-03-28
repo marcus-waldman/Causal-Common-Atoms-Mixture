@@ -1,0 +1,60 @@
+TITLE: Your title goes here
+
+DATA: FILE = "data/lalonde_obs.csv";
+
+VARIABLE: 
+NAMES = re78 treat marr nodegree black hispanic q1 q2 q3 q4; 
+USEV = treat-hispanic q1-q4;
+CATEGORICAL = marr-hispanic;
+CLASSES = C(3);
+MISSING=.;
+AUXILIARY = re78;
+
+
+ANALYSIS:
+TYPE = mixture;
+ESTIMATOR = MLR;
+PROCESSORS = 8;
+STARTS = 32 8;
+
+
+
+MODEL:
+
+%OVERALL% 
+
+    c#1 ON treat* (b01);
+    c#2 ON treat* (b02);
+
+    [ c#1* ] (b12);
+    [ c#2* ] (b22);
+
+    q1 with q2-q4@0;
+    q2 with q3-q4@0;
+    q3 with q4@0;
+
+    q1-q4*;
+
+%C#1%
+    [marr$1-hispanic$1*] (at1-at4);
+    [q1-q4*] (am1-am4);
+    q1-q4* (av1-av4);
+
+
+%C#2%
+    [marr$1-hispanic$1*] (bt1-bt4);
+    [q1-q4*] (bm1-bm4);
+    q1-q4* (bv1-bv4);
+
+
+%C#3%
+    [marr$1-hispanic$1*] (ct1-ct4);
+    [q1-q4*] (cm1-cm4);
+    q1-q4* (cv1-cv4);
+
+
+
+
+OUTPUT: 
+svalues;
+
