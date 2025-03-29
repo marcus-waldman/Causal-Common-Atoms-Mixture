@@ -3,126 +3,176 @@ TITLE: Your title goes here
 DATA: FILE = "data/lalonde_obs.dat";
 
 VARIABLE: 
-NAMES = re78 treat marr nodegree black hispanic q1 q2 q3 q4; 
-USEV = treat-hispanic q1-q4;
-CATEGORICAL = marr-hispanic;
+NAMES = re78 treat u e educ re75; 
+USEV = treat e educ re75;
+CATEGORICAL = re75;
 CLASSES = A(2) C(6);
-KNOWNCLASS = A(treat=0 treat = 1);
+KNOWNCLASS = A(treat=0 treat=1);
 MISSING=.;
 AUXILIARY = re78;
 
+
 ANALYSIS:
 TYPE = mixture;
-ESTIMATOR = MLR;
-PARAMETERIZATION = PROBABILITY;
+ESTIMATOR = mlr;
+PARAMETERIZATION = probability;
+!ALGORITHM = INTEGRATION;
 PROCESSORS = 8;
-STARTS = 64 16;
+STARTS = 128 32;
+
 
 MODEL:
 
-%OVERALL% 
+%OVERALL%
 
 C on A;
-
-q1 with q2-q4@0;
-q2 with q3-q4@0;
-q3 with q4@0;
-
-[ a#1* ] (p0);
-
-c#1 ON a#1* (pa_0);
-c#1 ON a#2* (pa_1);
-c#2 ON a#1* (pb_0);
-c#2 ON a#2* (pb_1);
-c#3 ON a#1* (pc_0);
-c#3 ON a#2* (pc_1);
-c#4 ON a#1* (pd_0);
-c#4 ON a#2* (pd_1);
-c#5 ON a#1* (pe_0);
-c#5 ON a#2* (pe_1);
-
-%A#1.C#1%
-[marr$1-hispanic$1*] (at1-at4);
-[q1-q4*] (am1-am4);
-
-%A#2.C#1%
-[marr$1-hispanic$1*] (at1-at4);
-[q1-q4*] (am1-am4);
+e with educ@0;
+![e-re75*];
+!e-re75*;
+![re75#1*];
 
 
-%A#1.C#2%
-[marr$1-hispanic$1*] (bt1-bt4);
-[q1-q4*] (bm1-bm4);
+C#1 ON A#2 (p1_1);
+C#2 ON A#2 (p1_2);
+C#3 ON A#2 (p1_3);
+C#4 ON A#2 (p1_4);
+C#5 ON A#2 (p1_5);
+
+
+%A#1.C#1% !Below common support
+[educ*] (m1_1);
+educ* (v1_1);
+![re75#1*] (h_1);
+[e*] (me_1);
+e* (ve_1);
+[re75$1*] (t1_1);
+[re75$2*] (t2_1);
+
+%A#2.C#1% 
+[educ@0];
+educ@1;
+![re75#1@0];
+[e*] (me_1);
+e@1;
+[re75$1@0];
+[re75$2@1];
+
+%A#1.C#2% !Within common support
+[educ*] (m1_2);
+educ* (v1_2);
+![re75#1*] (h_2);
+[e*] (me_2);
+e* (ve_2);
+[re75$1*] (t1_2);
+[re75$2*] (t2_2);
+
+
+%A#2.C#2% 
+[educ*] (m1_2);
+educ* (v1_2);
+![re75#1*] (h_2);
+[e*] (me_2);
+e* (ve_2);
+[re75$1*] (t1_2);
+[re75$2*] (t2_2);
+
+
+%A#1.C#3% !Within common support
+[e*] (me_3);
+e* (ve_3);
+[educ*] (m1_3);
+educ* (v1_3);
+![re75#1*] (h_3);
+[re75$1*] (t1_3);
+[re75$2*] (t2_3);
+
+%A#2.C#3% 
+[e*] (me_3);
+e* (ve_3);
+[educ*] (m1_3);
+educ* (v1_3);
+![re75#1*] (h_3);
+[re75$1*] (t1_3);
+[re75$2*] (t2_3);
+
+
+%A#1.C#4% !Within common support
+[e*] (me_4);
+e* (ve_4);
+[educ*] (m1_4);
+educ* (v1_4);
+![re75#1*] (h_4);
+[re75$1*] (t1_4);
+[re75$2*] (t2_4);
+
+%A#2.C#4% 
+[e*] (me_4);
+e* (ve_4);
+[educ*] (m1_4);
+educ* (v1_4);
+![re75#1*] (h_4);
+[re75$1*] (t1_4);
+[re75$2*] (t2_4);
+
+
+%A#1.C#5% !Within common support
+[e*] (me_5);
+e* (ve_5);
+[educ*] (m1_5);
+educ* (v1_5);
+![re75#1*] (h_5);
+[re75$1*] (t1_5);
+[re75$2*] (t2_5);
+
+%A#2.C#5% 
+[e*] (me_5);
+e* (ve_5);
+[educ*] (m1_5);
+educ* (v1_5);
+![re75#1*] (h_5);
+[re75$1*] (t1_5);
+[re75$2*] (t2_5);
 
 
 
-%A#2.C#2%
-[marr$1-hispanic$1*] (bt1-bt4);
-[q1-q4*] (bm1-bm4);
+
+%A#1.C#6% !Above common support
+[e*] (me_6);
+e* (ve_6);
+[educ*] (m1_6);
+educ* (v1_6);
+[re75$1*] (t1_6);
+[re75$2*] (t2_6);
+![re75#1*] (h_6);
 
 
-%A#1.C#3%
-[marr$1-hispanic$1*] (ct1-ct4);
-[q1-q4*] (cm1-cm4);
+%A#2.C#6% 
+[e*] (me_6);
+e@1;
+[educ@0];
+educ@1;
+![re75#1@0];
+[re75$1@0];
+[re75$2@1];
 
-%A#2.C#3%
-[marr$1-hispanic$1*] (ct1-ct4);
-[q1-q4*] (cm1-cm4);
-
-
-%A#1.C#4%
-[marr$1-hispanic$1*] (dt1-dt4);
-[q1-q4*] (dm1-dm4);
-
-
-%A#2.C#4%
-[marr$1-hispanic$1*] (dt1-dt4);
-[q1-q4*] (dm1-dm4);
-
-
-%A#1.C#5%
-[marr$1-hispanic$1*] (et1-et4);
-[q1-q4*] (em1-em4);
-
-
-%A#2.C#5%
-[marr$1-hispanic$1*] (et1-et4);
-[q1-q4*] (em1-em4);
-
-
-%A#1.C#6%
-[marr$1-hispanic$1*] (ft1-ft4);
-[q1-q4*] (fm1-fm4);
-
-
-%A#2.C#6%
-[marr$1-hispanic$1*] (ft1-ft4);
-[q1-q4*] (fm1-fm4);
 
 
 Model Constraint:
-New(p1*);
-p1 = 1-p0;
+New(p1_6*); 
+p1_6 = 1 - p1_1 - p1_2 - p1_3 - p1_4 - p1_5;
+0 = p1_1;
+0 = p1_6;
+0 = p1_2-p1_5;
+0 = p1_3-p1_5;
+0 = p1_4-p1_5;
 
-New(pf_0* pf_1*);
-pf_0 = 1 - pa_0 - pb_0 - pc_0 - pd_0 - pe_0;
-pf_1 = 1 - pa_1 - pb_1 - pc_1 - pd_1 - pe_1;
 
-New(pa* pb* pc* pd* pe* pf*);
-pa = pa_0*p0 + pa_1*p1;
-pb = pb_0*p0 + pb_1*p1;
-pc = pc_0*p0 + pc_1*p1;
-pd = pd_0*p0 + pd_1*p1;
-pe = pe_0*p0 + pe_1*p1;
-pf = pf_0*p0 + pf_1*p1;
+0 = me_1+0.8363425;
+0 = me_6-3.292603;
 
-0 = pa_0 - pf_0;
-0 = pb_0 - pf_0;
-0 = pc_0 - pf_0;
-0 = pd_0 - pf_0;
-0 = pe_0 - pf_0;
+
 
 
 OUTPUT: 
-sampstat;
 svalues;
+

@@ -44,10 +44,14 @@ mplus_dat = dat %>% dplyr::select(re78, treat, u, e, educ, re75)
 # let's get the minimum
 with(mplus_dat %>% dplyr::filter(e<e1_min), mean(e))
 
-# # Quantiles
-# mplus_dat = mplus_dat %>% 
-#   dplyr::mutate(u75 = ifelse(re75==0,1,0), 
-#                 re75 = ifelse(u75==1,NA,re75)
-#   )
+median_re75 = with(mplus_dat %>% dplyr::filter(re75!=0 & treat==1), mean(re75))
+
+
+# Quantiles
+mplus_dat = mplus_dat %>%
+  dplyr::mutate(re75 = ifelse(re75==0,0,re75), 
+                re75 = ifelse(re75>0 & re75<=median_re75, .1, re75), 
+                re75 = ifelse(re75>median_re75, .2, re75), 
+                re75 = re75*10)
 
 MplusAutomation::prepareMplusData(df = mplus_dat, filename = "data/lalonde_obs.dat")

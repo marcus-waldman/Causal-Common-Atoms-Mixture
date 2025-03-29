@@ -1,6 +1,6 @@
 Mplus VERSION 8.10
 MUTHEN & MUTHEN
-03/28/2025   5:00 PM
+03/28/2025  11:14 PM
 
 INPUT INSTRUCTIONS
 
@@ -11,69 +11,148 @@ INPUT INSTRUCTIONS
   VARIABLE:
   NAMES = re78 treat u e educ re75;
   USEV = treat e educ re75;
-  CENSORED = re75 (bi);
-  CLASSES = C(5);
+  CATEGORICAL = re75;
+  CLASSES = A(2) C(5);
+  KNOWNCLASS = A(treat=0 treat=1);
   MISSING=.;
   AUXILIARY = re78;
 
 
   ANALYSIS:
   TYPE = mixture;
-  ESTIMATOR = MLR;
+  ESTIMATOR = mlr;
+  PARAMETERIZATION = probability;
   !ALGORITHM = INTEGRATION;
   PROCESSORS = 8;
-  STARTS = 32 8;
+  STARTS = 128 32;
 
 
   MODEL:
 
   %OVERALL%
 
-  C on treat;
+  C on A;
   e with educ@0;
-  [e-educ*];
-  e-educ*;
-  [re75#1*];
+  ![e-re75*];
+  !e-re75*;
+  ![re75#1*];
 
 
-  %C#1% !Below common support
-  [educ-re75*];
-  educ-re75*;
-  [re75#1*];
-  [e@-0.8363425];
-  e@0.04947994;
+  C#1 ON A#2 (p1_1);
+  C#2 ON A#2 (p1_2);
+  C#3 ON A#2 (p1_3);
+  C#4 ON A#2 (p1_4);
 
-  %C#2% !Above common support
-  [educ-re75*];
-  educ-re75*;
-  [re75#1*];
-  [e@3.292603];
-  e@0.02200702;
 
-  %C#3% !Within common support
+  %A#1.C#1% !Below common support
+  [educ*] (m1_1);
+  educ* (v1_1);
+  ![re75#1*] (h_1);
+  [e*] (me_1);
+  e* (ve_1);
+  [re75$1*] (t1_1);
+  [re75$2*] (t2_1);
+
+  %A#2.C#1%
+  [educ@0];
+  educ@1;
+  ![re75#1@0];
+  [e*] (me_1);
+  e@1;
+  [re75$1@0];
+  [re75$2@1];
+
+  %A#1.C#2% !Within common support
+  [educ*] (m1_2);
+  educ* (v1_2);
+  ![re75#1*] (h_2);
+  [e*] (me_2);
+  e* (ve_2);
+  [re75$1*] (t1_2);
+  [re75$2*] (t2_2);
+
+
+  %A#2.C#2%
+  [educ*] (m1_2);
+  educ* (v1_2);
+  ![re75#1*] (h_2);
+  [e*] (me_2);
+  e* (ve_2);
+  [re75$1*] (t1_2);
+  [re75$2*] (t2_2);
+
+
+  %A#1.C#3% !Within common support
   [e*] (me_3);
-  e* (ve);
-  [educ-re75*];
-  [re75#1*];
-  educ-re75*;
+  e* (ve_3);
+  [educ*] (m1_3);
+  educ* (v1_3);
+  ![re75#1*] (h_3);
+  [re75$1*] (t1_3);
+  [re75$2*] (t2_3);
 
-  %C#4% !Within common support
+  %A#2.C#3%
+  [e*] (me_3);
+  e* (ve_3);
+  [educ*] (m1_3);
+  educ* (v1_3);
+  ![re75#1*] (h_3);
+  [re75$1*] (t1_3);
+  [re75$2*] (t2_3);
+
+
+  %A#1.C#4% !Within common support
   [e*] (me_4);
-  e* (ve);
-  [educ-re75*];
-  [re75#1*];
-  educ-re75*;
+  e* (ve_4);
+  [educ*] (m1_4);
+  educ* (v1_4);
+  ![re75#1*] (h_4);
+  [re75$1*] (t1_4);
+  [re75$2*] (t2_4);
 
-  %C#5% !Within common support
+  %A#2.C#4%
+  [e*] (me_4);
+  e* (ve_4);
+  [educ*] (m1_4);
+  educ* (v1_4);
+  ![re75#1*] (h_4);
+  [re75$1*] (t1_4);
+  [re75$2*] (t2_4);
+
+
+
+  %A#1.C#5% !Above common support
   [e*] (me_5);
-  e* (ve);
-  [educ-re75*];
-  [re75#1*];
-  educ-re75*;
+  e* (ve_5);
+  [educ*] (m1_5);
+  educ* (v1_5);
+  [re75$1*] (t1_5);
+  [re75$2*] (t2_5);
+  ![re75#1*] (h_5);
+
+
+  %A#2.C#5%
+  [e*] (me_5);
+  e@1;
+  [educ@0];
+  educ@1;
+  ![re75#1@0];
+  [re75$1@0];
+  [re75$2@1];
+
+
 
   Model Constraint:
-  0<me_5-me_4;
-  0<me_4-me_3;
+  New(p1_5*);
+  p1_5 = 1 - p1_1 - p1_2 - p1_3 - p1_4;
+  0 = p1_1;
+  0 = p1_5;
+  0 = p1_2-p1_4;
+  0 = p1_3-p1_4;
+
+
+  0 = me_1+0.8363425;
+  0 = me_5-3.292603;
 
 
 
@@ -95,26 +174,25 @@ Number of groups                                                 1
 Number of observations                                        2675
 
 Number of dependent variables                                    3
-Number of independent variables                                  1
+Number of independent variables                                  0
 Number of continuous latent variables                            0
-Number of categorical latent variables                           1
+Number of categorical latent variables                           2
 
 Observed dependent variables
 
   Continuous
    E           EDUC
 
-  Censored
+  Binary and ordered categorical (ordinal)
    RE75
-
-Observed independent variables
-   TREAT
 
 Observed auxiliary variables
    RE78
 
 Categorical latent variables
-   C
+   A           C
+
+  Knownclass            A
 
 
 Estimator                                                      MLR
@@ -126,9 +204,9 @@ Continuous Outcomes
 Optimization Specifications for the EM Algorithm
   Maximum number of iterations                                 500
   Convergence criteria
-    Loglikelihood change                                 0.100D-06
+    Loglikelihood change                                 0.100D-03
     Relative loglikelihood change                        0.100D-06
-    Derivative                                           0.100D-05
+    Derivative                                           0.100D-03
 Optimization Specifications for the M step of the EM Algorithm for
 Categorical Latent variables
   Number of M step iterations                                    1
@@ -147,12 +225,14 @@ Maximum number of iterations for H1                           2000
 Convergence criterion for H1                             0.100D-03
 Optimization algorithm                                         EMA
 Random Starts Specifications
-  Number of initial stage random starts                         32
-  Number of final stage optimizations                            8
+  Number of initial stage random starts                        128
+  Number of final stage optimizations                           32
   Number of initial stage iterations                            10
   Initial stage convergence criterion                    0.100D+01
   Random starts scale                                    0.500D+01
   Random seed for generating random starts                       0
+Parameterization                                       PROBABILITY
+Link                                                         LOGIT
 
 Input data file(s)
   data/lalonde_obs.dat
@@ -163,7 +243,7 @@ SUMMARY OF DATA
 
      Number of missing data patterns             1
      Number of y missing data patterns           1
-     Number of u missing data patterns           0
+     Number of u missing data patterns           1
 
 
 COVARIANCE COVERAGE OF DATA
@@ -175,16 +255,18 @@ Minimum covariance coverage value   0.100
 
 
            Covariance Coverage
-              E             EDUC          TREAT
-              ________      ________      ________
+              E             EDUC
+              ________      ________
  E              1.000
  EDUC           1.000         1.000
- TREAT          1.000         1.000         1.000
 
 
-SUMMARY OF CENSORED LIMITS
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
 
-      RE75               0.000
+    RE75
+      Category 1    0.135          360.000
+      Category 2    0.027           72.000
+      Category 3    0.839         2243.000
 
 
 
@@ -200,34 +282,40 @@ UNIVARIATE SAMPLE STATISTICS
             2675.000       1.000       1.271       3.595    0.04%      -0.175      0.367
      EDUC                  0.000      -0.426      -3.928    0.11%      -0.653      0.002      0.002
             2675.000       1.000       0.339       1.639    7.89%       0.002      0.984
-     TREAT                 0.069       3.396       0.000   93.08%       0.000      0.000      0.000
-            2675.000       0.064       9.534       1.000    6.92%       0.000      0.000
 
 RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
 
 
-21 perturbed starting value run(s) did not converge.
+61 perturbed starting value run(s) did not converge or were rejected in the third stage.
 Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
 
-           -3966.027  533738           11
-           -4099.084  432148           30
-           -4692.078  462953           7
-           -4790.727  637345           19
+           -6085.540  626891           32
+           -6085.540  373505           88
+           -6085.540  25127            107
+           -6085.540  407168           44
+           -6087.807  341041           34
+           -6109.638  637345           19
+           -6110.462  685657           69
+           -6195.706  960438           116
+           -6260.387  85462            51
+           -6260.387  851945           18
+           -6260.387  165853           105
+           -6260.387  345070           114
+           -6260.387  314084           81
+           -6260.387  939021           8
+           -6315.590  471398           74
+           -6611.538  794236           127
+           -6615.062  992389           77
+           -7056.749  318230           46
 
-Unperturbed starting value run did not converge.
-
-3 perturbed starting value run(s) did not converge.
+14 perturbed starting value run(s) did not converge or were rejected in the third stage.
 
 
 
-     WARNING:  THE BEST LOGLIKELIHOOD VALUE WAS NOT REPLICATED.  THE
-     SOLUTION MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.  INCREASE THE
-     NUMBER OF RANDOM STARTS.
+THE BEST LOGLIKELIHOOD VALUE HAS BEEN REPLICATED.  RERUN WITH AT LEAST TWICE THE
+RANDOM STARTS TO CHECK THAT THE BEST LOGLIKELIHOOD IS STILL OBTAINED AND REPLICATED.
 
-
-     WARNING:  THE SAMPLE VARIANCE OF TREAT IN CLASS 1 IS  0.000.
-
-     IN THE OPTIMIZATION, ONE OR MORE LOGIT SCALE PARAMETERS APPROACHED EXTREME VALUES
+     IN THE OPTIMIZATION, ONE OR MORE LOGIT THRESHOLDS APPROACHED EXTREME VALUES
      OF -15.000 AND 15.000 AND WERE FIXED TO STABILIZE MODEL ESTIMATION.  THESE
      VALUES IMPLY PROBABILITIES OF 0 AND 1.  IN THE MODEL RESULTS SECTION, THESE
      PARAMETERS HAVE 0 STANDARD ERRORS AND 999 IN THE Z-SCORE AND P-VALUE COLUMNS.
@@ -236,31 +324,10 @@ Unperturbed starting value run did not converge.
      TRUSTWORTHY FOR SOME PARAMETERS DUE TO A NON-POSITIVE DEFINITE
      FIRST-ORDER DERIVATIVE PRODUCT MATRIX.  THIS MAY BE DUE TO THE STARTING
      VALUES BUT MAY ALSO BE AN INDICATION OF MODEL NONIDENTIFICATION.  THE
-     CONDITION NUMBER IS       0.569D-18.  PROBLEM INVOLVING THE FOLLOWING PARAMETER:
-     Parameter 30, %C#3%: [ RE75 ]
+     CONDITION NUMBER IS       0.292D-18.  PROBLEM INVOLVING THE FOLLOWING PARAMETER:
+     Parameter 20, %A#1.C#5%: EDUC (equality/label)
 
-     ONE OR MORE PARAMETERS WERE FIXED TO AVOID SINGULARITY OF THE
-     INFORMATION MATRIX. THE SINGULARITY IS MOST LIKELY DUE TO THE
-     MODEL IS NOT IDENTIFIED, OR DUE TO A LARGE OR A SMALL PARAMETER
-     ON THE LOGIT SCALE. THE FOLLOWING PARAMETERS WERE FIXED:
-     Parameter 1, %C#1%: [ EDUC ]
-     Parameter 2, %C#1%: EDUC
-     Parameter 13, %C#5%: [ EDUC ]
-     Parameter 14, %C#5%: EDUC
-     Parameter 38
-     Parameter 15, [ C#1 ]
-     Parameter 19, C#1 ON TREAT
-     Parameter 22, C#4 ON TREAT
-     Parameter 23, %C#1%: [ RE75#1 ]
-     Parameter 24, %C#1%: [ RE75 ]
-     Parameter 25, %C#1%: RE75
-     Parameter 26, %C#2%: [ RE75#1 ]
-     Parameter 27, %C#2%: [ RE75 ]
-     Parameter 28, %C#2%: RE75
-     Parameter 35, %C#5%: [ RE75#1 ]
-     Parameter 36, %C#5%: [ RE75 ]
-     Parameter 37, %C#5%: RE75
-     Parameter 18, [ C#4 ]
+
 
 
 THE MODEL ESTIMATION TERMINATED NORMALLY
@@ -269,79 +336,115 @@ THE MODEL ESTIMATION TERMINATED NORMALLY
 
 MODEL FIT INFORMATION
 
-Number of Free Parameters                       37
+Number of Free Parameters                       33
 
 Loglikelihood
 
-          H0 Value                       -3966.027
-          H0 Scaling Correction Factor      0.6501
+          H0 Value                       -6085.540
+          H0 Scaling Correction Factor      1.1352
             for MLR
 
 Information Criteria
 
-          Akaike (AIC)                    8006.053
-          Bayesian (BIC)                  8224.047
-          Sample-Size Adjusted BIC        8106.486
+          Akaike (AIC)                   12237.079
+          Bayesian (BIC)                 12431.506
+          Sample-Size Adjusted BIC       12326.654
             (n* = (n + 2) / 24)
 
+Chi-Square Test of Model Fit for the Binary and Ordered Categorical
+(Ordinal) Outcomes
+
+          Pearson Chi-Square
+
+          Value                            418.922
+          Degrees of freedom cannot be computed for this model part.
+
+          Likelihood Ratio Chi-Square
+
+          Value                            207.061
+          Degrees of freedom cannot be computed for this model part.
 
 
-FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR EACH LATENT CLASS VARIABLE
 BASED ON THE ESTIMATED MODEL
 
-    Latent
-   Classes
+  Latent Class
+    Variable    Class
 
-       1          0.00000          0.00000
-       2         15.93190          0.00596
-       3       2260.13998          0.84491
-       4        398.92812          0.14913
-       5          0.00000          0.00000
-
-
-FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
-BASED ON ESTIMATED POSTERIOR PROBABILITIES
-
-    Latent
-   Classes
-
-       1          0.00000          0.00000
-       2         15.93190          0.00596
-       3       2260.13998          0.84491
-       4        398.92812          0.14913
-       5          0.00000          0.00000
+    A              1      2490.00000          0.93084
+                   2       185.00000          0.06916
+    C              1       199.62761          0.07463
+                   2       296.33020          0.11078
+                   3      1628.56311          0.60881
+                   4       535.95551          0.20036
+                   5        14.52359          0.00543
 
 
-FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
-BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
 
-Class Counts and Proportions
-
-    Latent
-   Classes
-
-       1                0          0.00000
-       2               17          0.00636
-       3             2260          0.84486
-       4              398          0.14879
-       5                0          0.00000
+     MEAN/PROBABILITY PROFILES FOR C
+                       Latent class
+                     1      2      3      4      5
+     E            -0.836  2.202 -0.269 -0.991  3.293
 
 
-CLASSIFICATION QUALITY
+LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
 
-     Entropy                         0.995
+  A Classes (Rows) by C Classes (Columns)
 
+            1        2        3        4        5
+
+   1     0.080    0.094    0.629    0.190    0.006
+   2     0.000    0.333    0.333    0.333    0.000
+
+
+C-SPECIFIC CLASSIFICATION RESULTS
+
+Classification Quality for A
+
+     Entropy                         1.000
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1     13.816    0.000
+    2    -13.816    0.000
+
+Classification Quality for C
+
+     Entropy                         0.962
 
 Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
 by Latent Class (Column)
 
            1        2        3        4        5
 
-    1   0.000    0.000    0.000    0.000    0.000
-    2   0.000    0.923    0.000    0.077    0.000
-    3   0.000    0.000    0.998    0.002    0.000
-    4   0.000    0.001    0.010    0.990    0.000
-    5   0.000    0.000    0.000    0.000    0.000
+    1   0.924    0.001    0.075    0.000    0.000
+    2   0.000    0.990    0.000    0.000    0.010
+    3   0.021    0.000    0.976    0.003    0.000
+    4   0.000    0.000    0.022    0.978    0.000
+    5   0.000    0.011    0.000    0.000    0.989
 
 
 Classification Probabilities for the Most Likely Latent Class Membership (Column)
@@ -349,11 +452,11 @@ by Latent Class (Row)
 
            1        2        3        4        5
 
-    1   0.000    0.000    0.000    0.000    0.000
-    2   0.000    0.985    0.000    0.015    0.000
-    3   0.000    0.000    0.998    0.002    0.000
-    4   0.000    0.003    0.009    0.987    0.000
-    5   0.000    0.000    0.000    0.000    0.000
+    1   0.824    0.000    0.176    0.000    0.000
+    2   0.001    0.998    0.001    0.000    0.000
+    3   0.008    0.000    0.985    0.006    0.000
+    4   0.000    0.000    0.010    0.990    0.000
+    5   0.000    0.251    0.000    0.000    0.749
 
 
 Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
@@ -361,11 +464,11 @@ by Latent Class (Row)
 
               1        2        3        4        5
 
-    1      0.000    0.000    0.000    0.000    0.000
-    2      0.000   13.801    0.000    9.590    0.000
-    3      0.000    0.000   13.814    7.449    0.000
-    4      0.000    8.090    9.146   13.803    0.000
-    5      0.000    0.000    0.000    0.000    0.000
+    1     13.622    0.000   12.080    0.000    0.000
+    2      0.436    7.981    0.635   -5.833    0.000
+    3      9.008    2.635   13.801    8.757    0.000
+    4      0.000    0.000    9.201   13.806    0.000
+    5    -13.527   -1.094  -13.527  -13.527    0.000
 
 
 MODEL RESULTS
@@ -373,379 +476,391 @@ MODEL RESULTS
                                                     Two-Tailed
                     Estimate       S.E.  Est./S.E.    P-Value
 
-Latent Class 1
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
 
  E        WITH
     EDUC               0.000      0.000    999.000    999.000
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
 
  Means
     E                 -0.836      0.000    999.000    999.000
-    EDUC              -5.322      0.000    999.000    999.000
+    EDUC              -1.914      0.089    -21.590      0.000
+
+ Thresholds
+    RE75$1           -28.451      0.000    999.000    999.000
+    RE75$2            -2.616      0.303     -8.627      0.000
+
+ Variances
+    E                  1.863      0.110     16.967      0.000
+    EDUC               0.367      0.045      8.065      0.000
+
+Latent Class Pattern 1 2
 
  Means
-    RE75#1            -5.382      0.000    999.000    999.000
-    RE75               1.182      0.000    999.000    999.000
+    E                  2.202      0.023     93.996      0.000
+    EDUC              -0.189      0.063     -3.004      0.003
+
+ Thresholds
+    RE75$1             4.976      0.820      6.070      0.000
+    RE75$2             5.872      1.033      5.687      0.000
 
  Variances
-    E                  0.049      0.000    999.000    999.000
-    EDUC               0.560      0.000    999.000    999.000
+    E                  0.119      0.014      8.589      0.000
+    EDUC               0.833      0.081     10.331      0.000
+
+Latent Class Pattern 1 3
+
+ Means
+    E                 -0.269      0.013    -20.105      0.000
+    EDUC              -0.114      0.027     -4.165      0.000
+
+ Thresholds
+    RE75$1           -31.162      0.000    999.000    999.000
+    RE75$2            -3.323      0.137    -24.221      0.000
 
  Variances
-    RE75               0.000      0.000    999.000    999.000
+    E                  0.088      0.006     15.083      0.000
+    EDUC               0.286      0.028     10.059      0.000
 
-Latent Class 2
+Latent Class Pattern 1 4
 
- E        WITH
-    EDUC               0.000      0.000    999.000    999.000
+ Means
+    E                 -0.991      0.008   -127.640      0.000
+    EDUC               1.418      0.011    133.137      0.000
+
+ Thresholds
+    RE75$1           -30.151      0.000    999.000    999.000
+    RE75$2           -29.677      0.000    999.000    999.000
+
+ Variances
+    E                  0.021      0.002     13.178      0.000
+    EDUC               0.039      0.003     15.248      0.000
+
+Latent Class Pattern 1 5
 
  Means
     E                  3.293      0.000    999.000    999.000
-    EDUC              -2.735      0.100    -27.415      0.000
+    EDUC              -2.630      0.374     -7.027      0.000
+
+ Thresholds
+    RE75$1            26.113      0.000    999.000    999.000
+    RE75$2            26.661      0.000    999.000    999.000
+
+ Variances
+    E                  0.070      0.066      1.049      0.294
+    EDUC               0.279      0.174      1.606      0.108
+
+Latent Class Pattern 2 1
 
  Means
-    RE75#1            -2.101      0.000    999.000    999.000
-    RE75              -3.821      0.000    999.000    999.000
-
- Variances
-    E                  0.022      0.000    999.000    999.000
-    EDUC               0.152      0.088      1.733      0.083
-
- Variances
-    RE75               0.070      0.000    999.000    999.000
-
-Latent Class 3
-
- E        WITH
+    E                 -0.836      0.000    999.000    999.000
     EDUC               0.000      0.000    999.000    999.000
 
- Means
-    E                 -0.375      0.010    -36.245      0.000
-    EDUC               0.062      0.021      2.889      0.004
-
- Means
-    RE75#1           -15.000      0.000    999.000    999.000
-    RE75               1.079      0.002    575.569      0.000
+ Thresholds
+    RE75$1             0.000      0.000    999.000    999.000
+    RE75$2             1.000      0.000    999.000    999.000
 
  Variances
-    E                  0.227      0.008     27.272      0.000
-    EDUC               0.968      0.032     30.247      0.000
+    E                  1.000      0.000    999.000    999.000
+    EDUC               1.000      0.000    999.000    999.000
+
+Latent Class Pattern 2 2
+
+ Means
+    E                  2.202      0.023     93.996      0.000
+    EDUC              -0.189      0.063     -3.004      0.003
+
+ Thresholds
+    RE75$1             4.976      0.820      6.070      0.000
+    RE75$2             5.872      1.033      5.687      0.000
 
  Variances
-    RE75               0.006      0.000     18.743      0.000
+    E                  0.119      0.014      8.589      0.000
+    EDUC               0.833      0.081     10.331      0.000
 
-Latent Class 4
+Latent Class Pattern 2 3
 
- E        WITH
+ Means
+    E                 -0.269      0.013    -20.105      0.000
+    EDUC              -0.114      0.027     -4.165      0.000
+
+ Thresholds
+    RE75$1           -31.162      0.000    999.000    999.000
+    RE75$2            -3.323      0.137    -24.221      0.000
+
+ Variances
+    E                  0.088      0.006     15.083      0.000
+    EDUC               0.286      0.028     10.059      0.000
+
+Latent Class Pattern 2 4
+
+ Means
+    E                 -0.991      0.008   -127.640      0.000
+    EDUC               1.418      0.011    133.137      0.000
+
+ Thresholds
+    RE75$1           -30.151      0.000    999.000    999.000
+    RE75$2           -29.677      0.000    999.000    999.000
+
+ Variances
+    E                  0.021      0.002     13.178      0.000
+    EDUC               0.039      0.003     15.248      0.000
+
+Latent Class Pattern 2 5
+
+ Means
+    E                  3.293      0.000    999.000    999.000
     EDUC               0.000      0.000    999.000    999.000
 
- Means
-    E                  1.999      0.045     44.422      0.000
-    EDUC              -0.241      0.049     -4.918      0.000
-
- Means
-    RE75#1             1.836      0.221      8.320      0.000
-    RE75               0.732      0.019     39.282      0.000
+ Thresholds
+    RE75$1             0.000      0.000    999.000    999.000
+    RE75$2             1.000      0.000    999.000    999.000
 
  Variances
-    E                  0.227      0.008     27.272      0.000
-    EDUC               0.834      0.067     12.474      0.000
-
- Variances
-    RE75               0.011      0.002      4.849      0.000
-
-Latent Class 5
-
- E        WITH
-    EDUC               0.000      0.000    999.000    999.000
-
- Means
-    E                 46.829      0.045   1040.602      0.000
-    EDUC               4.818      0.000    999.000    999.000
-
- Means
-    RE75#1            -6.408      0.000    999.000    999.000
-    RE75               4.481      0.000    999.000    999.000
-
- Variances
-    E                  0.227      0.008     27.272      0.000
-    EDUC               0.500      0.000    999.000    999.000
-
- Variances
-    RE75               0.070      0.000    999.000    999.000
+    E                  1.000      0.000    999.000    999.000
+    EDUC               1.000      0.000    999.000    999.000
 
 Categorical Latent Variables
 
- C#1        ON
-    TREAT              0.814      0.000    999.000    999.000
+ C#1      ON
+    A#1                0.080      0.012      6.748      0.000
+    A#2                0.000      0.000    999.000    999.000
 
- C#2        ON
-    TREAT             -1.677      0.602     -2.787      0.005
+ C#2      ON
+    A#1                0.094      0.006     15.082      0.000
+    A#2                0.333      0.000    999.000    999.000
 
- C#3        ON
-    TREAT             -4.807      0.223    -21.563      0.000
+ C#3      ON
+    A#1                0.629      0.015     43.091      0.000
+    A#2                0.333      0.000    999.000    999.000
 
- C#4        ON
-    TREAT             -1.590      0.000    999.000    999.000
+ C#4      ON
+    A#1                0.190      0.008     23.452      0.000
+    A#2                0.333      0.000    999.000    999.000
 
- Intercepts
-    C#1               -2.529      0.000    999.000    999.000
-    C#2               27.954      0.314     89.059      0.000
-    C#3               33.272      0.066    504.693      0.000
-    C#4               31.146      0.000    999.000    999.000
+ Means
+    A#1                0.931      0.005    189.747      0.000
+
+New/Additional Parameters
+    P1_5               0.000      0.000      0.000      1.000
 
 
 QUALITY OF NUMERICAL RESULTS
 
-     Condition Number for the Information Matrix              0.627E-06
+     Condition Number for the Information Matrix              0.292E-18
        (ratio of smallest to largest eigenvalue)
 
 
-LOGISTIC REGRESSION ODDS RATIO RESULTS
-
-                                                95% C.I.
-                    Estimate       S.E.  Lower 2.5% Upper 2.5%
-
-Categorical Latent Variables
-
- C#1      ON
-    TREAT              2.258      0.000      2.258      2.258
-
- C#2      ON
-    TREAT              0.187      0.112      0.057      0.608
-
- C#3      ON
-    TREAT              0.008      0.002      0.005      0.013
-
- C#4      ON
-    TREAT              0.204      0.000      0.204      0.204
-
-
-ALTERNATIVE PARAMETERIZATIONS FOR THE CATEGORICAL LATENT VARIABLE REGRESSION
+RESULTS IN PROBABILITY SCALE
 
                                                     Two-Tailed
                     Estimate       S.E.  Est./S.E.    P-Value
 
-Parameterization using Reference Class 1
+Latent Class Pattern 1 1
 
- C#2      ON
-    TREAT             -2.491      0.602     -4.141      0.000
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.068      0.019      3.539      0.000
+    Category 3         0.932      0.019     48.416      0.000
 
- C#3      ON
-    TREAT             -5.621      0.223    -25.216      0.000
+Latent Class Pattern 1 2
 
- C#4      ON
-    TREAT             -2.404      0.000      0.000      1.000
+ RE75
+    Category 1         0.993      0.006    177.934      0.000
+    Category 2         0.004      0.004      0.904      0.366
+    Category 3         0.003      0.003      0.971      0.331
 
- C#5      ON
-    TREAT             -0.814      0.000      0.000      1.000
+Latent Class Pattern 1 3
 
- Intercepts
-    C#2               30.483      0.314     97.117      0.000
-    C#3               35.801      0.066    543.060      0.000
-    C#4               33.675      0.000      0.000      1.000
-    C#5                2.529      0.000      0.000      1.000
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.035      0.005      7.551      0.000
+    Category 3         0.965      0.005    209.550      0.000
 
-Parameterization using Reference Class 2
+Latent Class Pattern 1 4
 
- C#1      ON
-    TREAT              2.491      0.602      4.141      0.000
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.000      0.000      0.000      1.000
+    Category 3         1.000      0.000      0.000      1.000
 
- C#3      ON
-    TREAT             -3.130      0.617     -5.073      0.000
+Latent Class Pattern 1 5
 
- C#4      ON
-    TREAT              0.087      0.602      0.145      0.884
+ RE75
+    Category 1         1.000      0.000      0.000      1.000
+    Category 2         0.000      0.000      0.000      1.000
+    Category 3         0.000      0.000      0.000      1.000
 
- C#5      ON
-    TREAT              1.677      0.602      2.787      0.005
+Latent Class Pattern 2 1
 
- Intercepts
-    C#1              -30.483      0.314    -97.117      0.000
-    C#3                5.318      0.308     17.276      0.000
-    C#4                3.192      0.314     10.169      0.000
-    C#5              -27.954      0.314    -89.059      0.000
+ RE75
+    Category 1         0.500      0.000      0.000      1.000
+    Category 2         0.231      0.000      0.000      1.000
+    Category 3         0.269      0.000      0.000      1.000
 
-Parameterization using Reference Class 3
+Latent Class Pattern 2 2
 
- C#1      ON
-    TREAT              5.621      0.223     25.216      0.000
+ RE75
+    Category 1         0.993      0.006    177.934      0.000
+    Category 2         0.004      0.004      0.904      0.366
+    Category 3         0.003      0.003      0.971      0.331
 
- C#2      ON
-    TREAT              3.130      0.617      5.073      0.000
+Latent Class Pattern 2 3
 
- C#4      ON
-    TREAT              3.217      0.223     14.432      0.000
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.035      0.005      7.551      0.000
+    Category 3         0.965      0.005    209.550      0.000
 
- C#5      ON
-    TREAT              4.807      0.223     21.563      0.000
+Latent Class Pattern 2 4
 
- Intercepts
-    C#1              -35.801      0.066   -543.060      0.000
-    C#2               -5.318      0.308    -17.276      0.000
-    C#4               -2.126      0.066    -32.250      0.000
-    C#5              -33.272      0.066   -504.693      0.000
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.000      0.000      0.000      1.000
+    Category 3         1.000      0.000      0.000      1.000
 
-Parameterization using Reference Class 4
+Latent Class Pattern 2 5
 
- C#1      ON
-    TREAT              2.404      0.000      0.000      1.000
-
- C#2      ON
-    TREAT             -0.087      0.602     -0.145      0.884
-
- C#3      ON
-    TREAT             -3.217      0.223    -14.432      0.000
-
- C#5      ON
-    TREAT              1.590      0.000      0.000      1.000
-
- Intercepts
-    C#1              -33.675      0.000      0.000      1.000
-    C#2               -3.192      0.314    -10.169      0.000
-    C#3                2.126      0.066     32.250      0.000
-    C#5              -31.146      0.000      0.000      1.000
-
-
-ODDS RATIO FOR THE ALTERNATIVE PARAMETERIZATIONS FOR THE CATEGORICAL LATENT VARIABLE REGRESSION
-
-                                                95% C.I.
-                    Estimate       S.E.  Lower 2.5% Upper 2.5%
-
-Parameterization using Reference Class 1
-
- C#2      ON
-    TREAT              0.083      0.050      0.025      0.269
-
- C#3      ON
-    TREAT              0.004      0.001      0.002      0.006
-
- C#4      ON
-    TREAT              0.090      0.000      0.090      0.090
-
- C#5      ON
-    TREAT              0.443      0.000      0.443      0.443
-
-Parameterization using Reference Class 2
-
- C#1      ON
-    TREAT             12.079      7.267      3.714     39.279
-
- C#3      ON
-    TREAT              0.044      0.027      0.013      0.147
-
- C#4      ON
-    TREAT              1.091      0.657      0.336      3.549
-
- C#5      ON
-    TREAT              5.350      3.219      1.645     17.397
-
-Parameterization using Reference Class 3
-
- C#1      ON
-    TREAT            276.165     61.561    178.411    427.481
-
- C#2      ON
-    TREAT             22.864     14.104      6.824     76.602
-
- C#4      ON
-    TREAT             24.953      5.562     16.120     38.625
-
- C#5      ON
-    TREAT            122.320     27.267     79.022    189.341
-
-Parameterization using Reference Class 4
-
- C#1      ON
-    TREAT             11.067      0.000     11.067     11.067
-
- C#2      ON
-    TREAT              0.916      0.551      0.282      2.980
-
- C#3      ON
-    TREAT              0.040      0.009      0.026      0.062
-
- C#5      ON
-    TREAT              4.902      0.000      4.902      4.902
+ RE75
+    Category 1         0.500      0.000      0.000      1.000
+    Category 2         0.231      0.000      0.000      1.000
+    Category 3         0.269      0.000      0.000      1.000
 
 
 MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
 
      %OVERALL%
 
-     c#1 ON treat*0.81436;
-     c#2 ON treat*-1.67709;
-     c#3 ON treat*-4.80664;
-     c#4 ON treat*-1.58964;
+     c#1 ON a#1*0.08017;
+     c#1 ON a#2*0.00000 (p1_1);
+     c#2 ON a#1*0.09424;
+     c#2 ON a#2*0.33333 (p1_2);
+     c#3 ON a#1*0.62928;
+     c#3 ON a#2*0.33333 (p1_3);
+     c#4 ON a#1*0.19048;
+     c#4 ON a#2*0.33333 (p1_4);
 
-     [ c#1*-2.52932 ];
-     [ c#2*27.95393 ];
-     [ c#3*33.27180 ];
-     [ c#4*31.14571 ];
-
-     %C#1%
-
-     e WITH educ@0;
-
-     [ e@-0.83634 ];
-     [ educ*-5.32224 ];
-     [ re75#1*-5.38165 ];
-     [ re75*1.18209 ];
-
-     e@0.04948;
-     educ*0.56047;
-     re75*0.00010;
-
-     %C#2%
+     [ a#1*0.93084 ];
 
      e WITH educ@0;
 
-     [ e@3.29260 ];
-     [ educ*-2.73540 ];
-     [ re75#1*-2.10147 ];
-     [ re75*-3.82111 ];
 
-     e@0.02201;
-     educ*0.15247;
-     re75*0.07043;
+     %A#1.C#1%
 
-     %C#3%
+     [ e*-0.83634 ] (me_1);
+     [ educ*-1.91437 ] (m1_1);
 
-     e WITH educ@0;
+     [ re75$1*-28.45100 ] (t1_1);
+     [ re75$2*-2.61598 ] (t2_1);
 
-     [ e*-0.37508 ] (me_3);
-     [ educ*0.06178 ];
-     [ re75#1*-15 ];
-     [ re75*1.07904 ];
+     e*1.86301 (ve_1);
+     educ*0.36689 (v1_1);
 
-     e*0.22676 (ve);
-     educ*0.96797;
-     re75*0.00553;
+     %A#1.C#2%
 
-     %C#4%
+     [ e*2.20175 ] (me_2);
+     [ educ*-0.18886 ] (m1_2);
 
-     e WITH educ@0;
+     [ re75$1*4.97569 ] (t1_2);
+     [ re75$2*5.87196 ] (t2_2);
 
-     [ e*1.99906 ] (me_4);
-     [ educ*-0.24079 ];
-     [ re75#1*1.83605 ];
-     [ re75*0.73151 ];
+     e*0.11931 (ve_2);
+     educ*0.83336 (v1_2);
 
-     e*0.22676 (ve);
-     educ*0.83437;
-     re75*0.01100;
+     %A#1.C#3%
 
-     %C#5%
+     [ e*-0.26859 ] (me_3);
+     [ educ*-0.11385 ] (m1_3);
 
-     e WITH educ@0;
+     [ re75$1*-31.16205 ] (t1_3);
+     [ re75$2*-3.32331 ] (t2_3);
 
-     [ e*46.82906 ] (me_5);
-     [ educ*4.81767 ];
-     [ re75#1*-6.40795 ];
-     [ re75*4.48106 ];
+     e*0.08800 (ve_3);
+     educ*0.28607 (v1_3);
 
-     e*0.22676 (ve);
-     educ*0.49981;
-     re75*0.07043;
+     %A#1.C#4%
+
+     [ e*-0.99062 ] (me_4);
+     [ educ*1.41815 ] (m1_4);
+
+     [ re75$1*-30.15101 ] (t1_4);
+     [ re75$2*-29.67725 ] (t2_4);
+
+     e*0.02070 (ve_4);
+     educ*0.03891 (v1_4);
+
+     %A#1.C#5%
+
+     [ e*3.29260 ] (me_5);
+     [ educ*-2.63010 ] (m1_5);
+
+     [ re75$1*26.11278 ] (t1_5);
+     [ re75$2*26.66115 ] (t2_5);
+
+     e*0.06960 (ve_5);
+     educ*0.27918 (v1_5);
+
+     %A#2.C#1%
+
+     [ e*-0.83634 ] (me_1);
+     [ educ@0 ];
+
+     [ re75$1@0 ];
+     [ re75$2@1 ];
+
+     e@1;
+     educ@1;
+
+     %A#2.C#2%
+
+     [ e*2.20175 ] (me_2);
+     [ educ*-0.18886 ] (m1_2);
+
+     [ re75$1*4.97569 ] (t1_2);
+     [ re75$2*5.87196 ] (t2_2);
+
+     e*0.11931 (ve_2);
+     educ*0.83336 (v1_2);
+
+     %A#2.C#3%
+
+     [ e*-0.26859 ] (me_3);
+     [ educ*-0.11385 ] (m1_3);
+
+     [ re75$1*-31.16205 ] (t1_3);
+     [ re75$2*-3.32331 ] (t2_3);
+
+     e*0.08800 (ve_3);
+     educ*0.28607 (v1_3);
+
+     %A#2.C#4%
+
+     [ e*-0.99062 ] (me_4);
+     [ educ*1.41815 ] (m1_4);
+
+     [ re75$1*-30.15101 ] (t1_4);
+     [ re75$2*-29.67725 ] (t2_4);
+
+     e*0.02070 (ve_4);
+     educ*0.03891 (v1_4);
+
+     %A#2.C#5%
+
+     [ e*3.29260 ] (me_5);
+     [ educ@0 ];
+
+     [ re75$1@0 ];
+     [ re75$2@1 ];
+
+     e@1;
+     educ@1;
+
+     ! NEW statements in MODEL CONSTRAINT
+     NEW(p1_5*0.00000);
+
 
 
 
@@ -755,9 +870,9 @@ DIAGRAM INFORMATION
   No diagram output was produced.
 
 
-     Beginning Time:  17:00:11
-        Ending Time:  17:00:15
-       Elapsed Time:  00:00:04
+     Beginning Time:  23:14:13
+        Ending Time:  23:14:22
+       Elapsed Time:  00:00:09
 
 
 

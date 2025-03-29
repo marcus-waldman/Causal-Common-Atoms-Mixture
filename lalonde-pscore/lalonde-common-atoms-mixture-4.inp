@@ -5,7 +5,7 @@ DATA: FILE = "data/lalonde_obs.dat";
 VARIABLE: 
 NAMES = re78 treat u e educ re75; 
 USEV = treat e educ re75;
-!CENSORED = re75 (bi);
+CATEGORICAL = re75;
 CLASSES = A(2) C(4);
 KNOWNCLASS = A(treat=0 treat=1);
 MISSING=.;
@@ -27,8 +27,8 @@ MODEL:
 
 C on A;
 e with educ@0;
-[e-educ*];
-e-educ*;
+![e-re75*];
+!e-re75*;
 ![re75#1*];
 
 
@@ -38,67 +38,80 @@ C#3 ON A#2 (p1_3);
 
 
 %A#1.C#1% !Below common support
-[educ-re75*] (m1_1 m2_1);
-educ-re75* (v1_1 v2_1);
+[educ*] (m1_1);
+educ* (v1_1);
 ![re75#1*] (h_1);
 [e*] (me_1);
 e* (ve_1);
+[re75$1*] (t1_1);
+[re75$2*] (t2_1);
 
 %A#2.C#1% 
-[educ-re75*] (m1_1 m2_1);
-educ-re75* (v1_1 v2_1);
-![re75#1*] (h_1);
+[educ@0];
+educ@1;
+![re75#1@0];
 [e*] (me_1);
-e* (ve_1);
-
+e@1;
+[re75$1@0];
+[re75$2@1];
 
 %A#1.C#2% !Within common support
-[educ-re75*] (m1_2 m2_2);
-educ-re75* (v1_2 v2_2);
+[educ*] (m1_2);
+educ* (v1_2);
 ![re75#1*] (h_2);
 [e*] (me_2);
 e* (ve_2);
+[re75$1*] (t1_2);
+[re75$2*] (t2_2);
 
 
 %A#2.C#2% 
-[educ-re75*] (m1_2 m2_2);
-educ-re75* (v1_2 v2_2);
+[educ*] (m1_2);
+educ* (v1_2);
 ![re75#1*] (h_2);
 [e*] (me_2);
 e* (ve_2);
-
+[re75$1*] (t1_2);
+[re75$2*] (t2_2);
 
 
 %A#1.C#3% !Within common support
 [e*] (me_3);
 e* (ve_3);
-[educ-re75*] (m1_3 m2_3);
-educ-re75* (v1_3 v2_3);
+[educ*] (m1_3);
+educ* (v1_3);
 ![re75#1*] (h_3);
-
+[re75$1*] (t1_3);
+[re75$2*] (t2_3);
 
 %A#2.C#3% 
 [e*] (me_3);
 e* (ve_3);
-[educ-re75*] (m1_3 m2_3);
-educ-re75* (v1_3 v2_3);
+[educ*] (m1_3);
+educ* (v1_3);
 ![re75#1*] (h_3);
+[re75$1*] (t1_3);
+[re75$2*] (t2_3);
 
 
 %A#1.C#4% !Above common support
 [e*] (me_4);
 e* (ve_4);
-[educ-re75*] (m1_4 m2_4);
-educ-re75* (v1_4 v2_4);
+[educ*] (m1_4);
+educ* (v1_4);
+[re75$1*] (t1_4);
+[re75$2*] (t2_4);
 ![re75#1*] (h_4);
 
 
 %A#2.C#4% 
 [e*] (me_4);
-e* (ve_4);
-[educ-re75*] (m1_4 m2_4);
-educ-re75* (v1_4 v2_4);
-![re75#1*] (h_4);
+e@1;
+[educ@0];
+educ@1;
+![re75#1@0];
+[re75$1@0];
+[re75$2@1];
 
 
 

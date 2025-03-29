@@ -1,6 +1,6 @@
 Mplus VERSION 8.10
 MUTHEN & MUTHEN
-03/28/2025  10:36 AM
+03/28/2025  11:26 PM
 
 INPUT INSTRUCTIONS
 
@@ -9,129 +9,179 @@ INPUT INSTRUCTIONS
   DATA: FILE = "data/lalonde_obs.dat";
 
   VARIABLE:
-  NAMES = re78 treat marr nodegree black hispanic q1 q2 q3 q4;
-  USEV = treat-hispanic q1-q4;
-  CATEGORICAL = marr-hispanic;
+  NAMES = re78 treat u e educ re75;
+  USEV = treat e educ re75;
+  CATEGORICAL = re75;
   CLASSES = A(2) C(6);
-  KNOWNCLASS = A(treat=0 treat = 1);
+  KNOWNCLASS = A(treat=0 treat=1);
   MISSING=.;
   AUXILIARY = re78;
 
+
   ANALYSIS:
   TYPE = mixture;
-  ESTIMATOR = MLR;
-  PARAMETERIZATION = PROBABILITY;
+  ESTIMATOR = mlr;
+  PARAMETERIZATION = probability;
+  !ALGORITHM = INTEGRATION;
   PROCESSORS = 8;
-  STARTS = 64 16;
+  STARTS = 128 32;
+
 
   MODEL:
 
   %OVERALL%
 
   C on A;
+  e with educ@0;
+  ![e-re75*];
+  !e-re75*;
+  ![re75#1*];
 
-  q1 with q2-q4@0;
-  q2 with q3-q4@0;
-  q3 with q4@0;
 
-  [ a#1* ] (p0);
+  C#1 ON A#2 (p1_1);
+  C#2 ON A#2 (p1_2);
+  C#3 ON A#2 (p1_3);
+  C#4 ON A#2 (p1_4);
+  C#5 ON A#2 (p1_5);
 
-  c#1 ON a#1* (pa_0);
-  c#1 ON a#2* (pa_1);
-  c#2 ON a#1* (pb_0);
-  c#2 ON a#2* (pb_1);
-  c#3 ON a#1* (pc_0);
-  c#3 ON a#2* (pc_1);
-  c#4 ON a#1* (pd_0);
-  c#4 ON a#2* (pd_1);
-  c#5 ON a#1* (pe_0);
-  c#5 ON a#2* (pe_1);
 
-  %A#1.C#1%
-  [marr$1-hispanic$1*] (at1-at4);
-  [q1-q4*] (am1-am4);
+  %A#1.C#1% !Below common support
+  [educ*] (m1_1);
+  educ* (v1_1);
+  ![re75#1*] (h_1);
+  [e*] (me_1);
+  e* (ve_1);
+  [re75$1*] (t1_1);
+  [re75$2*] (t2_1);
 
   %A#2.C#1%
-  [marr$1-hispanic$1*] (at1-at4);
-  [q1-q4*] (am1-am4);
+  [educ@0];
+  educ@1;
+  ![re75#1@0];
+  [e*] (me_1);
+  e@1;
+  [re75$1@0];
+  [re75$2@1];
 
-
-  %A#1.C#2%
-  [marr$1-hispanic$1*] (bt1-bt4);
-  [q1-q4*] (bm1-bm4);
-
+  %A#1.C#2% !Within common support
+  [educ*] (m1_2);
+  educ* (v1_2);
+  ![re75#1*] (h_2);
+  [e*] (me_2);
+  e* (ve_2);
+  [re75$1*] (t1_2);
+  [re75$2*] (t2_2);
 
 
   %A#2.C#2%
-  [marr$1-hispanic$1*] (bt1-bt4);
-  [q1-q4*] (bm1-bm4);
+  [educ*] (m1_2);
+  educ* (v1_2);
+  ![re75#1*] (h_2);
+  [e*] (me_2);
+  e* (ve_2);
+  [re75$1*] (t1_2);
+  [re75$2*] (t2_2);
 
 
-  %A#1.C#3%
-  [marr$1-hispanic$1*] (ct1-ct4);
-  [q1-q4*] (cm1-cm4);
+  %A#1.C#3% !Within common support
+  [e*] (me_3);
+  e* (ve_3);
+  [educ*] (m1_3);
+  educ* (v1_3);
+  ![re75#1*] (h_3);
+  [re75$1*] (t1_3);
+  [re75$2*] (t2_3);
 
   %A#2.C#3%
-  [marr$1-hispanic$1*] (ct1-ct4);
-  [q1-q4*] (cm1-cm4);
+  [e*] (me_3);
+  e* (ve_3);
+  [educ*] (m1_3);
+  educ* (v1_3);
+  ![re75#1*] (h_3);
+  [re75$1*] (t1_3);
+  [re75$2*] (t2_3);
 
 
-  %A#1.C#4%
-  [marr$1-hispanic$1*] (dt1-dt4);
-  [q1-q4*] (dm1-dm4);
-
+  %A#1.C#4% !Within common support
+  [e*] (me_4);
+  e* (ve_4);
+  [educ*] (m1_4);
+  educ* (v1_4);
+  ![re75#1*] (h_4);
+  [re75$1*] (t1_4);
+  [re75$2*] (t2_4);
 
   %A#2.C#4%
-  [marr$1-hispanic$1*] (dt1-dt4);
-  [q1-q4*] (dm1-dm4);
+  [e*] (me_4);
+  e* (ve_4);
+  [educ*] (m1_4);
+  educ* (v1_4);
+  ![re75#1*] (h_4);
+  [re75$1*] (t1_4);
+  [re75$2*] (t2_4);
 
 
-  %A#1.C#5%
-  [marr$1-hispanic$1*] (et1-et4);
-  [q1-q4*] (em1-em4);
-
+  %A#1.C#5% !Within common support
+  [e*] (me_5);
+  e* (ve_5);
+  [educ*] (m1_5);
+  educ* (v1_5);
+  ![re75#1*] (h_5);
+  [re75$1*] (t1_5);
+  [re75$2*] (t2_5);
 
   %A#2.C#5%
-  [marr$1-hispanic$1*] (et1-et4);
-  [q1-q4*] (em1-em4);
+  [e*] (me_5);
+  e* (ve_5);
+  [educ*] (m1_5);
+  educ* (v1_5);
+  ![re75#1*] (h_5);
+  [re75$1*] (t1_5);
+  [re75$2*] (t2_5);
 
 
-  %A#1.C#6%
-  [marr$1-hispanic$1*] (ft1-ft4);
-  [q1-q4*] (fm1-fm4);
+
+
+  %A#1.C#6% !Above common support
+  [e*] (me_6);
+  e* (ve_6);
+  [educ*] (m1_6);
+  educ* (v1_6);
+  [re75$1*] (t1_6);
+  [re75$2*] (t2_6);
+  ![re75#1*] (h_6);
 
 
   %A#2.C#6%
-  [marr$1-hispanic$1*] (ft1-ft4);
-  [q1-q4*] (fm1-fm4);
+  [e*] (me_6);
+  e@1;
+  [educ@0];
+  educ@1;
+  ![re75#1@0];
+  [re75$1@0];
+  [re75$2@1];
+
 
 
   Model Constraint:
-  New(p1*);
-  p1 = 1-p0;
+  New(p1_6*);
+  p1_6 = 1 - p1_1 - p1_2 - p1_3 - p1_4 - p1_5;
+  0 = p1_1;
+  0 = p1_6;
+  0 = p1_2-p1_5;
+  0 = p1_3-p1_5;
+  0 = p1_4-p1_5;
 
-  New(pf_0* pf_1*);
-  pf_0 = 1 - pa_0 - pb_0 - pc_0 - pd_0 - pe_0;
-  pf_1 = 1 - pa_1 - pb_1 - pc_1 - pd_1 - pe_1;
 
-  New(pa* pb* pc* pd* pe* pf*);
-  pa = pa_0*p0 + pa_1*p1;
-  pb = pb_0*p0 + pb_1*p1;
-  pc = pc_0*p0 + pc_1*p1;
-  pd = pd_0*p0 + pd_1*p1;
-  pe = pe_0*p0 + pe_1*p1;
-  pf = pf_0*p0 + pf_1*p1;
+  0 = me_1+0.8363425;
+  0 = me_6-3.292603;
 
-  0 = pa_0 - pf_0;
-  0 = pb_0 - pf_0;
-  0 = pc_0 - pf_0;
-  0 = pd_0 - pf_0;
-  0 = pe_0 - pf_0;
+
 
 
   OUTPUT:
-  sampstat;
   svalues;
+
 
 
 
@@ -146,7 +196,7 @@ SUMMARY OF ANALYSIS
 Number of groups                                                 1
 Number of observations                                        2675
 
-Number of dependent variables                                    8
+Number of dependent variables                                    3
 Number of independent variables                                  0
 Number of continuous latent variables                            0
 Number of categorical latent variables                           2
@@ -154,10 +204,10 @@ Number of categorical latent variables                           2
 Observed dependent variables
 
   Continuous
-   Q1          Q2          Q3          Q4
+   E           EDUC
 
   Binary and ordered categorical (ordinal)
-   MARR        NODEGREE    BLACK       HISPANIC
+   RE75
 
 Observed auxiliary variables
    RE78
@@ -198,8 +248,8 @@ Maximum number of iterations for H1                           2000
 Convergence criterion for H1                             0.100D-03
 Optimization algorithm                                         EMA
 Random Starts Specifications
-  Number of initial stage random starts                         64
-  Number of final stage optimizations                           16
+  Number of initial stage random starts                        128
+  Number of final stage optimizations                           32
   Number of initial stage iterations                            10
   Initial stage convergence criterion                    0.100D+01
   Random starts scale                                    0.500D+01
@@ -228,355 +278,19 @@ Minimum covariance coverage value   0.100
 
 
            Covariance Coverage
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2             1.000         1.000
- Q3             1.000         1.000         1.000
- Q4             1.000         1.000         1.000         1.000
+              E             EDUC
+              ________      ________
+ E              1.000
+ EDUC           1.000         1.000
 
 
 UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
 
-    MARR
-      Category 1    0.181          483.000
-      Category 2    0.819         2192.000
-    NODEGREE
-      Category 1    0.667         1784.000
-      Category 2    0.333          891.000
-    BLACK
-      Category 1    0.708         1895.000
-      Category 2    0.292          780.000
-    HISPANIC
-      Category 1    0.966         2583.000
-      Category 2    0.034           92.000
+    RE75
+      Category 1    0.135          360.000
+      Category 2    0.027           72.000
+      Category 3    0.839         2243.000
 
-
-SAMPLE STATISTICS
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 1
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                1.026         0.762         2.441         2.442
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.469
- Q2            -0.029         0.518
- Q3             0.064         0.088         1.247
- Q4            -0.010         0.021         0.821         1.313
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.058         1.000
- Q3             0.084         0.110         1.000
- Q4            -0.012         0.026         0.642         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 2
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-               -1.110         0.691         0.206         0.178
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.477
- Q2            -0.188         0.801
- Q3             0.039         0.086         0.326
- Q4             0.049         0.049         0.197         0.351
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.303         1.000
- Q3             0.099         0.167         1.000
- Q4             0.119         0.093         0.582         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 3
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.376        -0.468         0.018         0.032
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.297
- Q2            -0.013         0.544
- Q3            -0.003         0.047         0.189
- Q4             0.023         0.027         0.048         0.192
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.032         1.000
- Q3            -0.014         0.146         1.000
- Q4             0.097         0.085         0.254         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 4
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.701         0.269         0.763         0.766
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.437
- Q2            -0.091         0.776
- Q3             0.021         0.041         0.241
- Q4             0.011         0.003         0.084         0.240
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.156         1.000
- Q3             0.064         0.094         1.000
- Q4             0.032         0.007         0.350         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 5
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.426        -0.330        -0.800        -0.771
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.335
- Q2             0.041         0.931
- Q3            -0.046        -0.139         0.227
- Q4            -0.009        -0.146         0.092         0.232
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2             0.074         1.000
- Q3            -0.165        -0.302         1.000
- Q4            -0.032        -0.315         0.402         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 6
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-               -1.125         0.141        -0.795        -0.827
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.546
- Q2            -0.412         1.163
- Q3             0.059        -0.125         0.172
- Q4             0.035        -0.112         0.093         0.152
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.517         1.000
- Q3             0.192        -0.279         1.000
- Q4             0.121        -0.265         0.575         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 7
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.657        -0.879         1.225        -0.455
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.000
- Q2             0.000         0.000
- Q3             0.000         0.000         0.000
- Q4             0.000         0.000         0.000         0.000
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.484         1.000
- Q3             0.782        -0.620         1.000
- Q4            -0.584         0.452        -0.744         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 8
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-               -0.473        -0.090        -0.269         0.425
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.114
- Q2            -0.023         0.009
- Q3             0.008        -0.004         0.004
- Q4             0.070        -0.010         0.003         0.057
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.726         1.000
- Q3             0.381        -0.596         1.000
- Q4             0.865        -0.452         0.202         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 9
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.604        -0.824         1.128        -0.464
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.032
- Q2            -0.033         0.039
- Q3             0.057        -0.054         0.115
- Q4             0.005        -0.002         0.014         0.004
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.925         1.000
- Q3             0.948        -0.797         1.000
- Q4             0.443        -0.179         0.673         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 10
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.654        -0.875         1.220        -0.455
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.002
- Q2            -0.002         0.003
- Q3             0.003        -0.004         0.006
- Q4             0.000         0.000         0.000         0.000
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.999         1.000
- Q3             0.999        -0.996         1.000
- Q4             0.304        -0.297         0.314         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 11
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-                0.148        -0.697        -1.106        -1.197
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.080
- Q2             0.052         0.398
- Q3            -0.010        -0.023         0.160
- Q4            -0.007        -0.009         0.052         0.031
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2             0.290         1.000
- Q3            -0.092        -0.090         1.000
- Q4            -0.132        -0.077         0.735         1.000
-
-
-     ESTIMATED SAMPLE STATISTICS FOR CLASS 12
-
-
-           Means
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
-               -0.826        -0.843        -1.216        -1.171
-
-
-           Covariances
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             0.295
- Q2            -0.067         0.484
- Q3             0.001         0.005         0.082
- Q4             0.007         0.020         0.045         0.060
-
-
-           Correlations
-              Q1            Q2            Q3            Q4
-              ________      ________      ________      ________
- Q1             1.000
- Q2            -0.177         1.000
- Q3             0.004         0.025         1.000
- Q4             0.053         0.119         0.638         1.000
 
 
 UNIVARIATE SAMPLE STATISTICS
@@ -587,82 +301,68 @@ UNIVARIATE SAMPLE STATISTICS
          Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
         Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
 
-     Q1                    0.000      -0.426      -3.928    0.11%      -0.653      0.002      0.002
+     E                     0.000       1.450      -1.401    0.04%      -0.706     -0.406     -0.303
+            2675.000       1.000       1.271       3.595    0.04%      -0.175      0.367
+     EDUC                  0.000      -0.426      -3.928    0.11%      -0.653      0.002      0.002
             2675.000       1.000       0.339       1.639    7.89%       0.002      0.984
-     Q2                    0.000       0.383      -1.641    0.49%      -0.974     -0.593     -0.212
-            2675.000       1.000      -1.116       1.979    1.46%       0.169      1.121
-     Q3                    0.000       1.240      -1.328   12.93%      -0.900     -0.300     -0.058
-            2675.000       1.000       4.566       8.666    0.04%       0.157      0.701
-     Q4                    0.000       1.348      -1.286   13.46%      -0.937     -0.272     -0.061
-            2675.000       1.000       5.845      10.002    0.04%       0.171      0.661
 
 RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
 
+
+44 perturbed starting value run(s) did not converge or were rejected in the third stage.
 Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
 
-          -17522.013  967237           48
-          -17522.291  107446           12
-          -17565.649  645664           39
-          -17568.806  246261           38
-          -17568.899  432148           30
-          -17568.901  85462            51
-          -17569.079  195873           6
-          -17577.212  399671           13
-          -17583.735  407168           44
-          -17593.307  569131           26
-          -17605.096  285380           1
-          -17611.750  902278           21
-          -17612.774  481835           57
-          -17630.690  347515           24
-          -17703.455  551639           55
+           -5182.645  124999           96
+           -5182.645  603842           61
+           -5783.723  471398           74
+           -5792.929  366706           29
+           -5920.578  70118            104
+           -5936.949  341041           34
+           -6132.049  153942           31
+           -6132.049  268217           83
+           -6474.477  794236           127
 
-1 perturbed starting value run(s) did not converge or were rejected in the third stage.
+23 perturbed starting value run(s) did not converge or were rejected in the third stage.
 
 
 
-     WARNING:  THE BEST LOGLIKELIHOOD VALUE WAS NOT REPLICATED.  THE
-     SOLUTION MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.  INCREASE THE
-     NUMBER OF RANDOM STARTS.
+THE BEST LOGLIKELIHOOD VALUE HAS BEEN REPLICATED.  RERUN WITH AT LEAST TWICE THE
+RANDOM STARTS TO CHECK THAT THE BEST LOGLIKELIHOOD IS STILL OBTAINED AND REPLICATED.
 
      IN THE OPTIMIZATION, ONE OR MORE LOGIT THRESHOLDS APPROACHED EXTREME VALUES
      OF -15.000 AND 15.000 AND WERE FIXED TO STABILIZE MODEL ESTIMATION.  THESE
      VALUES IMPLY PROBABILITIES OF 0 AND 1.  IN THE MODEL RESULTS SECTION, THESE
      PARAMETERS HAVE 0 STANDARD ERRORS AND 999 IN THE Z-SCORE AND P-VALUE COLUMNS.
 
+     THE STANDARD ERRORS OF THE MODEL PARAMETER ESTIMATES MAY NOT BE
+     TRUSTWORTHY FOR SOME PARAMETERS DUE TO A NON-POSITIVE DEFINITE
+     FIRST-ORDER DERIVATIVE PRODUCT MATRIX.  THIS MAY BE DUE TO THE STARTING
+     VALUES BUT MAY ALSO BE AN INDICATION OF MODEL NONIDENTIFICATION.  THE
+     CONDITION NUMBER IS       0.185D-18.  PROBLEM INVOLVING THE FOLLOWING PARAMETER:
+     Parameter 24, %A#1.C#6%: EDUC (equality/label)
+
 
 
 
 THE MODEL ESTIMATION TERMINATED NORMALLY
 
-     WARNING:  THE SAMPLE VARIANCE OF Q1 IS  0.000.
-
-
-     WARNING:  THE SAMPLE VARIANCE OF Q2 IS  0.000.
-
-
-     WARNING:  THE SAMPLE VARIANCE OF Q4 IS  0.000.
-
-
-     WARNING:  THE SAMPLE VARIANCE OF Q4 IS  0.000.
-
-
 
 
 MODEL FIT INFORMATION
 
-Number of Free Parameters                       58
+Number of Free Parameters                       40
 
 Loglikelihood
 
-          H0 Value                      -17522.013
-          H0 Scaling Correction Factor      1.8030
+          H0 Value                       -5182.645
+          H0 Scaling Correction Factor      1.1015
             for MLR
 
 Information Criteria
 
-          Akaike (AIC)                   35160.026
-          Bayesian (BIC)                 35501.745
-          Sample-Size Adjusted BIC       35317.461
+          Akaike (AIC)                   10445.290
+          Bayesian (BIC)                 10680.958
+          Sample-Size Adjusted BIC       10553.866
             (n* = (n + 2) / 24)
 
 Chi-Square Test of Model Fit for the Binary and Ordered Categorical
@@ -670,12 +370,12 @@ Chi-Square Test of Model Fit for the Binary and Ordered Categorical
 
           Pearson Chi-Square
 
-          Value                            504.802
+          Value                            277.999
           Degrees of freedom cannot be computed for this model part.
 
           Likelihood Ratio Chi-Square
 
-          Value                            395.323
+          Value                            211.675
           Degrees of freedom cannot be computed for this model part.
 
 
@@ -688,12 +388,12 @@ BASED ON THE ESTIMATED MODEL
 
     A              1      2490.00000          0.93084
                    2       185.00000          0.06916
-    C              1       415.00867          0.15514
-                   2       415.00751          0.15514
-                   3       415.65485          0.15539
-                   4       415.00900          0.15514
-                   5       468.32266          0.17507
-                   6       545.99731          0.20411
+    C              1        34.51071          0.01290
+                   2       279.99731          0.10467
+                   3      1208.81250          0.45189
+                   4       591.66095          0.22118
+                   5       544.67072          0.20362
+                   6        15.34779          0.00574
 
 
 LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
@@ -701,22 +401,7 @@ LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
      MEAN/PROBABILITY PROFILES FOR C
                        Latent class
                      1      2      3      4      5      6
-     MARR
-       Category 1  0.024  0.035  0.108  0.084  0.322  0.400
-       Category 2  0.976  0.965  0.892  0.916  0.678  0.600
-     NODEGREE
-       Category 1  0.961  0.000  1.000  1.000  1.000  0.000
-       Category 2  0.039  1.000  0.000  0.000  0.000  1.000
-     BLACK
-       Category 1  0.985  0.713  0.769  0.911  0.708  0.323
-       Category 2  0.015  0.287  0.231  0.089  0.292  0.677
-     HISPANIC
-       Category 1  0.970  0.946  0.963  0.989  0.971  0.951
-       Category 2  0.030  0.054  0.037  0.011  0.029  0.049
-     Q1            1.026 -1.110  0.376  0.701  0.396 -1.044
-     Q2            0.762  0.691 -0.468  0.269 -0.370 -0.123
-     Q3            2.441  0.206  0.019  0.763 -0.833 -0.908
-     Q4            2.442  0.178  0.031  0.766 -0.817 -0.919
+     E            -0.836  2.205 -0.401  0.188 -0.977  3.293
 
 
 LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
@@ -725,8 +410,8 @@ LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
 
             1        2        3        4        5        6
 
-   1     0.167    0.167    0.167    0.167    0.167    0.167
-   2     0.000    0.000    0.004    0.000    0.288    0.708
+   1     0.014    0.094    0.467    0.219    0.200    0.006
+   2     0.000    0.250    0.250    0.250    0.250    0.000
 
 
 C-SPECIFIC CLASSIFICATION RESULTS
@@ -763,19 +448,19 @@ by Latent Class (Row)
 
 Classification Quality for C
 
-     Entropy                         0.820
+     Entropy                         0.953
 
 Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
 by Latent Class (Column)
 
            1        2        3        4        5        6
 
-    1   0.948    0.001    0.000    0.051    0.000    0.000
-    2   0.004    0.927    0.000    0.000    0.000    0.069
-    3   0.000    0.000    0.749    0.129    0.122    0.000
-    4   0.018    0.000    0.140    0.841    0.001    0.000
-    5   0.000    0.000    0.128    0.001    0.871    0.000
-    6   0.000    0.061    0.000    0.000    0.000    0.939
+    1   0.869    0.000    0.000    0.131    0.000    0.000
+    2   0.000    0.999    0.000    0.000    0.000    0.001
+    3   0.000    0.000    0.968    0.028    0.004    0.000
+    4   0.011    0.000    0.051    0.937    0.000    0.000
+    5   0.000    0.000    0.005    0.001    0.994    0.000
+    6   0.000    0.211    0.000    0.000    0.000    0.789
 
 
 Classification Probabilities for the Most Likely Latent Class Membership (Column)
@@ -783,12 +468,12 @@ by Latent Class (Row)
 
            1        2        3        4        5        6
 
-    1   0.920    0.011    0.000    0.069    0.000    0.000
-    2   0.000    0.925    0.000    0.000    0.000    0.075
-    3   0.000    0.000    0.777    0.123    0.100    0.000
-    4   0.013    0.000    0.151    0.836    0.001    0.000
-    5   0.000    0.000    0.156    0.002    0.842    0.000
-    6   0.000    0.056    0.000    0.000    0.000    0.944
+    1   0.806    0.000    0.000    0.194    0.000    0.000
+    2   0.000    0.988    0.000    0.000    0.000    0.012
+    3   0.000    0.000    0.971    0.027    0.002    0.000
+    4   0.007    0.000    0.054    0.938    0.001    0.000
+    5   0.000    0.000    0.009    0.000    0.991    0.000
+    6   0.000    0.023    0.000    0.000    0.000    0.977
 
 
 Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
@@ -796,12 +481,12 @@ by Latent Class (Row)
 
               1        2        3        4        5        6
 
-    1     13.732    9.318    0.000   11.139    0.000    0.000
-    2     -5.413    2.510  -11.227  -11.227  -11.227    0.000
-    3      2.391    0.000   13.563   11.723   11.514    0.000
-    4      9.458    0.000   11.923   13.636    6.797    0.000
-    5      0.000    0.000   11.960    7.328   13.644    0.000
-    6    -13.758   -2.824  -13.758  -13.758  -13.758    0.000
+    1     13.599    0.000    0.000   12.177    0.000    0.000
+    2     -5.635    4.444   -9.359   -3.895   -9.359    0.000
+    3      0.000    0.000   13.786   10.199    7.732    0.000
+    4      8.831    4.451   10.902   13.751    6.716    0.000
+    5      0.000    0.000    9.124    3.713   13.806    0.000
+    6    -13.792   -3.728  -13.792  -13.792  -13.792    0.000
 
 
 MODEL RESULTS
@@ -811,234 +496,211 @@ MODEL RESULTS
 
 Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
 
- Q1       WITH
-    Q2                 0.000      0.000    999.000    999.000
-    Q3                 0.000      0.000    999.000    999.000
-    Q4                 0.000      0.000    999.000    999.000
-
- Q2       WITH
-    Q3                 0.000      0.000    999.000    999.000
-    Q4                 0.000      0.000    999.000    999.000
-
- Q3       WITH
-    Q4                 0.000      0.000    999.000    999.000
-
- Variances
-    Q1                 0.401      0.013     31.781      0.000
-    Q2                 0.805      0.024     32.947      0.000
-    Q3                 0.282      0.032      8.694      0.000
-    Q4                 0.284      0.039      7.202      0.000
+ E        WITH
+    EDUC               0.000      0.000    999.000    999.000
 
 Parameters for Class-specific Model Parts
 
 Latent Class Pattern 1 1
 
  Means
-    Q1                 1.026      0.093     10.994      0.000
-    Q2                 0.762      0.072     10.617      0.000
-    Q3                 2.441      0.277      8.802      0.000
-    Q4                 2.442      0.305      8.000      0.000
+    E                 -0.836      0.000    999.000    999.000
+    EDUC              -2.813      0.107    -26.362      0.000
 
  Thresholds
-    MARR$1            -3.704      0.634     -5.838      0.000
-    NODEGREE$1         3.217      0.675      4.769      0.000
-    BLACK$1            4.196      0.735      5.711      0.000
-    HISPANIC$1         3.465      0.601      5.766      0.000
+    RE75$1           -26.722      0.000    999.000    999.000
+    RE75$2            -1.945      0.550     -3.539      0.000
+
+ Variances
+    E                  3.079      0.130     23.737      0.000
+    EDUC               0.207      0.059      3.493      0.000
 
 Latent Class Pattern 1 2
 
  Means
-    Q1                -1.110      0.045    -24.834      0.000
-    Q2                 0.691      0.059     11.623      0.000
-    Q3                 0.206      0.046      4.456      0.000
-    Q4                 0.178      0.051      3.489      0.000
+    E                  2.205      0.021    102.788      0.000
+    EDUC              -0.178      0.058     -3.089      0.002
 
  Thresholds
-    MARR$1            -3.309      0.317    -10.451      0.000
-    NODEGREE$1       -20.057      0.000    999.000    999.000
-    BLACK$1            0.910      0.134      6.812      0.000
-    HISPANIC$1         2.871      0.244     11.742      0.000
+    RE75$1             5.800      1.076      5.389      0.000
+    RE75$2            29.061      0.000    999.000    999.000
+
+ Variances
+    E                  0.113      0.010     10.986      0.000
+    EDUC               0.814      0.073     11.164      0.000
 
 Latent Class Pattern 1 3
 
  Means
-    Q1                 0.376      0.031     11.995      0.000
-    Q2                -0.468      0.052     -8.981      0.000
-    Q3                 0.019      0.099      0.193      0.847
-    Q4                 0.031      0.042      0.737      0.461
+    E                 -0.401      0.007    -59.513      0.000
+    EDUC               0.088      0.011      7.945      0.000
 
  Thresholds
-    MARR$1            -2.111      0.231     -9.124      0.000
-    NODEGREE$1        20.919      0.000    999.000    999.000
-    BLACK$1            1.200      0.354      3.391      0.001
-    HISPANIC$1         3.259      0.359      9.082      0.000
+    RE75$1           -29.774      0.000    999.000    999.000
+    RE75$2           -29.277      0.000    999.000    999.000
+
+ Variances
+    E                  0.030      0.002     16.526      0.000
+    EDUC               0.091      0.007     13.077      0.000
 
 Latent Class Pattern 1 4
 
  Means
-    Q1                 0.701      0.057     12.275      0.000
-    Q2                 0.269      0.109      2.466      0.014
-    Q3                 0.763      0.078      9.846      0.000
-    Q4                 0.766      0.134      5.715      0.000
+    E                  0.188      0.019      9.772      0.000
+    EDUC              -0.987      0.043    -23.153      0.000
 
  Thresholds
-    MARR$1            -2.388      0.196    -12.152      0.000
-    NODEGREE$1        18.732      0.000    999.000    999.000
-    BLACK$1            2.327      0.936      2.485      0.013
-    HISPANIC$1         4.538      0.815      5.568      0.000
+    RE75$1           -29.696      0.000    999.000    999.000
+    RE75$2            -2.109      0.138    -15.264      0.000
+
+ Variances
+    E                  0.072      0.007     10.631      0.000
+    EDUC               0.464      0.050      9.290      0.000
 
 Latent Class Pattern 1 5
 
  Means
-    Q1                 0.396      0.028     14.145      0.000
-    Q2                -0.370      0.054     -6.793      0.000
-    Q3                -0.833      0.047    -17.628      0.000
-    Q4                -0.817      0.047    -17.567      0.000
+    E                 -0.977      0.009   -112.308      0.000
+    EDUC               1.400      0.014    101.624      0.000
 
  Thresholds
-    MARR$1            -0.744      0.115     -6.444      0.000
-    NODEGREE$1        27.091      0.000    999.000    999.000
-    BLACK$1            0.886      0.154      5.735      0.000
-    HISPANIC$1         3.508      0.344     10.191      0.000
+    RE75$1           -29.530      0.000    999.000    999.000
+    RE75$2            -6.750      2.238     -3.016      0.003
+
+ Variances
+    E                  0.024      0.002     11.024      0.000
+    EDUC               0.046      0.006      8.212      0.000
 
 Latent Class Pattern 1 6
 
  Means
-    Q1                -1.044      0.041    -25.637      0.000
-    Q2                -0.123      0.066     -1.884      0.060
-    Q3                -0.908      0.026    -34.624      0.000
-    Q4                -0.919      0.024    -37.936      0.000
+    E                  3.293      0.000    999.000    999.000
+    EDUC              -2.592      0.285     -9.088      0.000
 
  Thresholds
-    MARR$1            -0.405      0.112     -3.618      0.000
-    NODEGREE$1       -17.486      0.000    999.000    999.000
-    BLACK$1           -0.738      0.111     -6.634      0.000
-    HISPANIC$1         2.976      0.229     12.997      0.000
+    RE75$1            25.799      0.000    999.000    999.000
+    RE75$2            25.802      0.000    999.000    999.000
+
+ Variances
+    E                  0.077      0.051      1.509      0.131
+    EDUC               0.292      0.141      2.071      0.038
 
 Latent Class Pattern 2 1
 
  Means
-    Q1                 1.026      0.093     10.994      0.000
-    Q2                 0.762      0.072     10.617      0.000
-    Q3                 2.441      0.277      8.802      0.000
-    Q4                 2.442      0.305      8.000      0.000
+    E                 -0.836      0.000    999.000    999.000
+    EDUC               0.000      0.000    999.000    999.000
 
  Thresholds
-    MARR$1            -3.704      0.634     -5.838      0.000
-    NODEGREE$1         3.217      0.675      4.769      0.000
-    BLACK$1            4.196      0.735      5.711      0.000
-    HISPANIC$1         3.465      0.601      5.766      0.000
+    RE75$1             0.000      0.000    999.000    999.000
+    RE75$2             1.000      0.000    999.000    999.000
+
+ Variances
+    E                  1.000      0.000    999.000    999.000
+    EDUC               1.000      0.000    999.000    999.000
 
 Latent Class Pattern 2 2
 
  Means
-    Q1                -1.110      0.045    -24.834      0.000
-    Q2                 0.691      0.059     11.623      0.000
-    Q3                 0.206      0.046      4.456      0.000
-    Q4                 0.178      0.051      3.489      0.000
+    E                  2.205      0.021    102.788      0.000
+    EDUC              -0.178      0.058     -3.089      0.002
 
  Thresholds
-    MARR$1            -3.309      0.317    -10.451      0.000
-    NODEGREE$1       -20.057      0.000    999.000    999.000
-    BLACK$1            0.910      0.134      6.812      0.000
-    HISPANIC$1         2.871      0.244     11.742      0.000
+    RE75$1             5.800      1.076      5.389      0.000
+    RE75$2            29.061      0.000    999.000    999.000
+
+ Variances
+    E                  0.113      0.010     10.986      0.000
+    EDUC               0.814      0.073     11.164      0.000
 
 Latent Class Pattern 2 3
 
  Means
-    Q1                 0.376      0.031     11.995      0.000
-    Q2                -0.468      0.052     -8.981      0.000
-    Q3                 0.019      0.099      0.193      0.847
-    Q4                 0.031      0.042      0.737      0.461
+    E                 -0.401      0.007    -59.513      0.000
+    EDUC               0.088      0.011      7.945      0.000
 
  Thresholds
-    MARR$1            -2.111      0.231     -9.124      0.000
-    NODEGREE$1        20.919      0.000    999.000    999.000
-    BLACK$1            1.200      0.354      3.391      0.001
-    HISPANIC$1         3.259      0.359      9.082      0.000
+    RE75$1           -29.774      0.000    999.000    999.000
+    RE75$2           -29.277      0.000    999.000    999.000
+
+ Variances
+    E                  0.030      0.002     16.526      0.000
+    EDUC               0.091      0.007     13.077      0.000
 
 Latent Class Pattern 2 4
 
  Means
-    Q1                 0.701      0.057     12.275      0.000
-    Q2                 0.269      0.109      2.466      0.014
-    Q3                 0.763      0.078      9.846      0.000
-    Q4                 0.766      0.134      5.715      0.000
+    E                  0.188      0.019      9.772      0.000
+    EDUC              -0.987      0.043    -23.153      0.000
 
  Thresholds
-    MARR$1            -2.388      0.196    -12.152      0.000
-    NODEGREE$1        18.732      0.000    999.000    999.000
-    BLACK$1            2.327      0.936      2.485      0.013
-    HISPANIC$1         4.538      0.815      5.568      0.000
+    RE75$1           -29.696      0.000    999.000    999.000
+    RE75$2            -2.109      0.138    -15.264      0.000
+
+ Variances
+    E                  0.072      0.007     10.631      0.000
+    EDUC               0.464      0.050      9.290      0.000
 
 Latent Class Pattern 2 5
 
  Means
-    Q1                 0.396      0.028     14.145      0.000
-    Q2                -0.370      0.054     -6.793      0.000
-    Q3                -0.833      0.047    -17.628      0.000
-    Q4                -0.817      0.047    -17.567      0.000
+    E                 -0.977      0.009   -112.308      0.000
+    EDUC               1.400      0.014    101.624      0.000
 
  Thresholds
-    MARR$1            -0.744      0.115     -6.444      0.000
-    NODEGREE$1        27.091      0.000    999.000    999.000
-    BLACK$1            0.886      0.154      5.735      0.000
-    HISPANIC$1         3.508      0.344     10.191      0.000
+    RE75$1           -29.530      0.000    999.000    999.000
+    RE75$2            -6.750      2.238     -3.016      0.003
+
+ Variances
+    E                  0.024      0.002     11.024      0.000
+    EDUC               0.046      0.006      8.212      0.000
 
 Latent Class Pattern 2 6
 
  Means
-    Q1                -1.044      0.041    -25.637      0.000
-    Q2                -0.123      0.066     -1.884      0.060
-    Q3                -0.908      0.026    -34.624      0.000
-    Q4                -0.919      0.024    -37.936      0.000
+    E                  3.293      0.000    999.000    999.000
+    EDUC               0.000      0.000    999.000    999.000
 
  Thresholds
-    MARR$1            -0.405      0.112     -3.618      0.000
-    NODEGREE$1       -17.486      0.000    999.000    999.000
-    BLACK$1           -0.738      0.111     -6.634      0.000
-    HISPANIC$1         2.976      0.229     12.997      0.000
+    RE75$1             0.000      0.000    999.000    999.000
+    RE75$2             1.000      0.000    999.000    999.000
+
+ Variances
+    E                  1.000      0.000    999.000    999.000
+    EDUC               1.000      0.000    999.000    999.000
 
 Categorical Latent Variables
 
  C#1      ON
-    A#1                0.167      0.000    999.000    999.000
-    A#2                0.000      0.374      0.000      1.000
+    A#1                0.014      0.004      3.701      0.000
+    A#2                0.000      0.000    999.000    999.000
 
  C#2      ON
-    A#1                0.167      0.000    999.000    999.000
-    A#2                0.000      0.052      0.001      0.999
+    A#1                0.094      0.006     15.537      0.000
+    A#2                0.250      0.000    999.000    999.000
 
  C#3      ON
-    A#1                0.167      0.000    999.000    999.000
-    A#2                0.004      0.099      0.036      0.972
+    A#1                0.467      0.012     38.510      0.000
+    A#2                0.250      0.000    999.000    999.000
 
  C#4      ON
-    A#1                0.167      0.000    999.000    999.000
-    A#2                0.000      0.457      0.000      1.000
+    A#1                0.219      0.010     22.057      0.000
+    A#2                0.250      0.000    999.000    999.000
 
  C#5      ON
-    A#1                0.167      0.000    999.000    999.000
-    A#2                0.288      0.041      7.068      0.000
+    A#1                0.200      0.008     23.854      0.000
+    A#2                0.250      0.000    999.000    999.000
 
  Means
     A#1                0.931      0.005    189.747      0.000
 
 New/Additional Parameters
-    P1                 0.069      0.005     14.098      0.000
-    PF_0               0.167      0.000  *********      0.000
-    PF_1               0.708      0.062     11.491      0.000
-    PA                 0.155      0.026      5.950      0.000
-    PB                 0.155      0.004     42.866      0.000
-    PC                 0.155      0.007     22.433      0.000
-    PD                 0.155      0.032      4.909      0.000
-    PE                 0.175      0.003     55.340      0.000
-    PF                 0.204      0.007     30.987      0.000
+    P1_6               0.000      0.000      0.000      1.000
 
 
 QUALITY OF NUMERICAL RESULTS
 
-     Condition Number for the Information Matrix              0.343E-07
+     Condition Number for the Information Matrix              0.185E-18
        (ratio of smallest to largest eigenvalue)
 
 
@@ -1047,283 +709,245 @@ RESULTS IN PROBABILITY SCALE
                                                     Two-Tailed
                     Estimate       S.E.  Est./S.E.    P-Value
 
-Results for Class-specific Model Parts of C
+Latent Class Pattern 1 1
 
-Latent Class C#1
-
- MARR
-    Category 1         0.024      0.015      1.615      0.106
-    Category 2         0.976      0.015     65.572      0.000
- NODEGREE
-    Category 1         0.961      0.025     38.474      0.000
-    Category 2         0.039      0.025      1.542      0.123
- BLACK
-    Category 1         0.985      0.011     91.730      0.000
-    Category 2         0.015      0.011      1.382      0.167
- HISPANIC
-    Category 1         0.970      0.018     54.880      0.000
-    Category 2         0.030      0.018      1.716      0.086
-
-Latent Class C#2
-
- MARR
-    Category 1         0.035      0.011      3.274      0.001
-    Category 2         0.965      0.011     89.547      0.000
- NODEGREE
+ RE75
     Category 1         0.000      0.000      0.000      1.000
-    Category 2         1.000      0.000      0.000      1.000
- BLACK
-    Category 1         0.713      0.027     26.080      0.000
-    Category 2         0.287      0.027     10.497      0.000
- HISPANIC
-    Category 1         0.946      0.012     76.276      0.000
-    Category 2         0.054      0.012      4.322      0.000
+    Category 2         0.125      0.060      2.079      0.038
+    Category 3         0.875      0.060     14.545      0.000
 
-Latent Class C#3
+Latent Class Pattern 1 2
 
- MARR
-    Category 1         0.108      0.022      4.845      0.000
-    Category 2         0.892      0.022     40.017      0.000
- NODEGREE
-    Category 1         1.000      0.000      0.000      1.000
-    Category 2         0.000      0.000      0.000      1.000
- BLACK
-    Category 1         0.769      0.063     12.206      0.000
-    Category 2         0.231      0.063      3.676      0.000
- HISPANIC
-    Category 1         0.963      0.013     75.304      0.000
-    Category 2         0.037      0.013      2.894      0.004
+ RE75
+    Category 1         0.997      0.003    307.802      0.000
+    Category 2         0.003      0.003      0.932      0.351
+    Category 3         0.000      0.000      0.000      1.000
 
-Latent Class C#4
+Latent Class Pattern 1 3
 
- MARR
-    Category 1         0.084      0.015      5.557      0.000
-    Category 2         0.916      0.015     60.511      0.000
- NODEGREE
-    Category 1         1.000      0.000      0.000      1.000
-    Category 2         0.000      0.000      0.000      1.000
- BLACK
-    Category 1         0.911      0.076     12.010      0.000
-    Category 2         0.089      0.076      1.172      0.241
- HISPANIC
-    Category 1         0.989      0.009    115.990      0.000
-    Category 2         0.011      0.009      1.240      0.215
-
-Latent Class C#5
-
- MARR
-    Category 1         0.322      0.025     12.777      0.000
-    Category 2         0.678      0.025     26.888      0.000
- NODEGREE
-    Category 1         1.000      0.000      0.000      1.000
-    Category 2         0.000      0.000      0.000      1.000
- BLACK
-    Category 1         0.708      0.032     22.176      0.000
-    Category 2         0.292      0.032      9.148      0.000
- HISPANIC
-    Category 1         0.971      0.010     99.904      0.000
-    Category 2         0.029      0.010      2.992      0.003
-
-Latent Class C#6
-
- MARR
-    Category 1         0.400      0.027     14.873      0.000
-    Category 2         0.600      0.027     22.309      0.000
- NODEGREE
+ RE75
     Category 1         0.000      0.000      0.000      1.000
-    Category 2         1.000      0.000      0.000      1.000
- BLACK
-    Category 1         0.323      0.024     13.289      0.000
-    Category 2         0.677      0.024     27.795      0.000
- HISPANIC
-    Category 1         0.951      0.011     90.016      0.000
-    Category 2         0.049      0.011      4.590      0.000
+    Category 2         0.000      0.000      0.000      1.000
+    Category 3         1.000      0.000      0.000      1.000
+
+Latent Class Pattern 1 4
+
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.108      0.013      8.114      0.000
+    Category 3         0.892      0.013     66.890      0.000
+
+Latent Class Pattern 1 5
+
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.001      0.003      0.447      0.655
+    Category 3         0.999      0.003    382.050      0.000
+
+Latent Class Pattern 1 6
+
+ RE75
+    Category 1         1.000      0.000      0.000      1.000
+    Category 2         0.000      0.000      0.000      1.000
+    Category 3         0.000      0.000      0.000      1.000
+
+Latent Class Pattern 2 1
+
+ RE75
+    Category 1         0.500      0.000      0.000      1.000
+    Category 2         0.231      0.000      0.000      1.000
+    Category 3         0.269      0.000      0.000      1.000
+
+Latent Class Pattern 2 2
+
+ RE75
+    Category 1         0.997      0.003    307.802      0.000
+    Category 2         0.003      0.003      0.932      0.351
+    Category 3         0.000      0.000      0.000      1.000
+
+Latent Class Pattern 2 3
+
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.000      0.000      0.000      1.000
+    Category 3         1.000      0.000      0.000      1.000
+
+Latent Class Pattern 2 4
+
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.108      0.013      8.114      0.000
+    Category 3         0.892      0.013     66.890      0.000
+
+Latent Class Pattern 2 5
+
+ RE75
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         0.001      0.003      0.447      0.655
+    Category 3         0.999      0.003    382.050      0.000
+
+Latent Class Pattern 2 6
+
+ RE75
+    Category 1         0.500      0.000      0.000      1.000
+    Category 2         0.231      0.000      0.000      1.000
+    Category 3         0.269      0.000      0.000      1.000
 
 
 MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
 
      %OVERALL%
 
-     c#1 ON a#1*0.16667 (pa_0);
-     c#1 ON a#2*0.00005 (pa_1);
-     c#2 ON a#1*0.16667 (pb_0);
-     c#2 ON a#2*0.00004 (pb_1);
-     c#3 ON a#1*0.16667 (pc_0);
-     c#3 ON a#2*0.00354 (pc_1);
-     c#4 ON a#1*0.16667 (pd_0);
-     c#4 ON a#2*0.00005 (pd_1);
-     c#5 ON a#1*0.16667 (pe_0);
-     c#5 ON a#2*0.28823 (pe_1);
+     c#1 ON a#1*0.01386;
+     c#1 ON a#2*0 (p1_1);
+     c#2 ON a#1*0.09387;
+     c#2 ON a#2*0.25000 (p1_2);
+     c#3 ON a#1*0.46689;
+     c#3 ON a#2*0.25000 (p1_3);
+     c#4 ON a#1*0.21904;
+     c#4 ON a#2*0.25000 (p1_4);
+     c#5 ON a#1*0.20017;
+     c#5 ON a#2*0.25000 (p1_5);
 
-     [ a#1*0.93084 ] (p0);
+     [ a#1*0.93084 ];
 
-     q1 WITH q2@0;
-     q1 WITH q3@0;
-     q1 WITH q4@0;
-     q2 WITH q3@0;
-     q2 WITH q4@0;
-     q3 WITH q4@0;
-
-     q1*0.40083 (5);
-     q2*0.80516 (6);
-     q3*0.28218 (7);
-     q4*0.28364 (8);
+     e WITH educ@0;
 
 
      %A#1.C#1%
 
-     [ q1*1.02632 ] (am1);
-     [ q2*0.76188 ] (am2);
-     [ q3*2.44091 ] (am3);
-     [ q4*2.44222 ] (am4);
+     [ e*-0.83634 ] (me_1);
+     [ educ*-2.81285 ] (m1_1);
 
-     [ marr$1*-3.70387 ] (at1);
-     [ nodegree$1*3.21700 ] (at2);
-     [ black$1*4.19552 ] (at3);
-     [ hispanic$1*3.46521 ] (at4);
+     [ re75$1*-26.72182 ] (t1_1);
+     [ re75$2*-1.94535 ] (t2_1);
+
+     e*3.07943 (ve_1);
+     educ*0.20667 (v1_1);
 
      %A#1.C#2%
 
-     [ q1*-1.11032 ] (bm1);
-     [ q2*0.69061 ] (bm2);
-     [ q3*0.20630 ] (bm3);
-     [ q4*0.17760 ] (bm4);
+     [ e*2.20495 ] (me_2);
+     [ educ*-0.17778 ] (m1_2);
 
-     [ marr$1*-3.30875 ] (bt1);
-     [ nodegree$1*-20.05656 ] (bt2);
-     [ black$1*0.91011 ] (bt3);
-     [ hispanic$1*2.87054 ] (bt4);
+     [ re75$1*5.79985 ] (t1_2);
+     [ re75$2*29.06073 ] (t2_2);
+
+     e*0.11321 (ve_2);
+     educ*0.81450 (v1_2);
 
      %A#1.C#3%
 
-     [ q1*0.37616 ] (cm1);
-     [ q2*-0.46841 ] (cm2);
-     [ q3*0.01906 ] (cm3);
-     [ q4*0.03104 ] (cm4);
+     [ e*-0.40108 ] (me_3);
+     [ educ*0.08826 ] (m1_3);
 
-     [ marr$1*-2.11143 ] (ct1);
-     [ nodegree$1*20.91863 ] (ct2);
-     [ black$1*1.20020 ] (ct3);
-     [ hispanic$1*3.25898 ] (ct4);
+     [ re75$1*-29.77421 ] (t1_3);
+     [ re75$2*-29.27729 ] (t2_3);
+
+     e*0.02961 (ve_3);
+     educ*0.09090 (v1_3);
 
      %A#1.C#4%
 
-     [ q1*0.70056 ] (dm1);
-     [ q2*0.26913 ] (dm2);
-     [ q3*0.76333 ] (dm3);
-     [ q4*0.76605 ] (dm4);
+     [ e*0.18847 ] (me_4);
+     [ educ*-0.98711 ] (m1_4);
 
-     [ marr$1*-2.38784 ] (dt1);
-     [ nodegree$1*18.73225 ] (dt2);
-     [ black$1*2.32659 ] (dt3);
-     [ hispanic$1*4.53849 ] (dt4);
+     [ re75$1*-29.69570 ] (t1_4);
+     [ re75$2*-2.10948 ] (t2_4);
+
+     e*0.07189 (ve_4);
+     educ*0.46406 (v1_4);
 
      %A#1.C#5%
 
-     [ q1*0.39614 ] (em1);
-     [ q2*-0.36952 ] (em2);
-     [ q3*-0.83295 ] (em3);
-     [ q4*-0.81702 ] (em4);
+     [ e*-0.97664 ] (me_5);
+     [ educ*1.39996 ] (m1_5);
 
-     [ marr$1*-0.74400 ] (et1);
-     [ nodegree$1*27.09114 ] (et2);
-     [ black$1*0.88550 ] (et3);
-     [ hispanic$1*3.50837 ] (et4);
+     [ re75$1*-29.52998 ] (t1_5);
+     [ re75$2*-6.74996 ] (t2_5);
+
+     e*0.02448 (ve_5);
+     educ*0.04623 (v1_5);
 
      %A#1.C#6%
 
-     [ q1*-1.04430 ] (fm1);
-     [ q2*-0.12337 ] (fm2);
-     [ q3*-0.90811 ] (fm3);
-     [ q4*-0.91924 ] (fm4);
+     [ e*3.29260 ] (me_6);
+     [ educ*-2.59172 ] (m1_6);
 
-     [ marr$1*-0.40543 ] (ft1);
-     [ nodegree$1*-17.48635 ] (ft2);
-     [ black$1*-0.73792 ] (ft3);
-     [ hispanic$1*2.97614 ] (ft4);
+     [ re75$1*25.79935 ] (t1_6);
+     [ re75$2*25.80226 ] (t2_6);
+
+     e*0.07657 (ve_6);
+     educ*0.29184 (v1_6);
 
      %A#2.C#1%
 
-     [ q1*1.02632 ] (am1);
-     [ q2*0.76188 ] (am2);
-     [ q3*2.44091 ] (am3);
-     [ q4*2.44222 ] (am4);
+     [ e*-0.83634 ] (me_1);
+     [ educ@0 ];
 
-     [ marr$1*-3.70387 ] (at1);
-     [ nodegree$1*3.21700 ] (at2);
-     [ black$1*4.19552 ] (at3);
-     [ hispanic$1*3.46521 ] (at4);
+     [ re75$1@0 ];
+     [ re75$2@1 ];
+
+     e@1;
+     educ@1;
 
      %A#2.C#2%
 
-     [ q1*-1.11032 ] (bm1);
-     [ q2*0.69061 ] (bm2);
-     [ q3*0.20630 ] (bm3);
-     [ q4*0.17760 ] (bm4);
+     [ e*2.20495 ] (me_2);
+     [ educ*-0.17778 ] (m1_2);
 
-     [ marr$1*-3.30875 ] (bt1);
-     [ nodegree$1*-20.05656 ] (bt2);
-     [ black$1*0.91011 ] (bt3);
-     [ hispanic$1*2.87054 ] (bt4);
+     [ re75$1*5.79985 ] (t1_2);
+     [ re75$2*29.06073 ] (t2_2);
+
+     e*0.11321 (ve_2);
+     educ*0.81450 (v1_2);
 
      %A#2.C#3%
 
-     [ q1*0.37616 ] (cm1);
-     [ q2*-0.46841 ] (cm2);
-     [ q3*0.01906 ] (cm3);
-     [ q4*0.03104 ] (cm4);
+     [ e*-0.40108 ] (me_3);
+     [ educ*0.08826 ] (m1_3);
 
-     [ marr$1*-2.11143 ] (ct1);
-     [ nodegree$1*20.91863 ] (ct2);
-     [ black$1*1.20020 ] (ct3);
-     [ hispanic$1*3.25898 ] (ct4);
+     [ re75$1*-29.77421 ] (t1_3);
+     [ re75$2*-29.27729 ] (t2_3);
+
+     e*0.02961 (ve_3);
+     educ*0.09090 (v1_3);
 
      %A#2.C#4%
 
-     [ q1*0.70056 ] (dm1);
-     [ q2*0.26913 ] (dm2);
-     [ q3*0.76333 ] (dm3);
-     [ q4*0.76605 ] (dm4);
+     [ e*0.18847 ] (me_4);
+     [ educ*-0.98711 ] (m1_4);
 
-     [ marr$1*-2.38784 ] (dt1);
-     [ nodegree$1*18.73225 ] (dt2);
-     [ black$1*2.32659 ] (dt3);
-     [ hispanic$1*4.53849 ] (dt4);
+     [ re75$1*-29.69570 ] (t1_4);
+     [ re75$2*-2.10948 ] (t2_4);
+
+     e*0.07189 (ve_4);
+     educ*0.46406 (v1_4);
 
      %A#2.C#5%
 
-     [ q1*0.39614 ] (em1);
-     [ q2*-0.36952 ] (em2);
-     [ q3*-0.83295 ] (em3);
-     [ q4*-0.81702 ] (em4);
+     [ e*-0.97664 ] (me_5);
+     [ educ*1.39996 ] (m1_5);
 
-     [ marr$1*-0.74400 ] (et1);
-     [ nodegree$1*27.09114 ] (et2);
-     [ black$1*0.88550 ] (et3);
-     [ hispanic$1*3.50837 ] (et4);
+     [ re75$1*-29.52998 ] (t1_5);
+     [ re75$2*-6.74996 ] (t2_5);
+
+     e*0.02448 (ve_5);
+     educ*0.04623 (v1_5);
 
      %A#2.C#6%
 
-     [ q1*-1.04430 ] (fm1);
-     [ q2*-0.12337 ] (fm2);
-     [ q3*-0.90811 ] (fm3);
-     [ q4*-0.91924 ] (fm4);
+     [ e*3.29260 ] (me_6);
+     [ educ@0 ];
 
-     [ marr$1*-0.40543 ] (ft1);
-     [ nodegree$1*-17.48635 ] (ft2);
-     [ black$1*-0.73792 ] (ft3);
-     [ hispanic$1*2.97614 ] (ft4);
+     [ re75$1@0 ];
+     [ re75$2@1 ];
+
+     e@1;
+     educ@1;
 
      ! NEW statements in MODEL CONSTRAINT
-     NEW(p1*0.06916);
-     NEW(pf_0*0.16667);
-     NEW(pf_1*0.70809);
-     NEW(pa*0.15514);
-     NEW(pb*0.15514);
-     NEW(pc*0.15538);
-     NEW(pd*0.15514);
-     NEW(pe*0.17507);
-     NEW(pf*0.20411);
+     NEW(p1_6*0);
 
 
 
@@ -1334,9 +958,9 @@ DIAGRAM INFORMATION
   No diagram output was produced.
 
 
-     Beginning Time:  10:36:29
-        Ending Time:  10:36:39
-       Elapsed Time:  00:00:10
+     Beginning Time:  23:26:58
+        Ending Time:  23:27:10
+       Elapsed Time:  00:00:12
 
 
 

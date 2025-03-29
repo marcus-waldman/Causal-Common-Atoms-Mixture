@@ -5,69 +5,148 @@ DATA: FILE = "data/lalonde_obs.dat";
 VARIABLE: 
 NAMES = re78 treat u e educ re75; 
 USEV = treat e educ re75;
-CENSORED = re75 (bi);
-CLASSES = C(5);
+CATEGORICAL = re75;
+CLASSES = A(2) C(5);
+KNOWNCLASS = A(treat=0 treat=1);
 MISSING=.;
 AUXILIARY = re78;
 
 
 ANALYSIS:
 TYPE = mixture;
-ESTIMATOR = MLR;
+ESTIMATOR = mlr;
+PARAMETERIZATION = probability;
 !ALGORITHM = INTEGRATION;
 PROCESSORS = 8;
-STARTS = 32 8;
+STARTS = 128 32;
 
 
 MODEL:
 
 %OVERALL%
 
-C on treat;
+C on A;
 e with educ@0;
-[e-educ*];
-e-educ*;
-[re75#1*];
+![e-re75*];
+!e-re75*;
+![re75#1*];
 
 
-%C#1% !Below common support
-[educ-re75*];
-educ-re75*;
-[re75#1*];
-[e@-0.8363425];
-e@0.04947994;
+C#1 ON A#2 (p1_1);
+C#2 ON A#2 (p1_2);
+C#3 ON A#2 (p1_3);
+C#4 ON A#2 (p1_4);
 
-%C#2% !Above common support
-[educ-re75*];
-educ-re75*;
-[re75#1*];
-[e@3.292603];
-e@0.02200702;
 
-%C#3% !Within common support
+%A#1.C#1% !Below common support
+[educ*] (m1_1);
+educ* (v1_1);
+![re75#1*] (h_1);
+[e*] (me_1);
+e* (ve_1);
+[re75$1*] (t1_1);
+[re75$2*] (t2_1);
+
+%A#2.C#1% 
+[educ@0];
+educ@1;
+![re75#1@0];
+[e*] (me_1);
+e@1;
+[re75$1@0];
+[re75$2@1];
+
+%A#1.C#2% !Within common support
+[educ*] (m1_2);
+educ* (v1_2);
+![re75#1*] (h_2);
+[e*] (me_2);
+e* (ve_2);
+[re75$1*] (t1_2);
+[re75$2*] (t2_2);
+
+
+%A#2.C#2% 
+[educ*] (m1_2);
+educ* (v1_2);
+![re75#1*] (h_2);
+[e*] (me_2);
+e* (ve_2);
+[re75$1*] (t1_2);
+[re75$2*] (t2_2);
+
+
+%A#1.C#3% !Within common support
 [e*] (me_3);
-e* (ve);
-[educ-re75*];
-[re75#1*];
-educ-re75*;
+e* (ve_3);
+[educ*] (m1_3);
+educ* (v1_3);
+![re75#1*] (h_3);
+[re75$1*] (t1_3);
+[re75$2*] (t2_3);
 
-%C#4% !Within common support
+%A#2.C#3% 
+[e*] (me_3);
+e* (ve_3);
+[educ*] (m1_3);
+educ* (v1_3);
+![re75#1*] (h_3);
+[re75$1*] (t1_3);
+[re75$2*] (t2_3);
+
+
+%A#1.C#4% !Within common support
 [e*] (me_4);
-e* (ve);
-[educ-re75*];
-[re75#1*];
-educ-re75*;
+e* (ve_4);
+[educ*] (m1_4);
+educ* (v1_4);
+![re75#1*] (h_4);
+[re75$1*] (t1_4);
+[re75$2*] (t2_4);
 
-%C#5% !Within common support
+%A#2.C#4% 
+[e*] (me_4);
+e* (ve_4);
+[educ*] (m1_4);
+educ* (v1_4);
+![re75#1*] (h_4);
+[re75$1*] (t1_4);
+[re75$2*] (t2_4);
+
+
+
+%A#1.C#5% !Above common support
 [e*] (me_5);
-e* (ve);
-[educ-re75*];
-[re75#1*];
-educ-re75*;
+e* (ve_5);
+[educ*] (m1_5);
+educ* (v1_5);
+[re75$1*] (t1_5);
+[re75$2*] (t2_5);
+![re75#1*] (h_5);
+
+
+%A#2.C#5% 
+[e*] (me_5);
+e@1;
+[educ@0];
+educ@1;
+![re75#1@0];
+[re75$1@0];
+[re75$2@1];
+
+
 
 Model Constraint:
-0<me_5-me_4;
-0<me_4-me_3;
+New(p1_5*); 
+p1_5 = 1 - p1_1 - p1_2 - p1_3 - p1_4;
+0 = p1_1;
+0 = p1_5;
+0 = p1_2-p1_4;
+0 = p1_3-p1_4;
+
+
+0 = me_1+0.8363425;
+0 = me_5-3.292603;
 
 
 
