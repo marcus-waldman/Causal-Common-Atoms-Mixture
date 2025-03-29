@@ -1,0 +1,120 @@
+TITLE: Your title goes here
+
+DATA: FILE = "data/lalonde_obs.dat";
+
+VARIABLE: 
+NAMES = re78 treat u e educ re75; 
+USEV = treat e educ re75;
+!CENSORED = re75 (bi);
+CLASSES = A(2) C(4);
+KNOWNCLASS = A(treat=0 treat=1);
+MISSING=.;
+AUXILIARY = re78;
+
+
+ANALYSIS:
+TYPE = mixture;
+ESTIMATOR = mlr;
+PARAMETERIZATION = probability;
+!ALGORITHM = INTEGRATION;
+PROCESSORS = 8;
+STARTS = 128 32;
+
+
+MODEL:
+
+%OVERALL%
+
+C on A;
+e with educ@0;
+[e-educ*];
+e-educ*;
+![re75#1*];
+
+
+C#1 ON A#2 (p1_1);
+C#2 ON A#2 (p1_2);
+C#3 ON A#2 (p1_3);
+
+
+%A#1.C#1% !Below common support
+[educ-re75*] (m1_1 m2_1);
+educ-re75* (v1_1 v2_1);
+![re75#1*] (h_1);
+[e*] (me_1);
+e* (ve_1);
+
+%A#2.C#1% 
+[educ-re75*] (m1_1 m2_1);
+educ-re75* (v1_1 v2_1);
+![re75#1*] (h_1);
+[e*] (me_1);
+e* (ve_1);
+
+
+%A#1.C#2% !Within common support
+[educ-re75*] (m1_2 m2_2);
+educ-re75* (v1_2 v2_2);
+![re75#1*] (h_2);
+[e*] (me_2);
+e* (ve_2);
+
+
+%A#2.C#2% 
+[educ-re75*] (m1_2 m2_2);
+educ-re75* (v1_2 v2_2);
+![re75#1*] (h_2);
+[e*] (me_2);
+e* (ve_2);
+
+
+
+%A#1.C#3% !Within common support
+[e*] (me_3);
+e* (ve_3);
+[educ-re75*] (m1_3 m2_3);
+educ-re75* (v1_3 v2_3);
+![re75#1*] (h_3);
+
+
+%A#2.C#3% 
+[e*] (me_3);
+e* (ve_3);
+[educ-re75*] (m1_3 m2_3);
+educ-re75* (v1_3 v2_3);
+![re75#1*] (h_3);
+
+
+%A#1.C#4% !Above common support
+[e*] (me_4);
+e* (ve_4);
+[educ-re75*] (m1_4 m2_4);
+educ-re75* (v1_4 v2_4);
+![re75#1*] (h_4);
+
+
+%A#2.C#4% 
+[e*] (me_4);
+e* (ve_4);
+[educ-re75*] (m1_4 m2_4);
+educ-re75* (v1_4 v2_4);
+![re75#1*] (h_4);
+
+
+
+Model Constraint:
+New(p1_4*); 
+p1_4 = 1 - p1_1 - p1_2 - p1_3;
+0 = p1_1;
+0 = p1_4;
+0 = p1_2-p1_3;
+
+
+0 = me_1+0.8363425;
+0 = me_4-3.292603;
+
+
+
+OUTPUT: 
+svalues;
+

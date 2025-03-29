@@ -6,7 +6,7 @@ VARIABLE:
 NAMES = re78 treat u e educ re75; 
 USEV = treat e educ re75;
 CENSORED = re75 (bi);
-CLASSES = C(3);
+CLASSES = C(5);
 MISSING=.;
 AUXILIARY = re78;
 
@@ -25,26 +25,49 @@ MODEL:
 
 C on treat;
 e with educ@0;
-[e-re75*];
+[e-educ*];
+e-educ*;
 [re75#1*];
 
 
 %C#1% !Below common support
 [educ-re75*];
+educ-re75*;
+[re75#1*];
 [e@-0.8363425];
 e@0.04947994;
 
 %C#2% !Above common support
 [educ-re75*];
+educ-re75*;
+[re75#1*];
 [e@3.292603];
 e@0.02200702;
 
 %C#3% !Within common support
+[e*] (me_3);
+e* (ve);
 [educ-re75*];
+[re75#1*];
+educ-re75*;
 
+%C#4% !Within common support
+[e*] (me_4);
+e* (ve);
+[educ-re75*];
+[re75#1*];
+educ-re75*;
 
+%C#5% !Within common support
+[e*] (me_5);
+e* (ve);
+[educ-re75*];
+[re75#1*];
+educ-re75*;
 
-
+Model Constraint:
+0<me_5-me_4;
+0<me_4-me_3;
 
 
 

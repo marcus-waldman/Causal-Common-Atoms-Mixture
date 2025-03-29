@@ -1,0 +1,668 @@
+Mplus VERSION 8.10
+MUTHEN & MUTHEN
+03/28/2025   6:26 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+
+  DATA: FILE = "data/lalonde_obs.dat";
+
+  VARIABLE:
+  NAMES = re78 treat u e educ re75;
+  USEV = treat e educ re75;
+  !CENSORED = re75 (bi);
+  CLASSES = A(2) C(4);
+  KNOWNCLASS = A(treat=0 treat=1);
+  MISSING=.;
+  AUXILIARY = re78;
+
+
+  ANALYSIS:
+  TYPE = mixture;
+  ESTIMATOR = mlr;
+  PARAMETERIZATION = probability;
+  !ALGORITHM = INTEGRATION;
+  PROCESSORS = 8;
+  STARTS = 128 32;
+
+
+  MODEL:
+
+  %OVERALL%
+
+  C on A;
+  e with educ@0;
+  [e-educ*];
+  e-educ*;
+  ![re75#1*];
+
+
+  C#1 ON A#2 (p1_1);
+  C#2 ON A#2 (p1_2);
+  C#3 ON A#2 (p1_3);
+
+
+  %A#1.C#1% !Below common support
+  [educ-re75*] (m1_1 m2_1);
+  educ-re75* (v1_1 v2_1);
+  ![re75#1*] (h_1);
+  [e*] (me_1);
+  e* (ve_1);
+
+  %A#2.C#1%
+  [educ-re75*] (m1_1 m2_1);
+  educ-re75* (v1_1 v2_1);
+  ![re75#1*] (h_1);
+  [e*] (me_1);
+  e* (ve_1);
+
+
+  %A#1.C#2% !Within common support
+  [educ-re75*] (m1_2 m2_2);
+  educ-re75* (v1_2 v2_2);
+  ![re75#1*] (h_2);
+  [e*] (me_2);
+  e* (ve_2);
+
+
+  %A#2.C#2%
+  [educ-re75*] (m1_2 m2_2);
+  educ-re75* (v1_2 v2_2);
+  ![re75#1*] (h_2);
+  [e*] (me_2);
+  e* (ve_2);
+
+
+
+  %A#1.C#3% !Within common support
+  [e*] (me_3);
+  e* (ve_3);
+  [educ-re75*] (m1_3 m2_3);
+  educ-re75* (v1_3 v2_3);
+  ![re75#1*] (h_3);
+
+
+  %A#2.C#3%
+  [e*] (me_3);
+  e* (ve_3);
+  [educ-re75*] (m1_3 m2_3);
+  educ-re75* (v1_3 v2_3);
+  ![re75#1*] (h_3);
+
+
+  %A#1.C#4% !Above common support
+  [e*] (me_4);
+  e* (ve_4);
+  [educ-re75*] (m1_4 m2_4);
+  educ-re75* (v1_4 v2_4);
+  ![re75#1*] (h_4);
+
+
+  %A#2.C#4%
+  [e*] (me_4);
+  e* (ve_4);
+  [educ-re75*] (m1_4 m2_4);
+  educ-re75* (v1_4 v2_4);
+  ![re75#1*] (h_4);
+
+
+
+  Model Constraint:
+  New(p1_4*);
+  p1_4 = 1 - p1_1 - p1_2 - p1_3;
+  0 = p1_1;
+  0 = p1_4;
+  0 = p1_2-p1_3;
+
+
+  0 = me_1+0.8363425;
+  0 = me_4-3.292603;
+
+
+
+  OUTPUT:
+  svalues;
+
+
+
+
+*** WARNING in MODEL command
+  Variable is uncorrelated with all other variables within class:  RE75
+*** WARNING in MODEL command
+  At least one variable is uncorrelated with all other variables within class.
+  Check that this is what is intended.
+   2 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                        2675
+
+Number of dependent variables                                    3
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           2
+
+Observed dependent variables
+
+  Continuous
+   E           EDUC        RE75
+
+Observed auxiliary variables
+   RE78
+
+Categorical latent variables
+   A           C
+
+  Knownclass            A
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-03
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-03
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Number of initial stage random starts                        128
+  Number of final stage optimizations                           32
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+Parameterization                                       PROBABILITY
+
+Input data file(s)
+  data/lalonde_obs.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+     Number of y missing data patterns           1
+     Number of u missing data patterns           0
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              E             EDUC          RE75
+              ________      ________      ________
+ E              1.000
+ EDUC           1.000         1.000
+ RE75           1.000         1.000         1.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     E                     0.000       1.450      -1.401    0.04%      -0.706     -0.406     -0.303
+            2675.000       1.000       1.271       3.595    0.04%      -0.175      0.367
+     EDUC                  0.000      -0.426      -3.928    0.11%      -0.653      0.002      0.002
+            2675.000       1.000       0.339       1.639    7.89%       0.002      0.984
+     RE75                  0.927      -1.941       0.000   13.46%       0.938      1.055      1.076
+            2675.000       0.141       2.059       1.322    0.04%       1.095      1.127
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+
+111 perturbed starting value run(s) did not converge or were rejected in the third stage.
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+           -3756.119  372176           23
+           -3845.176  402224           91
+           -4537.148  957392           79
+
+29 perturbed starting value run(s) did not converge or were rejected in the third stage.
+
+
+
+     WARNING:  THE BEST LOGLIKELIHOOD VALUE WAS NOT REPLICATED.  THE
+     SOLUTION MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.  INCREASE THE
+     NUMBER OF RANDOM STARTS.
+
+     THE STANDARD ERRORS OF THE MODEL PARAMETER ESTIMATES MAY NOT BE
+     TRUSTWORTHY FOR SOME PARAMETERS DUE TO A NON-POSITIVE DEFINITE
+     FIRST-ORDER DERIVATIVE PRODUCT MATRIX.  THIS MAY BE DUE TO THE STARTING
+     VALUES BUT MAY ALSO BE AN INDICATION OF MODEL NONIDENTIFICATION.  THE
+     CONDITION NUMBER IS       0.376D-16.  PROBLEM INVOLVING THE FOLLOWING PARAMETER:
+     Parameter 15, %A#1.C#3%: [ RE75 ] (equality/label)
+
+     ONE OR MORE PARAMETERS WERE FIXED TO AVOID SINGULARITY OF THE
+     INFORMATION MATRIX. THE SINGULARITY IS MOST LIKELY BECAUSE THE
+     MODEL IS NOT IDENTIFIED, OR BECAUSE OF EMPTY CELLS IN THE JOINT
+     DISTRIBUTION OF THE CATEGORICAL VARIABLES IN THE MODEL.
+     THE FOLLOWING PARAMETERS WERE FIXED:
+     Parameter 20, %A#1.C#4%: [ EDUC ] (equality/label)
+     Parameter 21, %A#1.C#4%: [ RE75 ] (equality/label)
+     Parameter 22, %A#1.C#4%: E (equality/label)
+     Parameter 23, %A#1.C#4%: EDUC (equality/label)
+     Parameter 24, %A#1.C#4%: RE75 (equality/label)
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       26
+
+Loglikelihood
+
+          H0 Value                       -3756.119
+          H0 Scaling Correction Factor      1.4390
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    7564.238
+          Bayesian (BIC)                  7717.422
+          Sample-Size Adjusted BIC        7634.812
+            (n* = (n + 2) / 24)
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR EACH LATENT CLASS VARIABLE
+BASED ON THE ESTIMATED MODEL
+
+  Latent Class
+    Variable    Class
+
+    A              1      2490.00000          0.93084
+                   2       185.00000          0.06916
+    C              1       809.95703          0.30279
+                   2       906.87134          0.33902
+                   3       958.17163          0.35819
+                   4         0.00000          0.00000
+
+
+LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
+
+     MEAN/PROBABILITY PROFILES FOR C
+                       Latent class
+                     1      2      3      4
+     E            -0.836 -0.332  1.046  3.293
+     EDUC          1.192 -0.072 -0.784*******
+     RE75          1.124  1.082  0.600*******
+
+
+LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
+
+  A Classes (Rows) by C Classes (Columns)
+
+            1        2        3        4
+
+   1     0.325    0.327    0.348    0.000
+   2     0.000    0.500    0.500    0.000
+
+
+C-SPECIFIC CLASSIFICATION RESULTS
+
+Classification Quality for A
+
+     Entropy                         1.000
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1     13.816    0.000
+    2    -13.816    0.000
+
+Classification Quality for C
+
+     Entropy                         0.946
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3        4
+
+    1   0.973    0.022    0.005    0.000
+    2   0.012    0.968    0.020    0.000
+    3   0.001    0.022    0.977    0.000
+    4   0.000    0.000    0.000    0.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3        4
+
+    1   0.980    0.019    0.001    0.000
+    2   0.014    0.967    0.019    0.000
+    3   0.004    0.023    0.973    0.000
+    4   0.000    0.000    0.000    0.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3        4
+
+    1     13.795    9.867    6.838    0.000
+    2      9.546   13.782    9.827    0.000
+    3      8.222   10.051   13.788    0.000
+    4      0.000    0.000    0.000    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
+
+ E        WITH
+    EDUC               0.000      0.000    999.000    999.000
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
+
+ Means
+    E                 -0.836      0.000    999.000    999.000
+    EDUC               1.192      0.026     46.131      0.000
+    RE75               1.124      0.002    459.134      0.000
+
+ Variances
+    E                  0.042      0.002     20.684      0.000
+    EDUC               0.162      0.012     13.032      0.000
+    RE75               0.003      0.000     11.559      0.000
+
+Latent Class Pattern 1 2
+
+ Means
+    E                 -0.332      0.019    -17.360      0.000
+    EDUC              -0.072      0.031     -2.302      0.021
+    RE75               1.082      0.004    294.654      0.000
+
+ Variances
+    E                  0.022      0.006      3.617      0.000
+    EDUC               0.071      0.034      2.113      0.035
+    RE75               0.003      0.000      7.709      0.000
+
+Latent Class Pattern 1 3
+
+ Means
+    E                  1.046      0.094     11.107      0.000
+    EDUC              -0.784      0.035    -22.131      0.000
+    RE75               0.600      0.040     15.096      0.000
+
+ Variances
+    E                  1.042      0.027     38.719      0.000
+    EDUC               1.047      0.083     12.591      0.000
+    RE75               0.241      0.005     44.829      0.000
+
+Latent Class Pattern 1 4
+
+ Means
+    E                  3.293      0.000    999.000    999.000
+    EDUC           49108.098      0.000    999.000    999.000
+    RE75           *********      0.000    999.000    999.000
+
+ Variances
+    E              *********      0.000    999.000    999.000
+    EDUC           *********      0.000    999.000    999.000
+    RE75           36979.578      0.000    999.000    999.000
+
+Latent Class Pattern 2 1
+
+ Means
+    E                 -0.836      0.000    999.000    999.000
+    EDUC               1.192      0.026     46.131      0.000
+    RE75               1.124      0.002    459.134      0.000
+
+ Variances
+    E                  0.042      0.002     20.684      0.000
+    EDUC               0.162      0.012     13.032      0.000
+    RE75               0.003      0.000     11.559      0.000
+
+Latent Class Pattern 2 2
+
+ Means
+    E                 -0.332      0.019    -17.360      0.000
+    EDUC              -0.072      0.031     -2.302      0.021
+    RE75               1.082      0.004    294.654      0.000
+
+ Variances
+    E                  0.022      0.006      3.617      0.000
+    EDUC               0.071      0.034      2.113      0.035
+    RE75               0.003      0.000      7.709      0.000
+
+Latent Class Pattern 2 3
+
+ Means
+    E                  1.046      0.094     11.107      0.000
+    EDUC              -0.784      0.035    -22.131      0.000
+    RE75               0.600      0.040     15.096      0.000
+
+ Variances
+    E                  1.042      0.027     38.719      0.000
+    EDUC               1.047      0.083     12.591      0.000
+    RE75               0.241      0.005     44.829      0.000
+
+Latent Class Pattern 2 4
+
+ Means
+    E                  3.293      0.000    999.000    999.000
+    EDUC           49108.098      0.000    999.000    999.000
+    RE75           *********      0.000    999.000    999.000
+
+ Variances
+    E              *********      0.000    999.000    999.000
+    EDUC           *********      0.000    999.000    999.000
+    RE75           36979.578      0.000    999.000    999.000
+
+Categorical Latent Variables
+
+ C#1      ON
+    A#1                0.325      0.015     21.252      0.000
+    A#2                0.000      0.000    999.000    999.000
+
+ C#2      ON
+    A#1                0.327      0.028     11.845      0.000
+    A#2                0.500      0.000    999.000    999.000
+
+ C#3      ON
+    A#1                0.348      0.035      9.988      0.000
+    A#2                0.500      0.000    999.000    999.000
+
+ Means
+    A#1                0.931      0.005    189.747      0.000
+
+New/Additional Parameters
+    P1_4               0.000      0.000      0.000      1.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.304E-06
+       (ratio of smallest to largest eigenvalue)
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     %OVERALL%
+
+     c#1 ON a#1*0.32528;
+     c#1 ON a#2*0 (p1_1);
+     c#2 ON a#1*0.32706;
+     c#2 ON a#2*0.50000 (p1_2);
+     c#3 ON a#1*0.34766;
+     c#3 ON a#2*0.50000 (p1_3);
+
+     [ a#1*0.93084 ];
+
+     e WITH educ@0;
+
+
+     %A#1.C#1%
+
+     [ e*-0.83634 ] (me_1);
+     [ educ*1.19199 ] (m1_1);
+     [ re75*1.12397 ] (m2_1);
+
+     e*0.04214 (ve_1);
+     educ*0.16245 (v1_1);
+     re75*0.00281 (v2_1);
+
+     %A#1.C#2%
+
+     [ e*-0.33232 ] (me_2);
+     [ educ*-0.07224 ] (m1_2);
+     [ re75*1.08199 ] (m2_2);
+
+     e*0.02216 (ve_2);
+     educ*0.07097 (v1_2);
+     re75*0.00264 (v2_2);
+
+     %A#1.C#3%
+
+     [ e*1.04569 ] (me_3);
+     [ educ*-0.78418 ] (m1_3);
+     [ re75*0.59987 ] (m2_3);
+
+     e*1.04185 (ve_3);
+     educ*1.04700 (v1_3);
+     re75*0.24077 (v2_3);
+
+     %A#1.C#4%
+
+     [ e*3.29260 ] (me_4);
+     [ educ*49108.09766 ] (m1_4);
+     [ re75*-10829180 ] (m2_4);
+
+     e*25446756 (ve_4);
+     educ*5505778 (v1_4);
+     re75*36979.57812 (v2_4);
+
+     %A#2.C#1%
+
+     [ e*-0.83634 ] (me_1);
+     [ educ*1.19199 ] (m1_1);
+     [ re75*1.12397 ] (m2_1);
+
+     e*0.04214 (ve_1);
+     educ*0.16245 (v1_1);
+     re75*0.00281 (v2_1);
+
+     %A#2.C#2%
+
+     [ e*-0.33232 ] (me_2);
+     [ educ*-0.07224 ] (m1_2);
+     [ re75*1.08199 ] (m2_2);
+
+     e*0.02216 (ve_2);
+     educ*0.07097 (v1_2);
+     re75*0.00264 (v2_2);
+
+     %A#2.C#3%
+
+     [ e*1.04569 ] (me_3);
+     [ educ*-0.78418 ] (m1_3);
+     [ re75*0.59987 ] (m2_3);
+
+     e*1.04185 (ve_3);
+     educ*1.04700 (v1_3);
+     re75*0.24077 (v2_3);
+
+     %A#2.C#4%
+
+     [ e*3.29260 ] (me_4);
+     [ educ*49108.09766 ] (m1_4);
+     [ re75*-10829180 ] (m2_4);
+
+     e*25446756 (ve_4);
+     educ*5505778 (v1_4);
+     re75*36979.57812 (v2_4);
+
+     ! NEW statements in MODEL CONSTRAINT
+     NEW(p1_4*0);
+
+
+
+
+DIAGRAM INFORMATION
+
+  Mplus diagrams are currently not available for Mixture analysis.
+  No diagram output was produced.
+
+
+     Beginning Time:  18:26:21
+        Ending Time:  18:26:44
+       Elapsed Time:  00:00:23
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen

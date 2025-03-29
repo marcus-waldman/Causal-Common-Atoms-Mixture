@@ -1,6 +1,6 @@
 TITLE: Your title goes here
 
-DATA: FILE = "data/lalonde_obs.csv";
+DATA: FILE = "data/lalonde_obs.dat";
 
 VARIABLE: 
 NAMES = re78 treat marr nodegree black hispanic q1 q2 q3 q4; 
@@ -28,12 +28,22 @@ q1 with q2-q4@0;
 q2 with q3-q4@0;
 q3 with q4@0;
 
-q1-q4* (v1-v4);
+[ a#1* ] (p0);
+
+c#1 ON a#1* (pa_0);
+c#1 ON a#2* (pa_1);
+c#2 ON a#1* (pb_0);
+c#2 ON a#2* (pb_1);
+c#3 ON a#1* (pc_0);
+c#3 ON a#2* (pc_1);
+c#4 ON a#1* (pd_0);
+c#4 ON a#2* (pd_1);
+c#5 ON a#1* (pe_0);
+c#5 ON a#2* (pe_1);
 
 %A#1.C#1%
 [marr$1-hispanic$1*] (at1-at4);
 [q1-q4*] (am1-am4);
-
 
 %A#2.C#1%
 [marr$1-hispanic$1*] (at1-at4);
@@ -45,6 +55,7 @@ q1-q4* (v1-v4);
 [q1-q4*] (bm1-bm4);
 
 
+
 %A#2.C#2%
 [marr$1-hispanic$1*] (bt1-bt4);
 [q1-q4*] (bm1-bm4);
@@ -53,7 +64,6 @@ q1-q4* (v1-v4);
 %A#1.C#3%
 [marr$1-hispanic$1*] (ct1-ct4);
 [q1-q4*] (cm1-cm4);
-
 
 %A#2.C#3%
 [marr$1-hispanic$1*] (ct1-ct4);
@@ -90,9 +100,29 @@ q1-q4* (v1-v4);
 [q1-q4*] (fm1-fm4);
 
 
+Model Constraint:
+New(p1*);
+p1 = 1-p0;
+
+New(pf_0* pf_1*);
+pf_0 = 1 - pa_0 - pb_0 - pc_0 - pd_0 - pe_0;
+pf_1 = 1 - pa_1 - pb_1 - pc_1 - pd_1 - pe_1;
+
+New(pa* pb* pc* pd* pe* pf*);
+pa = pa_0*p0 + pa_1*p1;
+pb = pb_0*p0 + pb_1*p1;
+pc = pc_0*p0 + pc_1*p1;
+pd = pd_0*p0 + pd_1*p1;
+pe = pe_0*p0 + pe_1*p1;
+pf = pf_0*p0 + pf_1*p1;
+
+0 = pa_0 - pf_0;
+0 = pb_0 - pf_0;
+0 = pc_0 - pf_0;
+0 = pd_0 - pf_0;
+0 = pe_0 - pf_0;
+
 
 OUTPUT: 
+sampstat;
 svalues;
-
-SAVEDATA: 
-File= manBCH2.dat; Save=bchweights;

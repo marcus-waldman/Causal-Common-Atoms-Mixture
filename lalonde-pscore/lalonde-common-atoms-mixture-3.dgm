@@ -1,0 +1,52 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+
+DATA:
+ FILE = "data/lalonde_obs.dat";
+VARIABLE:
+NAMES = re78 treat u e educ re75;
+USEV = treat u e educ re75 u75;
+CATEGORICAL = u;
+CLASSES = Z(2) C(3);
+MISSING=.;
+AUXILIARY = re78;
+DEFINE:
+u75 = 1;
+IF re75 EQ 0 THEN u75 = 0;
+ANALYSIS:
+ESTIMATOR = MLR;
+ALGORITHM = INTEGRATION;
+OUTPUT:
+svalues;
+MODEL:
+eta on e@1;
+eta by u@1;
+eta*;
+INPUT_END
+2
+0
+0
+0
+MLR
+1
+GENERAL
+0
+5
+1
+1
+u treat educ re75 u75 eta e
+2
+-1 0 0 0 0 1 0
+0
+1
+eta
+u
+1 1 eta u    1.000    0.000
+1 1 e eta    1.000    0.000
+4 1 eta    0.000    0.000
+5 1 treat    0.064    0.004
+5 1 educ    1.000    0.030
+5 1 re75    0.141    0.005
+5 1 u75    0.116    0.005
