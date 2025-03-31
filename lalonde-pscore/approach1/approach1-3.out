@@ -1,0 +1,799 @@
+Mplus VERSION 8.10
+MUTHEN & MUTHEN
+03/31/2025   4:30 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+
+  DATA: FILE = "lalondeQPO.dat";
+
+  VARIABLE:
+  NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+       q11 q12 q13 q14 treat lnyobs lny0 lny1;
+  USEV = age-nodegr;
+  MISSING=.;
+  CLASSES = A(2) C(3);
+  KNOWNCLASS = A(treat=0 treat=1);
+  CENSORED = ln74-ln75 (bi);
+  CATEGORICAL = black-nodegr;
+
+
+  ANALYSIS:
+  TYPE = mixture;
+  ESTIMATOR = mlr;
+  !PARAMETERIZATION = probability;
+  !ALGORITHM = INTEGRATION;
+  PROCESSORS = 1;
+  STARTS = 128 32;
+
+
+  MODEL:
+
+  %OVERALL%
+  C on A;
+
+  !C#1 on A#2 (p1_a);
+  !C#2 on A#2 (p1_b);
+
+  age with educ@0;
+  [ln74#1-ln75#1];
+  [age-ln75*];
+  age-ln75*;
+  [black$1-nodegr$1*];
+
+  %A#1.C#1%
+  [ln74#1-ln75#1*] (ha_1-ha_2);
+  [age-ln75*] (ma_1-ma_4);
+  age-ln75* (va_1-va_4);
+  [black$1-nodegr$1*] (ta_1-ta_4);
+
+  %A#2.C#1%
+  [ln74#1-ln75#1*] (ha_1-ha_2);
+  [age-ln75*] (ma_1-ma_4);
+  age-ln75* (va_1-va_4);
+  [black$1-nodegr$1*] (ta_1-ta_4);
+
+
+  !-- Class 2--
+  %A#1.C#2%
+  [ln74#1-ln75#1*] (hb_1-hb_2);
+  [age-ln75*] (mb_1-mb_4);
+  age-ln75* (vb_1-vb_4);
+  [black$1-nodegr$1*] (tb_1-tb_4);
+
+  %A#2.C#2%
+  [ln74#1-ln75#1*] (hb_1-hb_2);
+  [age-ln75*] (mb_1-mb_4);
+  age-ln75* (vb_1-vb_4);
+  [black$1-nodegr$1*] (tb_1-tb_4);
+
+
+  !--Class 3--
+  %A#1.C#3%
+  [ln74#1-ln75#1*] (hc_1-hc_2);
+  [age-ln75*] (mc_1-mc_4);
+  age-ln75* (vc_1-vc_4);
+  [black$1-nodegr$1*] (tc_1-tc_4);
+
+
+  %A#2.C#3%
+  [ln74#1-ln75#1*] (hc_1-hc_2);
+  [age-ln75*] (mc_1-mc_4);
+  age-ln75* (vc_1-vc_4);
+  [black$1-nodegr$1*] (tc_1-tc_4);
+
+
+  Model Constraint:
+  !New(p1_c);
+  !p1_c = 1 - p1_a - p1_b;
+  !0 = p1_a-p1_c;
+  !0 = p1_b-p1_c;
+
+
+  Output:
+
+
+  svalues;
+
+
+
+
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                    8
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           2
+
+Observed dependent variables
+
+  Continuous
+   AGE         EDUC
+
+  Censored
+   LN74        LN75
+
+  Binary and ordered categorical (ordinal)
+   BLACK       HISP        MARRIED     NODEGR
+
+Categorical latent variables
+   A           C
+
+  Knownclass            A
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Number of initial stage random starts                        128
+  Number of final stage optimizations                           32
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+Parameterization                                             LOGIT
+Link                                                         LOGIT
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+     Number of y missing data patterns           1
+     Number of u missing data patterns           1
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              AGE           EDUC
+              ________      ________
+ AGE            1.000
+ EDUC           1.000         1.000
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    BLACK
+      Category 1    0.166           74.000
+      Category 2    0.834          371.000
+    HISP
+      Category 1    0.912          406.000
+      Category 2    0.088           39.000
+    MARRIED
+      Category 1    0.831          370.000
+      Category 2    0.169           75.000
+    NODEGR
+      Category 1    0.218           97.000
+      Category 2    0.782          348.000
+
+
+SUMMARY OF CENSORED LIMITS
+
+      LN74               0.000
+      LN75               0.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     AGE                   0.000       1.257      -1.179    7.64%      -0.897     -0.334     -0.193
+             445.000       0.998       1.665       4.173    0.22%      -0.052      0.652
+     EDUC                  0.000      -0.774      -4.015    0.22%      -0.667     -0.109     -0.109
+             445.000       0.998       1.816       3.239    0.22%       0.449      1.007
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+1 perturbed starting value run(s) did not converge in the initial stage
+optimizations.
+
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+           -2613.440  723775           97
+           -2621.346  170954           86
+           -2621.346  568859           49
+           -2625.236  25127            107
+           -2626.293  475420           71
+           -2628.421  761633           50
+           -2632.434  354559           73
+           -2635.059  165853           105
+           -2637.158  960438           116
+           -2646.613  751153           110
+           -2653.791  635245           121
+           -2659.826  68985            17
+
+20 perturbed starting value run(s) did not converge or were rejected in the third stage.
+
+
+
+     WARNING:  THE BEST LOGLIKELIHOOD VALUE WAS NOT REPLICATED.  THE
+     SOLUTION MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.  INCREASE THE
+     NUMBER OF RANDOM STARTS.
+
+     IN THE OPTIMIZATION, ONE OR MORE LOGIT THRESHOLDS APPROACHED EXTREME VALUES
+     OF -15.000 AND 15.000 AND WERE FIXED TO STABILIZE MODEL ESTIMATION.  THESE
+     VALUES IMPLY PROBABILITIES OF 0 AND 1.  IN THE MODEL RESULTS SECTION, THESE
+     PARAMETERS HAVE 0 STANDARD ERRORS AND 999 IN THE Z-SCORE AND P-VALUE COLUMNS.
+
+     IN THE OPTIMIZATION, ONE OR MORE LOGIT SCALE PARAMETERS APPROACHED EXTREME VALUES
+     OF -15.000 AND 15.000 AND WERE FIXED TO STABILIZE MODEL ESTIMATION.  THESE
+     VALUES IMPLY PROBABILITIES OF 0 AND 1.  IN THE MODEL RESULTS SECTION, THESE
+     PARAMETERS HAVE 0 STANDARD ERRORS AND 999 IN THE Z-SCORE AND P-VALUE COLUMNS.
+
+     ONE OR MORE PARAMETERS WERE FIXED TO AVOID SINGULARITY OF THE
+     INFORMATION MATRIX. THE SINGULARITY IS MOST LIKELY DUE TO THE
+     MODEL IS NOT IDENTIFIED, OR DUE TO A LARGE OR A SMALL PARAMETER
+     ON THE LOGIT SCALE. THE FOLLOWING PARAMETERS WERE FIXED:
+     Parameter 32, %A#1.C#1%: [ LN75#1 ] (equality/label)
+     Parameter 33, %A#1.C#1%: [ LN75 ] (equality/label)
+     Parameter 34, %A#1.C#1%: LN74 (equality/label)
+     Parameter 35, %A#1.C#1%: LN75 (equality/label)
+     Parameter 31, %A#1.C#1%: [ LN74 ] (equality/label)
+
+
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       47
+
+Loglikelihood
+
+          H0 Value                       -2613.440
+          H0 Scaling Correction Factor      1.1247
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    5320.880
+          Bayesian (BIC)                  5513.489
+          Sample-Size Adjusted BIC        5364.331
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit for the Binary and Ordered Categorical
+(Ordinal) Outcomes
+
+          Pearson Chi-Square
+
+          Value                            263.879
+          Degrees of Freedom                    14
+          P-Value                           0.0000
+
+          Likelihood Ratio Chi-Square
+
+          Value                            181.805
+          Degrees of Freedom                    14
+          P-Value                           0.0000
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR EACH LATENT CLASS VARIABLE
+BASED ON THE ESTIMATED MODEL
+
+  Latent Class
+    Variable    Class
+
+    A              1       260.00000          0.58427
+                   2       185.00002          0.41573
+    C              1       226.77486          0.50961
+                   2        87.90218          0.19753
+                   3       130.32295          0.29286
+
+
+LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
+
+     MEAN/PROBABILITY PROFILES FOR C
+                       Latent class
+                     1      2      3
+     BLACK
+       Category 1  0.156  0.203  0.160
+       Category 2  0.844  0.797  0.840
+     HISP
+       Category 1  0.896  0.955  0.912
+       Category 2  0.104  0.045  0.088
+     MARRIED
+       Category 1  0.868  0.809  0.783
+       Category 2  0.132  0.191  0.217
+     NODEGR
+       Category 1  0.040  1.000  0.000
+       Category 2  0.960  0.000  1.000
+     AGE           0.048  0.129 -0.171
+     EDUC         -0.334  1.111 -0.168
+
+
+LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
+
+  A Classes (Rows) by C Classes (Columns)
+
+            1        2        3
+
+   1     0.557    0.155    0.288
+   2     0.442    0.258    0.300
+
+
+C-SPECIFIC CLASSIFICATION RESULTS
+
+Classification Quality for A
+
+     Entropy                         1.000
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1     13.816    0.000
+    2    -13.816    0.000
+
+Classification Quality for C
+
+     Entropy                         0.927
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3
+
+    1   0.970    0.003    0.027
+    2   0.019    0.981    0.000
+    3   0.000    0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   0.993    0.007    0.000
+    2   0.007    0.993    0.000
+    3   0.049    0.000    0.951
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1     13.808    8.916    0.000
+    2      8.815   13.809    0.000
+    3     -2.976  -13.766    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
+
+ AGE      WITH
+    EDUC               0.000      0.000    999.000    999.000
+
+ Variances
+    LN74               3.830      0.000    999.000    999.000
+    LN75               3.975      0.000    999.000    999.000
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
+
+ Means
+    AGE                0.048      0.085      0.562      0.574
+    EDUC              -0.334      0.078     -4.289      0.000
+
+ Means
+    LN74#1            15.000      0.000    999.000    999.000
+    LN74             -10.405      0.000    999.000    999.000
+    LN75#1            -3.147      0.000    999.000    999.000
+    LN75             -16.775      0.000    999.000    999.000
+
+ Thresholds
+    BLACK$1           -1.688      0.190     -8.880      0.000
+    HISP$1             2.155      0.226      9.523      0.000
+    MARRIED$1          1.886      0.203      9.278      0.000
+    NODEGR$1          -3.175      0.543     -5.845      0.000
+
+ Variances
+    AGE                1.303      0.168      7.745      0.000
+    EDUC               1.080      0.163      6.641      0.000
+
+Latent Class Pattern 1 2
+
+ Means
+    AGE                0.129      0.115      1.126      0.260
+    EDUC               1.111      0.039     28.728      0.000
+
+ Means
+    LN74#1             0.658      0.242      2.720      0.007
+    LN74               1.968      0.043     45.671      0.000
+    LN75#1             0.134      0.233      0.577      0.564
+    LN75               1.597      0.041     38.624      0.000
+
+ Thresholds
+    BLACK$1           -1.369      0.272     -5.028      0.000
+    HISP$1             3.056      0.524      5.829      0.000
+    MARRIED$1          1.442      0.277      5.206      0.000
+    NODEGR$1          15.000      0.000    999.000    999.000
+
+ Variances
+    AGE                0.552      0.183      3.012      0.003
+    EDUC               0.063      0.027      2.322      0.020
+
+Latent Class Pattern 1 3
+
+ Means
+    AGE               -0.171      0.077     -2.211      0.027
+    EDUC              -0.168      0.059     -2.844      0.004
+
+ Means
+    LN74#1            -0.767      0.218     -3.517      0.000
+    LN74               1.899      0.025     75.136      0.000
+    LN75#1            -2.016      0.388     -5.195      0.000
+    LN75               1.693      0.023     73.171      0.000
+
+ Thresholds
+    BLACK$1           -1.662      0.251     -6.616      0.000
+    HISP$1             2.335      0.325      7.195      0.000
+    MARRIED$1          1.281      0.219      5.861      0.000
+    NODEGR$1         -15.000      0.000    999.000    999.000
+
+ Variances
+    AGE                0.723      0.126      5.755      0.000
+    EDUC               0.430      0.095      4.542      0.000
+
+Latent Class Pattern 2 1
+
+ Means
+    AGE                0.048      0.085      0.562      0.574
+    EDUC              -0.334      0.078     -4.289      0.000
+
+ Means
+    LN74#1            15.000      0.000    999.000    999.000
+    LN74             -10.405      0.000    999.000    999.000
+    LN75#1            -3.147      0.000    999.000    999.000
+    LN75             -16.775      0.000    999.000    999.000
+
+ Thresholds
+    BLACK$1           -1.688      0.190     -8.880      0.000
+    HISP$1             2.155      0.226      9.523      0.000
+    MARRIED$1          1.886      0.203      9.278      0.000
+    NODEGR$1          -3.175      0.543     -5.845      0.000
+
+ Variances
+    AGE                1.303      0.168      7.745      0.000
+    EDUC               1.080      0.163      6.641      0.000
+
+Latent Class Pattern 2 2
+
+ Means
+    AGE                0.129      0.115      1.126      0.260
+    EDUC               1.111      0.039     28.728      0.000
+
+ Means
+    LN74#1             0.658      0.242      2.720      0.007
+    LN74               1.968      0.043     45.671      0.000
+    LN75#1             0.134      0.233      0.577      0.564
+    LN75               1.597      0.041     38.624      0.000
+
+ Thresholds
+    BLACK$1           -1.369      0.272     -5.028      0.000
+    HISP$1             3.056      0.524      5.829      0.000
+    MARRIED$1          1.442      0.277      5.206      0.000
+    NODEGR$1          15.000      0.000    999.000    999.000
+
+ Variances
+    AGE                0.552      0.183      3.012      0.003
+    EDUC               0.063      0.027      2.322      0.020
+
+Latent Class Pattern 2 3
+
+ Means
+    AGE               -0.171      0.077     -2.211      0.027
+    EDUC              -0.168      0.059     -2.844      0.004
+
+ Means
+    LN74#1            -0.767      0.218     -3.517      0.000
+    LN74               1.899      0.025     75.136      0.000
+    LN75#1            -2.016      0.388     -5.195      0.000
+    LN75               1.693      0.023     73.171      0.000
+
+ Thresholds
+    BLACK$1           -1.662      0.251     -6.616      0.000
+    HISP$1             2.335      0.325      7.195      0.000
+    MARRIED$1          1.281      0.219      5.861      0.000
+    NODEGR$1         -15.000      0.000    999.000    999.000
+
+ Variances
+    AGE                0.723      0.126      5.755      0.000
+    EDUC               0.430      0.095      4.542      0.000
+
+Categorical Latent Variables
+
+ C#1      ON
+    A#1                0.271      0.236      1.145      0.252
+
+ C#2      ON
+    A#1               -0.473      0.283     -1.669      0.095
+
+ Means
+    A#1                0.340      0.096      3.538      0.000
+    C#1                0.390      0.185      2.112      0.035
+    C#2               -0.150      0.206     -0.727      0.468
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.165E-04
+       (ratio of smallest to largest eigenvalue)
+
+
+RESULTS IN PROBABILITY SCALE
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Results for Class-specific Model Parts of C
+
+Latent Class C#1
+
+ BLACK
+    Category 1         0.156      0.025      6.233      0.000
+    Category 2         0.844      0.025     33.713      0.000
+ HISP
+    Category 1         0.896      0.021     42.555      0.000
+    Category 2         0.104      0.021      4.930      0.000
+ MARRIED
+    Category 1         0.868      0.023     37.358      0.000
+    Category 2         0.132      0.023      5.664      0.000
+ NODEGR
+    Category 1         0.040      0.021      1.918      0.055
+    Category 2         0.960      0.021     45.887      0.000
+
+Latent Class C#2
+
+ BLACK
+    Category 1         0.203      0.044      4.607      0.000
+    Category 2         0.797      0.044     18.111      0.000
+ HISP
+    Category 1         0.955      0.023     42.421      0.000
+    Category 2         0.045      0.023      1.997      0.046
+ MARRIED
+    Category 1         0.809      0.043     18.879      0.000
+    Category 2         0.191      0.043      4.466      0.000
+ NODEGR
+    Category 1         1.000      0.000      0.000      1.000
+    Category 2         0.000      0.000      0.000      1.000
+
+Latent Class C#3
+
+ BLACK
+    Category 1         0.160      0.034      4.737      0.000
+    Category 2         0.840      0.034     24.959      0.000
+ HISP
+    Category 1         0.912      0.026     34.911      0.000
+    Category 2         0.088      0.026      3.379      0.001
+ MARRIED
+    Category 1         0.783      0.037     21.049      0.000
+    Category 2         0.217      0.037      5.846      0.000
+ NODEGR
+    Category 1         0.000      0.000      0.000      1.000
+    Category 2         1.000      0.000      0.000      1.000
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     %OVERALL%
+
+     c#1 ON a#1*0.27059;
+     c#2 ON a#1*-0.47252;
+
+     [ a#1*0.34033 ];
+     [ c#1*0.38965 ];
+     [ c#2*-0.14995 ];
+
+     age WITH educ@0;
+
+
+     %A#1.C#1%
+
+     [ age*0.04798 ] (ma_1);
+     [ educ*-0.33402 ] (ma_2);
+     [ ln74#1*15 ] (ha_1);
+     [ ln74*-10.40503 ] (ma_3);
+     [ ln75#1*-3.14670 ] (ha_2);
+     [ ln75*-16.77536 ] (ma_4);
+
+     [ black$1*-1.68797 ] (ta_1);
+     [ hisp$1*2.15539 ] (ta_2);
+     [ married$1*1.88643 ] (ta_3);
+     [ nodegr$1*-3.17498 ] (ta_4);
+
+     age*1.30309 (va_1);
+     educ*1.07988 (va_2);
+
+     %A#1.C#2%
+
+     [ age*0.12932 ] (mb_1);
+     [ educ*1.11115 ] (mb_2);
+     [ ln74#1*0.65756 ] (hb_1);
+     [ ln74*1.96766 ] (mb_3);
+     [ ln75#1*0.13449 ] (hb_2);
+     [ ln75*1.59673 ] (mb_4);
+
+     [ black$1*-1.36887 ] (tb_1);
+     [ hisp$1*3.05586 ] (tb_2);
+     [ married$1*1.44154 ] (tb_3);
+     [ nodegr$1*15 ] (tb_4);
+
+     age*0.55198 (vb_1);
+     educ*0.06282 (vb_2);
+
+     %A#1.C#3%
+
+     [ age*-0.17071 ] (mc_1);
+     [ educ*-0.16824 ] (mc_2);
+     [ ln74#1*-0.76722 ] (hc_1);
+     [ ln74*1.89949 ] (mc_3);
+     [ ln75#1*-2.01558 ] (hc_2);
+     [ ln75*1.69274 ] (mc_4);
+
+     [ black$1*-1.66194 ] (tc_1);
+     [ hisp$1*2.33512 ] (tc_2);
+     [ married$1*1.28106 ] (tc_3);
+     [ nodegr$1*-15 ] (tc_4);
+
+     age*0.72268 (vc_1);
+     educ*0.43024 (vc_2);
+
+     %A#2.C#1%
+
+     [ age*0.04798 ] (ma_1);
+     [ educ*-0.33402 ] (ma_2);
+     [ ln74#1*15 ] (ha_1);
+     [ ln74*-10.40503 ] (ma_3);
+     [ ln75#1*-3.14670 ] (ha_2);
+     [ ln75*-16.77536 ] (ma_4);
+
+     [ black$1*-1.68797 ] (ta_1);
+     [ hisp$1*2.15539 ] (ta_2);
+     [ married$1*1.88643 ] (ta_3);
+     [ nodegr$1*-3.17498 ] (ta_4);
+
+     age*1.30309 (va_1);
+     educ*1.07988 (va_2);
+
+     %A#2.C#2%
+
+     [ age*0.12932 ] (mb_1);
+     [ educ*1.11115 ] (mb_2);
+     [ ln74#1*0.65756 ] (hb_1);
+     [ ln74*1.96766 ] (mb_3);
+     [ ln75#1*0.13449 ] (hb_2);
+     [ ln75*1.59673 ] (mb_4);
+
+     [ black$1*-1.36887 ] (tb_1);
+     [ hisp$1*3.05586 ] (tb_2);
+     [ married$1*1.44154 ] (tb_3);
+     [ nodegr$1*15 ] (tb_4);
+
+     age*0.55198 (vb_1);
+     educ*0.06282 (vb_2);
+
+     %A#2.C#3%
+
+     [ age*-0.17071 ] (mc_1);
+     [ educ*-0.16824 ] (mc_2);
+     [ ln74#1*-0.76722 ] (hc_1);
+     [ ln74*1.89949 ] (mc_3);
+     [ ln75#1*-2.01558 ] (hc_2);
+     [ ln75*1.69274 ] (mc_4);
+
+     [ black$1*-1.66194 ] (tc_1);
+     [ hisp$1*2.33512 ] (tc_2);
+     [ married$1*1.28106 ] (tc_3);
+     [ nodegr$1*-15 ] (tc_4);
+
+     age*0.72268 (vc_1);
+     educ*0.43024 (vc_2);
+
+
+
+DIAGRAM INFORMATION
+
+  Mplus diagrams are currently not available for Mixture analysis.
+  No diagram output was produced.
+
+
+     Beginning Time:  16:30:02
+        Ending Time:  16:30:27
+       Elapsed Time:  00:00:25
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen

@@ -1,0 +1,188 @@
+TITLE: Your title goes here
+
+DATA: FILE = "lalondeQPO.dat";
+
+VARIABLE: 
+NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+     q11 q12 q13 q14 treat lnyobs lny0 lny1; 
+USEV = age-nodegr;
+MISSING=.;
+CLASSES = A(2) C(5);
+KNOWNCLASS = A(treat=0 treat=1);
+CENSORED = ln74-ln75 (bi);
+CATEGORICAL = black-nodegr;
+AUXILIARY = lnyobs;
+
+
+ANALYSIS:
+TYPE = mixture;
+ESTIMATOR = mlr;
+PARAMETERIZATION = probability;
+ALGORITHM = INTEGRATION;
+PROCESSORS = 1;
+STARTS = 128 32;
+
+
+MODEL:
+
+%OVERALL%
+C on A;
+
+C#1 on A#1 (p0_a);
+C#2 on A#1 (p0_b);
+C#3 on A#1 (p0_c);
+C#4 on A#1 (p0_d);
+
+C#1 on A#2 (p1_a);
+C#2 on A#2 (p1_b);
+C#3 on A#2 (p1_c);
+C#4 on A#2 (p1_d);
+
+age with educ@0;
+[ln74#1-ln75#1];
+[age-ln75*];
+age-ln75*;
+[black$1-nodegr$1*];
+
+%A#1.C#1%
+[ln74#1-ln75#1*] (ha_1-ha_2);
+[age-ln75*] (ma_1-ma_4);
+age-educ* (va_1-va_2);
+ln74-ln75* (va_3 va_4);
+[black$1-nodegr$1*] (ta_1-ta_4);
+
+%A#2.C#1%
+[ln74#1-ln75#1*] (ha_1-ha_2);
+[age-ln75*] (ma_1-ma_4);
+age-educ* (va_1-va_2);
+ln74-ln75* (va_3 va_4);
+[black$1-nodegr$1*] (ta_1-ta_4);
+
+
+!-- Class 2--
+%A#1.C#2%
+[ln74#1-ln75#1*] (hb_1-hb_2);
+[age-ln75*] (mb_1-mb_4);
+age-educ* (vb_1-vb_2);
+ln74-ln75* (vb_3 vb_4);
+[black$1-nodegr$1*] (tb_1-tb_4);
+
+%A#2.C#2%
+[ln74#1-ln75#1*] (hb_1-hb_2);
+[age-ln75*] (mb_1-mb_4);
+age-educ* (vb_1-vb_2);
+ln74-ln75* (vb_3 vb_4);
+[black$1-nodegr$1*] (tb_1-tb_4);
+
+
+!--Class 3--
+%A#1.C#3%
+[ln74#1-ln75#1*] (hc_1-hc_2);
+[age-ln75*] (mc_1-mc_4);
+age-educ* (vc_1-vc_2);
+ln74-ln75* (vc_3 vc_4);
+[black$1-nodegr$1*] (tc_1-tc_4);
+
+
+%A#2.C#3%
+[ln74#1-ln75#1*] (hc_1-hc_2);
+[age-ln75*] (mc_1-mc_4);
+age-educ* (vc_1-vc_2);
+ln74-ln75* (vc_3 vc_4);
+[black$1-nodegr$1*] (tc_1-tc_4);
+
+!--Class 4--
+%A#1.C#4%
+[ln74#1-ln75#1*] (hd_1-hd_2);
+[age-ln75*] (md_1-md_4);
+age-educ* (vd_1-vd_2);
+ln74-ln75* (vd_3 vd_4);
+[black$1-nodegr$1*] (td_1-td_4);
+
+
+%A#2.C#4%
+[ln74#1-ln75#1*] (hd_1-hd_2);
+[age-ln75*] (md_1-md_4);
+age-educ* (vd_1-vd_2);
+ln74-ln75* (vd_3 vd_4);
+[black$1-nodegr$1*] (td_1-td_4);
+
+!--Class 5--
+%A#1.C#5%
+[ln74#1-ln75#1*] (he_1-he_2);
+[age-ln75*] (me_1-me_4);
+age-educ* (ve_1-ve_2);
+ln74-ln75* (ve_3 ve_4);
+[black$1-nodegr$1*] (te_1-te_4);
+
+
+%A#2.C#5%
+[ln74#1-ln75#1*] (he_1-he_2);
+[age-ln75*] (me_1-me_4);
+age-educ* (ve_1-ve_2);
+ln74-ln75* (ve_3 ve_4);
+[black$1-nodegr$1*] (te_1-te_4);
+
+
+Model Constraint:
+
+!0 = va_3-va_4;
+!0 = vb_3-vb_4;
+!0 = vc_3-vc_4;
+!0 = vd_3-vd_4;
+!0 = ve_3-ve_4;
+
+0=va_1-ve_1;
+0=vb_1-ve_1;
+0=vc_1-ve_1;
+0=vd_1-ve_1;
+
+0=va_2-ve_2;
+0=vb_2-ve_2;
+0=vc_2-ve_2;
+0=vd_2-ve_2;
+
+
+0=va_3-ve_3;
+0=vb_3-ve_3;
+0=vc_3-ve_3;
+0=vd_3-ve_3;
+
+0=va_4-ve_4;
+0=vb_4-ve_4;
+0=vc_4-ve_4;
+0=vd_4-ve_4;
+
+DO(1,4) 0<15-ta_#;
+DO(1,4) 0<15-tb_#;
+DO(1,4) 0<15-tc_#;
+DO(1,4) 0<15-td_#;
+
+DO(1,4) 0<ta_#+15;
+DO(1,4) 0<tb_#+15;
+DO(1,4) 0<tc_#+15;
+DO(1,4) 0<td_#+15;
+
+New(p0_e p1_e);
+p0_e = 1 - p0_a - p0_b - p0_c - p0_d;
+p1_e = 1 - p1_a - p1_b - p1_c - p1_d;
+
+
+New(p_a p_b p_c p_d p_e);
+p_a = p0_a + p1_a;
+p_b = p0_b + p1_b;
+p_c = p0_c + p1_c;
+p_d = p0_d + p1_d;
+p_e = p0_e + p1_e;
+
+
+Output:
+sampstat
+svalues;
+
+Savedata:
+file = "cprobs-approach1-5.dat";
+save = cprob;
+
+
+

@@ -1,0 +1,93 @@
+TITLE: Your title goes here
+
+DATA: FILE = "lalondeQPO.dat";
+
+VARIABLE: 
+NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+     q11 q12 q13 q14 treat lnyobs lny0 lny1; 
+USEV = age-nodegr;
+MISSING=.;
+CLASSES = A(2) C(3);
+KNOWNCLASS = A(treat=0 treat=1);
+CENSORED = ln74-ln75 (bi);
+CATEGORICAL = black-nodegr;
+
+
+ANALYSIS:
+TYPE = mixture;
+ESTIMATOR = mlr;
+PARAMETERIZATION = probability;
+!ALGORITHM = INTEGRATION;
+PROCESSORS = 1;
+STARTS = 128 32;
+
+
+MODEL:
+
+%OVERALL%
+C on A;
+
+C#1 on A#2 (p1_a);
+C#2 on A#2 (p1_b);
+
+age with educ@0;
+[ln74#1-ln75#1];
+[age-ln75*];
+age-ln75*;
+[black$1-nodegr$1*];
+
+%A#1.C#1%
+[ln74#1-ln75#1*] (ha_1-ha_2);
+[age-ln75*] (ma_1-ma_4);
+age-ln75* (va_1-va_4);
+[black$1-nodegr$1*] (ta_1-ta_4);
+
+%A#2.C#1%
+[ln74#1-ln75#1*] (ha_1-ha_2);
+[age-ln75*] (ma_1-ma_4);
+age-ln75* (va_1-va_4);
+[black$1-nodegr$1*] (ta_1-ta_4);
+
+
+!-- Class 2--
+%A#1.C#2%
+[ln74#1-ln75#1*] (hb_1-hb_2);
+[age-ln75*] (mb_1-mb_4);
+age-ln75* (vb_1-vb_4);
+[black$1-nodegr$1*] (tb_1-tb_4);
+
+%A#2.C#2%
+[ln74#1-ln75#1*] (hb_1-hb_2);
+[age-ln75*] (mb_1-mb_4);
+age-ln75* (vb_1-vb_4);
+[black$1-nodegr$1*] (tb_1-tb_4);
+
+
+!--Class 3--
+%A#1.C#3%
+[ln74#1-ln75#1*] (hc_1-hc_2);
+[age-ln75*] (mc_1-mc_4);
+age-ln75* (vc_1-vc_4);
+[black$1-nodegr$1*] (tc_1-tc_4);
+
+
+%A#2.C#3%
+[ln74#1-ln75#1*] (hc_1-hc_2);
+[age-ln75*] (mc_1-mc_4);
+age-ln75* (vc_1-vc_4);
+[black$1-nodegr$1*] (tc_1-tc_4);
+
+
+Model Constraint:
+New(p1_c);
+p1_c = 1 - p1_a - p1_b;
+
+
+Output:
+
+
+svalues;
+
+
+
+

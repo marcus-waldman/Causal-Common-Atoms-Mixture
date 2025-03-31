@@ -38,3 +38,6 @@ vignettes/*.pdf
 
 #Temporary folder
 tmp/
+
+#Image files
+*.png
