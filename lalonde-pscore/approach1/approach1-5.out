@@ -1,6 +1,6 @@
 Mplus VERSION 8.10
 MUTHEN & MUTHEN
-03/31/2025   5:08 PM
+03/31/2025   7:55 PM
 
 INPUT INSTRUCTIONS
 
@@ -25,7 +25,7 @@ INPUT INSTRUCTIONS
   ESTIMATOR = mlr;
   PARAMETERIZATION = probability;
   ALGORITHM = INTEGRATION;
-  PROCESSORS = 1;
+  PROCESSORS = 16;
   STARTS = 128 32;
 
 
@@ -138,6 +138,12 @@ INPUT INSTRUCTIONS
   !0 = vd_3-vd_4;
   !0 = ve_3-ve_4;
 
+  0 = ha_1-ha_2;
+  0 = hb_1-hb_2;
+  0 = hc_1-hc_2;
+  0 = hd_1-hd_2;
+  0 = he_1-he_2;
+
   0=va_1-ve_1;
   0=vb_1-ve_1;
   0=vc_1-ve_1;
@@ -163,11 +169,13 @@ INPUT INSTRUCTIONS
   DO(1,4) 0<15-tb_#;
   DO(1,4) 0<15-tc_#;
   DO(1,4) 0<15-td_#;
+  DO(1,4) 0<15-te_#;
 
   DO(1,4) 0<ta_#+15;
   DO(1,4) 0<tb_#+15;
   DO(1,4) 0<tc_#+15;
   DO(1,4) 0<td_#+15;
+  DO(1,4) 0<te_#+15;
 
   New(p0_e p1_e);
   p0_e = 1 - p0_a - p0_b - p0_c - p0_d;
@@ -201,3 +209,679 @@ INPUT READING TERMINATED NORMALLY
 
 Your title goes here
 
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                    8
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           2
+
+Observed dependent variables
+
+  Continuous
+   AGE         EDUC
+
+  Censored
+   LN74        LN75
+
+  Binary and ordered categorical (ordinal)
+   BLACK       HISP        MARRIED     NODEGR
+
+Observed auxiliary variables
+   LNYOBS
+
+Categorical latent variables
+   A           C
+
+  Knownclass            A
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Integration Specifications
+  Type                                                    STANDARD
+  Number of integration points                                  15
+  Dimensions of numerical integration                            0
+  Adaptive quadrature                                           ON
+Random Starts Specifications
+  Number of initial stage random starts                        128
+  Number of final stage optimizations                           32
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+Parameterization                                       PROBABILITY
+Link                                                         LOGIT
+Cholesky                                                       OFF
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+     Number of y missing data patterns           1
+     Number of u missing data patterns           1
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              AGE           EDUC
+              ________      ________
+ AGE            1.000
+ EDUC           1.000         1.000
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    BLACK
+      Category 1    0.166           74.000
+      Category 2    0.834          371.000
+    HISP
+      Category 1    0.912          406.000
+      Category 2    0.088           39.000
+    MARRIED
+      Category 1    0.831          370.000
+      Category 2    0.169           75.000
+    NODEGR
+      Category 1    0.218           97.000
+      Category 2    0.782          348.000
+
+
+SUMMARY OF CENSORED LIMITS
+
+      LN74               0.000
+      LN75               0.000
+
+
+SAMPLE STATISTICS
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     AGE                   0.000       1.257      -1.179    7.64%      -0.897     -0.334     -0.193
+             445.000       0.998       1.665       4.173    0.22%      -0.052      0.652
+     EDUC                  0.000      -0.774      -4.015    0.22%      -0.667     -0.109     -0.109
+             445.000       0.998       1.816       3.239    0.22%       0.449      1.007
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+
+57 perturbed starting value run(s) did not converge or were rejected in the third stage.
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+
+Unperturbed starting value run did not converge or was rejected in the third stage.
+
+31 perturbed starting value run(s) did not converge or were rejected in the third stage.
+
+
+     THE MODEL ESTIMATION DID NOT TERMINATE NORMALLY DUE TO AN INSUFFICIENT
+     NUMBER OF E STEPS.  INCREASE THE NUMBER OF MITERATIONS.  ESTIMATES
+     CANNOT BE TRUSTED.
+
+
+
+     THE MODEL ESTIMATION DID NOT TERMINATE NORMALLY DUE TO AN ERROR IN THE
+     COMPUTATION.  CHANGE YOUR MODEL AND/OR STARTING VALUES.
+
+
+
+
+
+
+MODEL RESULTS
+
+                    Estimate
+
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
+
+ AGE      WITH
+    EDUC               0.000
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
+
+ Means
+    AGE                0.105
+    EDUC              -0.003
+    LN74#1             2.029
+    LN74             -12.069
+    LN75#1             2.029
+    LN75               7.014
+
+ Thresholds
+    BLACK$1          -14.733
+    HISP$1             7.390
+    MARRIED$1          3.682
+    NODEGR$1          -2.803
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 1 2
+
+ Means
+    AGE               -0.365
+    EDUC              -0.457
+    LN74#1             1.580
+    LN74              10.104
+    LN75#1             1.580
+    LN75               8.346
+
+ Thresholds
+    BLACK$1           15.000
+    HISP$1            15.000
+    MARRIED$1          1.698
+    NODEGR$1         -14.958
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 1 3
+
+ Means
+    AGE                0.619
+    EDUC               1.235
+    LN74#1            -1.289
+    LN74               9.017
+    LN75#1            -1.289
+    LN75               8.279
+
+ Thresholds
+    BLACK$1            3.575
+    HISP$1             6.902
+    MARRIED$1        -14.983
+    NODEGR$1          15.000
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 1 4
+
+ Means
+    AGE               -0.229
+    EDUC              -0.135
+    LN74#1            -1.081
+    LN74               8.413
+    LN75#1            -1.081
+    LN75               7.866
+
+ Thresholds
+    BLACK$1           -2.565
+    HISP$1             0.447
+    MARRIED$1         13.697
+    NODEGR$1          -4.525
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 1 5
+
+ Means
+    AGE                0.372
+    EDUC               1.126
+    LN74#1             0.697
+    LN74               8.530
+    LN75#1             0.697
+    LN75               6.953
+
+ Thresholds
+    BLACK$1           15.000
+    HISP$1            15.000
+    MARRIED$1          2.487
+    NODEGR$1           3.878
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 2 1
+
+ Means
+    AGE                0.105
+    EDUC              -0.003
+    LN74#1             2.029
+    LN74             -12.069
+    LN75#1             2.029
+    LN75               7.014
+
+ Thresholds
+    BLACK$1          -14.733
+    HISP$1             7.390
+    MARRIED$1          3.682
+    NODEGR$1          -2.803
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 2 2
+
+ Means
+    AGE               -0.365
+    EDUC              -0.457
+    LN74#1             1.580
+    LN74              10.104
+    LN75#1             1.580
+    LN75               8.346
+
+ Thresholds
+    BLACK$1           15.000
+    HISP$1            15.000
+    MARRIED$1          1.698
+    NODEGR$1         -14.958
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 2 3
+
+ Means
+    AGE                0.619
+    EDUC               1.235
+    LN74#1            -1.289
+    LN74               9.017
+    LN75#1            -1.289
+    LN75               8.279
+
+ Thresholds
+    BLACK$1            3.575
+    HISP$1             6.902
+    MARRIED$1        -14.983
+    NODEGR$1          15.000
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 2 4
+
+ Means
+    AGE               -0.229
+    EDUC              -0.135
+    LN74#1            -1.081
+    LN74               8.413
+    LN75#1            -1.081
+    LN75               7.866
+
+ Thresholds
+    BLACK$1           -2.565
+    HISP$1             0.447
+    MARRIED$1         13.697
+    NODEGR$1          -4.525
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Latent Class Pattern 2 5
+
+ Means
+    AGE                0.372
+    EDUC               1.126
+    LN74#1             0.697
+    LN74               8.530
+    LN75#1             0.697
+    LN75               6.953
+
+ Thresholds
+    BLACK$1           15.000
+    HISP$1            15.000
+    MARRIED$1          2.487
+    NODEGR$1           3.878
+
+ Variances
+    AGE                0.956
+    EDUC               0.910
+    LN74               1.068
+    LN75               1.237
+
+Categorical Latent Variables
+
+ C#1      ON
+    A#1                0.609
+    A#2                0.566
+
+ C#2      ON
+    A#1                0.035
+    A#2                0.042
+
+ C#3      ON
+    A#1                0.000
+    A#2                0.039
+
+ C#4      ON
+    A#1                0.333
+    A#2                0.312
+
+ Means
+    A#1                0.584
+
+New/Additional Parameters
+    P0_E               0.500
+    P1_E               0.500
+    P_A                0.500
+    P_B                0.500
+    P_C                0.500
+    P_D                0.500
+    P_E                0.500
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     %OVERALL%
+
+     c#1 ON a#1*0.60886 (p0_a);
+     c#1 ON a#2*0.56624 (p1_a);
+     c#2 ON a#1*0.03451 (p0_b);
+     c#2 ON a#2*0.04236 (p1_b);
+     c#3 ON a#1*0.00006 (p0_c);
+     c#3 ON a#2*0.03925 (p1_c);
+     c#4 ON a#1*0.33284 (p0_d);
+     c#4 ON a#2*0.31184 (p1_d);
+
+     [ a#1*0.58427 ];
+
+     age WITH educ@0;
+
+
+     %A#1.C#1%
+
+     [ age*0.10544 ] (ma_1);
+     [ educ*-0.00324 ] (ma_2);
+     [ ln74#1*2.02941 ] (ha_1);
+     [ ln74*-12.06894 ] (ma_3);
+     [ ln75#1*2.02941 ] (ha_2);
+     [ ln75*7.01386 ] (ma_4);
+
+     [ black$1*-14.73328 ] (ta_1);
+     [ hisp$1*7.38978 ] (ta_2);
+     [ married$1*3.68168 ] (ta_3);
+     [ nodegr$1*-2.80268 ] (ta_4);
+
+     age*0.95634 (va_1);
+     educ*0.91045 (va_2);
+     ln74*1.06772 (va_3);
+     ln75*1.23733 (va_4);
+
+     %A#1.C#2%
+
+     [ age*-0.36474 ] (mb_1);
+     [ educ*-0.45727 ] (mb_2);
+     [ ln74#1*1.57976 ] (hb_1);
+     [ ln74*10.10421 ] (mb_3);
+     [ ln75#1*1.57976 ] (hb_2);
+     [ ln75*8.34605 ] (mb_4);
+
+     [ black$1*14.99993 ] (tb_1);
+     [ hisp$1*14.99986 ] (tb_2);
+     [ married$1*1.69802 ] (tb_3);
+     [ nodegr$1*-14.95755 ] (tb_4);
+
+     age*0.95634 (vb_1);
+     educ*0.91045 (vb_2);
+     ln74*1.06772 (vb_3);
+     ln75*1.23733 (vb_4);
+
+     %A#1.C#3%
+
+     [ age*0.61879 ] (mc_1);
+     [ educ*1.23528 ] (mc_2);
+     [ ln74#1*-1.28941 ] (hc_1);
+     [ ln74*9.01719 ] (mc_3);
+     [ ln75#1*-1.28941 ] (hc_2);
+     [ ln75*8.27896 ] (mc_4);
+
+     [ black$1*3.57514 ] (tc_1);
+     [ hisp$1*6.90184 ] (tc_2);
+     [ married$1*-14.98340 ] (tc_3);
+     [ nodegr$1*15 ] (tc_4);
+
+     age*0.95634 (vc_1);
+     educ*0.91045 (vc_2);
+     ln74*1.06772 (vc_3);
+     ln75*1.23733 (vc_4);
+
+     %A#1.C#4%
+
+     [ age*-0.22904 ] (md_1);
+     [ educ*-0.13519 ] (md_2);
+     [ ln74#1*-1.08130 ] (hd_1);
+     [ ln74*8.41342 ] (md_3);
+     [ ln75#1*-1.08130 ] (hd_2);
+     [ ln75*7.86616 ] (md_4);
+
+     [ black$1*-2.56513 ] (td_1);
+     [ hisp$1*0.44688 ] (td_2);
+     [ married$1*13.69666 ] (td_3);
+     [ nodegr$1*-4.52510 ] (td_4);
+
+     age*0.95634 (vd_1);
+     educ*0.91045 (vd_2);
+     ln74*1.06772 (vd_3);
+     ln75*1.23733 (vd_4);
+
+     %A#1.C#5%
+
+     [ age*0.37239 ] (me_1);
+     [ educ*1.12562 ] (me_2);
+     [ ln74#1*0.69736 ] (he_1);
+     [ ln74*8.52953 ] (me_3);
+     [ ln75#1*0.69736 ] (he_2);
+     [ ln75*6.95275 ] (me_4);
+
+     [ black$1*15 ] (te_1);
+     [ hisp$1*15 ] (te_2);
+     [ married$1*2.48728 ] (te_3);
+     [ nodegr$1*3.87791 ] (te_4);
+
+     age*0.95634 (ve_1);
+     educ*0.91045 (ve_2);
+     ln74*1.06772 (ve_3);
+     ln75*1.23733 (ve_4);
+
+     %A#2.C#1%
+
+     [ age*0.10544 ] (ma_1);
+     [ educ*-0.00324 ] (ma_2);
+     [ ln74#1*2.02941 ] (ha_1);
+     [ ln74*-12.06894 ] (ma_3);
+     [ ln75#1*2.02941 ] (ha_2);
+     [ ln75*7.01386 ] (ma_4);
+
+     [ black$1*-14.73328 ] (ta_1);
+     [ hisp$1*7.38978 ] (ta_2);
+     [ married$1*3.68168 ] (ta_3);
+     [ nodegr$1*-2.80268 ] (ta_4);
+
+     age*0.95634 (va_1);
+     educ*0.91045 (va_2);
+     ln74*1.06772 (va_3);
+     ln75*1.23733 (va_4);
+
+     %A#2.C#2%
+
+     [ age*-0.36474 ] (mb_1);
+     [ educ*-0.45727 ] (mb_2);
+     [ ln74#1*1.57976 ] (hb_1);
+     [ ln74*10.10421 ] (mb_3);
+     [ ln75#1*1.57976 ] (hb_2);
+     [ ln75*8.34605 ] (mb_4);
+
+     [ black$1*14.99993 ] (tb_1);
+     [ hisp$1*14.99986 ] (tb_2);
+     [ married$1*1.69802 ] (tb_3);
+     [ nodegr$1*-14.95755 ] (tb_4);
+
+     age*0.95634 (vb_1);
+     educ*0.91045 (vb_2);
+     ln74*1.06772 (vb_3);
+     ln75*1.23733 (vb_4);
+
+     %A#2.C#3%
+
+     [ age*0.61879 ] (mc_1);
+     [ educ*1.23528 ] (mc_2);
+     [ ln74#1*-1.28941 ] (hc_1);
+     [ ln74*9.01719 ] (mc_3);
+     [ ln75#1*-1.28941 ] (hc_2);
+     [ ln75*8.27896 ] (mc_4);
+
+     [ black$1*3.57514 ] (tc_1);
+     [ hisp$1*6.90184 ] (tc_2);
+     [ married$1*-14.98340 ] (tc_3);
+     [ nodegr$1*15 ] (tc_4);
+
+     age*0.95634 (vc_1);
+     educ*0.91045 (vc_2);
+     ln74*1.06772 (vc_3);
+     ln75*1.23733 (vc_4);
+
+     %A#2.C#4%
+
+     [ age*-0.22904 ] (md_1);
+     [ educ*-0.13519 ] (md_2);
+     [ ln74#1*-1.08130 ] (hd_1);
+     [ ln74*8.41342 ] (md_3);
+     [ ln75#1*-1.08130 ] (hd_2);
+     [ ln75*7.86616 ] (md_4);
+
+     [ black$1*-2.56513 ] (td_1);
+     [ hisp$1*0.44688 ] (td_2);
+     [ married$1*13.69666 ] (td_3);
+     [ nodegr$1*-4.52510 ] (td_4);
+
+     age*0.95634 (vd_1);
+     educ*0.91045 (vd_2);
+     ln74*1.06772 (vd_3);
+     ln75*1.23733 (vd_4);
+
+     %A#2.C#5%
+
+     [ age*0.37239 ] (me_1);
+     [ educ*1.12562 ] (me_2);
+     [ ln74#1*0.69736 ] (he_1);
+     [ ln74*8.52953 ] (me_3);
+     [ ln75#1*0.69736 ] (he_2);
+     [ ln75*6.95275 ] (me_4);
+
+     [ black$1*15 ] (te_1);
+     [ hisp$1*15 ] (te_2);
+     [ married$1*2.48728 ] (te_3);
+     [ nodegr$1*3.87791 ] (te_4);
+
+     age*0.95634 (ve_1);
+     educ*0.91045 (ve_2);
+     ln74*1.06772 (ve_3);
+     ln75*1.23733 (ve_4);
+
+     ! NEW statements in MODEL CONSTRAINT
+     NEW(p0_e*0.50000);
+     NEW(p1_e*0.50000);
+     NEW(p_a*0.50000);
+     NEW(p_b*0.50000);
+     NEW(p_c*0.50000);
+     NEW(p_d*0.50000);
+     NEW(p_e*0.50000);
+
+
+
+
+SAVEDATA INFORMATION
+
+     Class probabilities were not computed.
+     No data were saved.
+
+
+DIAGRAM INFORMATION
+
+  Mplus diagrams are currently not available for Mixture analysis.
+  No diagram output was produced.
+
+
+     Beginning Time:  19:55:03
+        Ending Time:  19:55:37
+       Elapsed Time:  00:00:34
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen

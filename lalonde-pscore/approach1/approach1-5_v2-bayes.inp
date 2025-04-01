@@ -1,0 +1,81 @@
+TITLE: Your title goes here
+
+DATA: FILE = "lalondeQPO.dat";
+
+VARIABLE: 
+NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+     q11 q12 q13 q14 treat lnyobs lny0 lny1; 
+USEV =  age educ ln74 ln75 black hisp married nodegr treat lny0 lny1;
+MISSING=.;
+!CLASSES = C(2);
+!KNOWNCLASS = A(treat=0 treat=1);
+!CENSORED = ln74 (bi) ln75 (bi) lny0 (bi) lny1 (bi);
+!CATEGORICAL = black-nodegr treat;
+
+
+
+ANALYSIS:
+TYPE = general; !mixture;
+ALGORITHM = integration;
+!ESTIMATOR = bayes;
+!PROCESSORS = 4;
+!CHAINS = 4;
+!STARTS = 128 32;
+
+
+
+
+MODEL:
+!%OVERALL% 
+
+
+
+d1 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+d1@1;
+[d1@0];
+
+d2 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+d2@1;
+[d2@0];
+
+d3 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+d3@1;
+[d3@0];
+
+f by d1* d2-d3;
+[f@0];
+f@1;
+
+e1 by f*;
+e1@0;
+[e1*];
+e1 on age* educ-ln75;
+
+e2 by f*;
+e2@0;
+[e2*];
+e2 on age* educ-ln75;
+
+e3 by f*;
+e3@0;
+[e3*];
+e3 on age* educ-ln75;
+
+
+
+e1 with e2-e3@0;
+e2 with e3@0;
+d1 with d2-d3@0;
+d2 with d3@0;
+
+
+![c#1@0]
+
+!%C#1%
+![f@0];
+
+!%C#2%
+![f*0];
+
+!Output:
+!noserr;

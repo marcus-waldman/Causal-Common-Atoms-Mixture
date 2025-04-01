@@ -1,0 +1,142 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+
+DATA:
+ FILE = "lalondeQPO.dat";
+VARIABLE:
+NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+     q11 q12 q13 q14 treat lnyobs lny0 lny1;
+USEV =  age educ ln74 ln75 black hisp married nodegr treat lny0 lny1;
+MISSING=.;
+ANALYSIS:
+TYPE = general;
+ALGORITHM = integration;
+MODEL:
+d1 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+d1@1;
+[d1@0];
+d2 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+d2@1;
+[d2@0];
+d3 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+d3@1;
+[d3@0];
+f by d1* d2-d3;
+[f@0];
+f@1;
+e1 by f*;
+e1@0;
+[e1*];
+e1 on age* educ-ln75;
+e2 by f*;
+e2@0;
+[e2*];
+e2 on age* educ-ln75;
+e3 by f*;
+e3@0;
+[e3*];
+e3 on age* educ-ln75;
+e1 with e2-e3@0;
+e2 with e3@0;
+d1 with d2-d3@0;
+d2 with d3@0;
+INPUT_END
+1
+0
+0
+0
+MLR
+1
+GENERAL
+0
+11
+7
+0
+age educ ln74 ln75 black hisp married nodegr treat lny0 lny1 d1 d2 d3 f e1 e2 e3
+3
+-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2 2 2 1 0 0 0
+0
+3
+d1
+age educ ln74 ln75 black hisp married nodegr treat lny0 lny1
+d2
+age educ ln74 ln75 black hisp married nodegr treat lny0 lny1
+d3
+age educ ln74 ln75 black hisp married nodegr treat lny0 lny1
+1 1 d1 age    2.008
+1 1 d1 educ    0.445
+1 1 d1 ln74    1.285
+1 1 d1 ln75    2.081
+1 1 d1 black    0.011
+1 1 d1 hisp   -0.032
+1 1 d1 married    0.029
+1 1 d1 nodegr   -0.241
+1 1 d1 treat    0.055
+1 1 d1 lny0   -0.018
+1 1 d1 lny1    0.218
+1 1 d2 age    2.724
+1 1 d2 educ   -0.510
+1 1 d2 ln74    0.774
+1 1 d2 ln75    1.439
+1 1 d2 black    0.017
+1 1 d2 hisp    0.018
+1 1 d2 married   -0.001
+1 1 d2 nodegr    0.316
+1 1 d2 treat   -0.056
+1 1 d2 lny0   -0.067
+1 1 d2 lny1   -0.184
+1 1 d3 age    1.887
+1 1 d3 educ    0.045
+1 1 d3 ln74    0.111
+1 1 d3 ln75    0.271
+1 1 d3 black    0.357
+1 1 d3 hisp   -0.221
+1 1 d3 married    0.007
+1 1 d3 nodegr    0.032
+1 1 d3 treat    0.015
+1 1 d3 lny0   -0.850
+1 1 d3 lny1   -0.806
+1 1 f d1    0.367
+1 1 f d2    0.341
+1 1 f d3    0.035
+1 1 e1 f    0.753
+1 1 e2 f    0.179
+1 1 e3 f    0.530
+1 1 age e1    0.742
+1 1 educ e1   -0.788
+1 1 ln74 e1   -0.087
+1 1 ln75 e1    1.652
+1 1 age e2   -3.555
+1 1 educ e2    0.752
+1 1 ln74 e2   -0.846
+1 1 ln75 e2   -1.576
+1 1 age e3   -1.537
+1 1 educ e3    0.392
+1 1 ln74 e3   -0.388
+1 1 ln75 e3    0.629
+2 1 e1 e2    0.000
+2 1 e1 e3    0.000
+2 1 e2 e3    0.000
+2 1 d1 d2    0.000
+2 1 d1 d3    0.000
+2 1 d2 d3    0.000
+4 1 age   32.302
+4 1 educ    0.541
+4 1 ln74    8.103
+4 1 ln75   -4.307
+4 1 black    0.021
+4 1 hisp    0.033
+4 1 married    0.137
+4 1 nodegr    0.016
+4 1 treat    0.236
+4 1 lny0   16.477
+4 1 lny1   13.739
+4 1 d1    1.000
+4 1 d2    1.000
+4 1 d3    1.000
+4 1 f    1.000
+4 1 e1    0.000
+4 1 e2    0.000
+4 1 e3    0.000

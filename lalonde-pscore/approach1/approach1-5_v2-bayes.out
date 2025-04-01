@@ -1,0 +1,916 @@
+Mplus VERSION 8.10
+MUTHEN & MUTHEN
+03/31/2025  10:34 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+
+  DATA: FILE = "lalondeQPO.dat";
+
+  VARIABLE:
+  NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+       q11 q12 q13 q14 treat lnyobs lny0 lny1;
+  USEV =  age educ ln74 ln75 black hisp married nodegr treat lny0 lny1;
+  MISSING=.;
+  !CLASSES = C(2);
+  !KNOWNCLASS = A(treat=0 treat=1);
+  !CENSORED = ln74 (bi) ln75 (bi) lny0 (bi) lny1 (bi);
+  !CATEGORICAL = black-nodegr treat;
+
+
+
+  ANALYSIS:
+  TYPE = general; !mixture;
+  ALGORITHM = integration;
+  !ESTIMATOR = bayes;
+  !PROCESSORS = 4;
+  !CHAINS = 4;
+  !STARTS = 128 32;
+
+
+
+
+  MODEL:
+  !%OVERALL%
+
+
+
+  d1 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+  d1@1;
+  [d1@0];
+
+  d2 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+  d2@1;
+  [d2@0];
+
+  d3 by  age* educ-ln75 black-nodegr treat lny0 lny1;
+  d3@1;
+  [d3@0];
+
+  f by d1* d2-d3;
+  [f@0];
+  f@1;
+
+  e1 by f*;
+  e1@0;
+  [e1*];
+  e1 on age* educ-ln75;
+
+  e2 by f*;
+  e2@0;
+  [e2*];
+  e2 on age* educ-ln75;
+
+  e3 by f*;
+  e3@0;
+  [e3*];
+  e3 on age* educ-ln75;
+
+
+
+  e1 with e2-e3@0;
+  e2 with e3@0;
+  d1 with d2-d3@0;
+  d2 with d3@0;
+
+
+  ![c#1@0]
+
+  !%C#1%
+  ![f@0];
+
+  !%C#2%
+  ![f*0];
+
+  !Output:
+  !noserr;
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                   11
+Number of independent variables                                  0
+Number of continuous latent variables                            7
+
+Observed dependent variables
+
+  Continuous
+   AGE         EDUC        LN74        LN75        BLACK       HISP
+   MARRIED     NODEGR      TREAT       LNY0        LNY1
+
+Continuous latent variables
+   D1          D2          D3          F           E1          E2
+   E3
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Integration Specifications
+  Type                                                    STANDARD
+  Number of integration points                                  15
+  Dimensions of numerical integration                            0
+  Adaptive quadrature                                           ON
+Cholesky                                                       OFF
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             2
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              AGE           EDUC          LN74          LN75          BLACK
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           1.000         1.000
+ LN74           1.000         1.000         1.000
+ LN75           1.000         1.000         1.000         1.000
+ BLACK          1.000         1.000         1.000         1.000         1.000
+ HISP           1.000         1.000         1.000         1.000         1.000
+ MARRIED        1.000         1.000         1.000         1.000         1.000
+ NODEGR         1.000         1.000         1.000         1.000         1.000
+ TREAT          1.000         1.000         1.000         1.000         1.000
+ LNY0           0.584         0.584         0.584         0.584         0.584
+ LNY1           0.416         0.416         0.416         0.416         0.416
+
+
+           Covariance Coverage
+              HISP          MARRIED       NODEGR        TREAT         LNY0
+              ________      ________      ________      ________      ________
+ HISP           1.000
+ MARRIED        1.000         1.000
+ NODEGR         1.000         1.000         1.000
+ TREAT          1.000         1.000         1.000         1.000
+ LNY0           0.584         0.584         0.584         0.584         0.584
+ LNY1           0.416         0.416         0.416         0.416         0.000
+
+
+           Covariance Coverage
+              LNY1
+              ________
+ LNY1           0.416
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     AGE                   0.000       1.257      -1.179    7.64%      -0.897     -0.334     -0.193
+             445.000       0.998       1.665       4.173    0.22%      -0.052      0.652
+     EDUC                  0.000      -0.774      -4.015    0.22%      -0.667     -0.109     -0.109
+             445.000       0.998       1.816       3.239    0.22%       0.449      1.007
+     LN74                  2.267       1.119       0.000   73.26%       0.000      0.000      0.000
+             445.000      14.382      -0.652      10.586    0.22%       0.000      7.693
+     LN75                  2.699       0.729       0.000   64.94%       0.000      0.000      0.000
+             445.000      13.986      -1.345      10.132    0.22%       0.000      7.603
+     BLACK                 0.834      -1.792       0.000   16.63%       1.000      1.000      1.000
+             445.000       0.139       1.213       1.000   83.37%       1.000      1.000
+     HISP                  0.088       2.917       0.000   91.24%       0.000      0.000      0.000
+             445.000       0.080       6.506       1.000    8.76%       0.000      0.000
+     MARRIED               0.169       1.771       0.000   83.15%       0.000      0.000      0.000
+             445.000       0.140       1.136       1.000   16.85%       0.000      0.000
+     NODEGR                0.782      -1.366       0.000   21.80%       0.000      1.000      1.000
+             445.000       0.170      -0.134       1.000   78.20%       1.000      1.000
+     TREAT                 0.416       0.342       0.000   58.43%       0.000      0.000      0.000
+             445.000       0.243      -1.883       1.000   41.57%       1.000      1.000
+     LNY0                  5.498      -0.508       0.000   35.38%       0.000      7.043      8.052
+             260.000      17.196      -1.633      10.584    0.38%       8.459      9.044
+     LNY1                  6.507      -1.015       0.000   24.32%       0.000      7.750      8.351
+             185.000      14.415      -0.738      11.007    0.54%       8.730      9.283
+
+     THE MODEL ESTIMATION DID NOT TERMINATE NORMALLY DUE TO AN ILL-CONDITIONED
+     FISHER INFORMATION MATRIX.  CHANGE YOUR MODEL AND/OR STARTING VALUES.
+
+     THE MODEL ESTIMATION DID NOT TERMINATE NORMALLY DUE TO A NON-POSITIVE
+     DEFINITE FISHER INFORMATION MATRIX.  THIS MAY BE DUE TO THE STARTING VALUES
+     BUT MAY ALSO BE AN INDICATION OF MODEL NONIDENTIFICATION.  THE CONDITION
+     NUMBER IS      -0.302D-16.
+
+     THE STANDARD ERRORS OF THE MODEL PARAMETER ESTIMATES COULD NOT BE
+     COMPUTED.  THIS IS OFTEN DUE TO THE STARTING VALUES BUT MAY ALSO BE
+     AN INDICATION OF MODEL NONIDENTIFICATION.  CHANGE YOUR MODEL AND/OR
+     STARTING VALUES.  PROBLEM INVOLVING THE FOLLOWING PARAMETER:
+     Parameter 37, [ E2 ]
+
+
+
+
+
+
+MODEL RESULTS
+
+                    Estimate
+
+ D1       BY
+    AGE                2.008
+    EDUC               0.445
+    LN74               1.285
+    LN75               2.081
+    BLACK              0.011
+    HISP              -0.032
+    MARRIED            0.029
+    NODEGR            -0.241
+    TREAT              0.055
+    LNY0              -0.018
+    LNY1               0.218
+
+ D2       BY
+    AGE                2.724
+    EDUC              -0.510
+    LN74               0.774
+    LN75               1.439
+    BLACK              0.017
+    HISP               0.018
+    MARRIED           -0.001
+    NODEGR             0.316
+    TREAT             -0.056
+    LNY0              -0.067
+    LNY1              -0.184
+
+ D3       BY
+    AGE                1.887
+    EDUC               0.045
+    LN74               0.111
+    LN75               0.271
+    BLACK              0.357
+    HISP              -0.221
+    MARRIED            0.007
+    NODEGR             0.032
+    TREAT              0.015
+    LNY0              -0.850
+    LNY1              -0.806
+
+ F        BY
+    D1                 0.367
+    D2                 0.341
+    D3                 0.035
+
+ E1       BY
+    F                  0.753
+
+ E2       BY
+    F                  0.179
+
+ E3       BY
+    F                  0.530
+
+ E1         ON
+    AGE                0.742
+    EDUC              -0.788
+    LN74              -0.087
+    LN75               1.652
+
+ E2         ON
+    AGE               -3.555
+    EDUC               0.752
+    LN74              -0.846
+    LN75              -1.576
+
+ E3         ON
+    AGE               -1.537
+    EDUC               0.392
+    LN74              -0.388
+    LN75               0.629
+
+ E1       WITH
+    E2                 0.000
+    E3                 0.000
+
+ E2       WITH
+    E3                 0.000
+
+ D1       WITH
+    D2                 0.000
+    D3                 0.000
+
+ D2       WITH
+    D3                 0.000
+
+ Intercepts
+    AGE               -0.175
+    EDUC               0.001
+    LN74               2.192
+    LN75               2.571
+    BLACK              0.831
+    HISP               0.089
+    MARRIED            0.167
+    NODEGR             0.780
+    TREAT              0.416
+    LNY0               5.483
+    LNY1               6.482
+    D1                 0.000
+    D2                 0.000
+    D3                 0.000
+    F                  0.000
+    E1                -3.790
+    E2                 2.894
+    E3                -0.190
+
+ Residual Variances
+    AGE               32.302
+    EDUC               0.541
+    LN74               8.103
+    LN75              -4.307
+    BLACK              0.021
+    HISP               0.033
+    MARRIED            0.137
+    NODEGR             0.016
+    TREAT              0.236
+    LNY0              16.477
+    LNY1              13.739
+    D1                 1.000
+    D2                 1.000
+    D3                 1.000
+    F                  1.000
+    E1                 0.000
+    E2                 0.000
+    E3                 0.000
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     d1 BY age*2.00775;
+     d1 BY educ*0.44501;
+     d1 BY ln74*1.28484;
+     d1 BY ln75*2.08078;
+     d1 BY black*0.01145;
+     d1 BY hisp*-0.03155;
+     d1 BY married*0.02930;
+     d1 BY nodegr*-0.24081;
+     d1 BY treat*0.05481;
+     d1 BY lny0*-0.01788;
+     d1 BY lny1*0.21845;
+     d2 BY age*2.72364;
+     d2 BY educ*-0.50979;
+     d2 BY ln74*0.77393;
+     d2 BY ln75*1.43857;
+     d2 BY black*0.01691;
+     d2 BY hisp*0.01773;
+     d2 BY married*-0.00142;
+     d2 BY nodegr*0.31649;
+     d2 BY treat*-0.05628;
+     d2 BY lny0*-0.06703;
+     d2 BY lny1*-0.18391;
+     d3 BY age*1.88677;
+     d3 BY educ*0.04497;
+     d3 BY ln74*0.11063;
+     d3 BY ln75*0.27113;
+     d3 BY black*0.35702;
+     d3 BY hisp*-0.22145;
+     d3 BY married*0.00706;
+     d3 BY nodegr*0.03237;
+     d3 BY treat*0.01550;
+     d3 BY lny0*-0.84964;
+     d3 BY lny1*-0.80587;
+
+     f BY d1*0.36734;
+     f BY d2*0.34132;
+     f BY d3*0.03463;
+     e1 BY f*0.75349;
+     e2 BY f*0.17926;
+     e3 BY f*0.52997;
+
+     e1 ON age*0.74164;
+     e1 ON educ*-0.78787;
+     e1 ON ln74*-0.08662;
+     e1 ON ln75*1.65206;
+     e2 ON age*-3.55464;
+     e2 ON educ*0.75211;
+     e2 ON ln74*-0.84580;
+     e2 ON ln75*-1.57640;
+     e3 ON age*-1.53709;
+     e3 ON educ*0.39175;
+     e3 ON ln74*-0.38829;
+     e3 ON ln75*0.62892;
+
+     e1 WITH e2@0;
+     e1 WITH e3@0;
+     e2 WITH e3@0;
+     d1 WITH d2@0;
+     d1 WITH d3@0;
+     d2 WITH d3@0;
+
+     [ age*-0.17509 ];
+     [ educ*0.00097 ];
+     [ ln74*2.19240 ];
+     [ ln75*2.57134 ];
+     [ black*0.83149 ];
+     [ hisp*0.08895 ];
+     [ married*0.16748 ];
+     [ nodegr*0.77990 ];
+     [ treat*0.41558 ];
+     [ lny0*5.48314 ];
+     [ lny1*6.48180 ];
+     [ d1@0 ];
+     [ d2@0 ];
+     [ d3@0 ];
+     [ f@0 ];
+     [ e1*-3.78961 ];
+     [ e2*2.89402 ];
+     [ e3*-0.19025 ];
+
+     age*32.30170;
+     educ*0.54114;
+     ln74*8.10348;
+     ln75*-4.30684;
+     black*0.02141;
+     hisp*0.03305;
+     married*0.13749;
+     nodegr*0.01636;
+     treat*0.23637;
+     lny0*16.47699;
+     lny1*13.73867;
+     d1@1;
+     d2@1;
+     d3@1;
+     f@1;
+     e1@0;
+     e2@0;
+     e3@0;
+
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION
+
+
+           NU
+              AGE           EDUC          LN74          LN75          BLACK
+              ________      ________      ________      ________      ________
+                    0             0             0             0             1
+
+
+           NU
+              HISP          MARRIED       NODEGR        TREAT         LNY0
+              ________      ________      ________      ________      ________
+                    2             3             4             5             6
+
+
+           NU
+              LNY1
+              ________
+                    7
+
+
+           LAMBDA
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+ AGE                0             0             0             0             0
+ EDUC               0             0             0             0             0
+ LN74               0             0             0             0             0
+ LN75               0             0             0             0             0
+ BLACK              8             9            10             0             0
+ HISP              11            12            13             0             0
+ MARRIED           14            15            16             0             0
+ NODEGR            17            18            19             0             0
+ TREAT             20            21            22             0             0
+ LNY0              23            24            25             0             0
+ LNY1              26            27            28             0             0
+
+
+           LAMBDA
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+ AGE                0             0             0             0             0
+ EDUC               0             0             0             0             0
+ LN74               0             0             0             0             0
+ LN75               0             0             0             0             0
+ BLACK              0             0             0             0             0
+ HISP               0             0             0             0             0
+ MARRIED            0             0             0             0             0
+ NODEGR             0             0             0             0             0
+ TREAT              0             0             0             0             0
+ LNY0               0             0             0             0             0
+ LNY1               0             0             0             0             0
+
+
+           LAMBDA
+              LN75
+              ________
+ AGE                0
+ EDUC               0
+ LN74               0
+ LN75               0
+ BLACK              0
+ HISP               0
+ MARRIED            0
+ NODEGR             0
+ TREAT              0
+ LNY0               0
+ LNY1               0
+
+
+           THETA
+              AGE           EDUC          LN74          LN75          BLACK
+              ________      ________      ________      ________      ________
+ AGE                0
+ EDUC               0             0
+ LN74               0             0             0
+ LN75               0             0             0             0
+ BLACK              0             0             0             0            29
+ HISP               0             0             0             0             0
+ MARRIED            0             0             0             0             0
+ NODEGR             0             0             0             0             0
+ TREAT              0             0             0             0             0
+ LNY0               0             0             0             0             0
+ LNY1               0             0             0             0             0
+
+
+           THETA
+              HISP          MARRIED       NODEGR        TREAT         LNY0
+              ________      ________      ________      ________      ________
+ HISP              30
+ MARRIED            0            31
+ NODEGR             0             0            32
+ TREAT              0             0             0            33
+ LNY0               0             0             0             0            34
+ LNY1               0             0             0             0             0
+
+
+           THETA
+              LNY1
+              ________
+ LNY1              35
+
+
+           ALPHA
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+                    0             0             0             0            36
+
+
+           ALPHA
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+                   37            38            39            40            41
+
+
+           ALPHA
+              LN75
+              ________
+                   42
+
+
+           BETA
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+ D1                 0             0             0            43             0
+ D2                 0             0             0            44             0
+ D3                 0             0             0            45             0
+ F                  0             0             0             0            46
+ E1                 0             0             0             0             0
+ E2                 0             0             0             0             0
+ E3                 0             0             0             0             0
+ AGE               61            62            63             0             0
+ EDUC              64            65            66             0             0
+ LN74              67            68            69             0             0
+ LN75              70            71            72             0             0
+
+
+           BETA
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+ D1                 0             0             0             0             0
+ D2                 0             0             0             0             0
+ D3                 0             0             0             0             0
+ F                 47            48             0             0             0
+ E1                 0             0            49            50            51
+ E2                 0             0            53            54            55
+ E3                 0             0            57            58            59
+ AGE                0             0             0             0             0
+ EDUC               0             0             0             0             0
+ LN74               0             0             0             0             0
+ LN75               0             0             0             0             0
+
+
+           BETA
+              LN75
+              ________
+ D1                 0
+ D2                 0
+ D3                 0
+ F                  0
+ E1                52
+ E2                56
+ E3                60
+ AGE                0
+ EDUC               0
+ LN74               0
+ LN75               0
+
+
+           PSI
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+ D1                 0
+ D2                 0             0
+ D3                 0             0             0
+ F                  0             0             0             0
+ E1                 0             0             0             0             0
+ E2                 0             0             0             0             0
+ E3                 0             0             0             0             0
+ AGE                0             0             0             0             0
+ EDUC               0             0             0             0             0
+ LN74               0             0             0             0             0
+ LN75               0             0             0             0             0
+
+
+           PSI
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+ E2                 0
+ E3                 0             0
+ AGE                0             0            73
+ EDUC               0             0             0            74
+ LN74               0             0             0             0            75
+ LN75               0             0             0             0             0
+
+
+           PSI
+              LN75
+              ________
+ LN75              76
+
+
+     STARTING VALUES
+
+
+           NU
+              AGE           EDUC          LN74          LN75          BLACK
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.834
+
+
+           NU
+              HISP          MARRIED       NODEGR        TREAT         LNY0
+              ________      ________      ________      ________      ________
+                0.088         0.169         0.782         0.416         5.498
+
+
+           NU
+              LNY1
+              ________
+                6.507
+
+
+           LAMBDA
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+ AGE            0.000         0.000         0.000         0.000         0.000
+ EDUC           0.000         0.000         0.000         0.000         0.000
+ LN74           0.000         0.000         0.000         0.000         0.000
+ LN75           0.000         0.000         0.000         0.000         0.000
+ BLACK          1.000         1.000         1.000         0.000         0.000
+ HISP           1.000         1.000         1.000         0.000         0.000
+ MARRIED        1.000         1.000         1.000         0.000         0.000
+ NODEGR         1.000         1.000         1.000         0.000         0.000
+ TREAT          1.000         1.000         1.000         0.000         0.000
+ LNY0           1.000         1.000         1.000         0.000         0.000
+ LNY1           1.000         1.000         1.000         0.000         0.000
+
+
+           LAMBDA
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+ AGE            0.000         0.000         1.000         0.000         0.000
+ EDUC           0.000         0.000         0.000         1.000         0.000
+ LN74           0.000         0.000         0.000         0.000         1.000
+ LN75           0.000         0.000         0.000         0.000         0.000
+ BLACK          0.000         0.000         0.000         0.000         0.000
+ HISP           0.000         0.000         0.000         0.000         0.000
+ MARRIED        0.000         0.000         0.000         0.000         0.000
+ NODEGR         0.000         0.000         0.000         0.000         0.000
+ TREAT          0.000         0.000         0.000         0.000         0.000
+ LNY0           0.000         0.000         0.000         0.000         0.000
+ LNY1           0.000         0.000         0.000         0.000         0.000
+
+
+           LAMBDA
+              LN75
+              ________
+ AGE            0.000
+ EDUC           0.000
+ LN74           0.000
+ LN75           1.000
+ BLACK          0.000
+ HISP           0.000
+ MARRIED        0.000
+ NODEGR         0.000
+ TREAT          0.000
+ LNY0           0.000
+ LNY1           0.000
+
+
+           THETA
+              AGE           EDUC          LN74          LN75          BLACK
+              ________      ________      ________      ________      ________
+ AGE            0.000
+ EDUC           0.000         0.000
+ LN74           0.000         0.000         0.000
+ LN75           0.000         0.000         0.000         0.000
+ BLACK          0.000         0.000         0.000         0.000         0.069
+ HISP           0.000         0.000         0.000         0.000         0.000
+ MARRIED        0.000         0.000         0.000         0.000         0.000
+ NODEGR         0.000         0.000         0.000         0.000         0.000
+ TREAT          0.000         0.000         0.000         0.000         0.000
+ LNY0           0.000         0.000         0.000         0.000         0.000
+ LNY1           0.000         0.000         0.000         0.000         0.000
+
+
+           THETA
+              HISP          MARRIED       NODEGR        TREAT         LNY0
+              ________      ________      ________      ________      ________
+ HISP           0.040
+ MARRIED        0.000         0.070
+ NODEGR         0.000         0.000         0.085
+ TREAT          0.000         0.000         0.000         0.121
+ LNY0           0.000         0.000         0.000         0.000         8.598
+ LNY1           0.000         0.000         0.000         0.000         0.000
+
+
+           THETA
+              LNY1
+              ________
+ LNY1           7.208
+
+
+           ALPHA
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           ALPHA
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         2.267
+
+
+           ALPHA
+              LN75
+              ________
+                2.699
+
+
+           BETA
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+ D1             0.000         0.000         0.000         1.000         0.000
+ D2             0.000         0.000         0.000         1.000         0.000
+ D3             0.000         0.000         0.000         1.000         0.000
+ F              0.000         0.000         0.000         0.000         1.000
+ E1             0.000         0.000         0.000         0.000         0.000
+ E2             0.000         0.000         0.000         0.000         0.000
+ E3             0.000         0.000         0.000         0.000         0.000
+ AGE            1.000         1.000         1.000         0.000         0.000
+ EDUC           1.000         1.000         1.000         0.000         0.000
+ LN74           1.000         1.000         1.000         0.000         0.000
+ LN75           1.000         1.000         1.000         0.000         0.000
+
+
+           BETA
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+ D1             0.000         0.000         0.000         0.000         0.000
+ D2             0.000         0.000         0.000         0.000         0.000
+ D3             0.000         0.000         0.000         0.000         0.000
+ F              1.000         1.000         0.000         0.000         0.000
+ E1             0.000         0.000         0.000         0.000         0.000
+ E2             0.000         0.000         0.000         0.000         0.000
+ E3             0.000         0.000         0.000         0.000         0.000
+ AGE            0.000         0.000         0.000         0.000         0.000
+ EDUC           0.000         0.000         0.000         0.000         0.000
+ LN74           0.000         0.000         0.000         0.000         0.000
+ LN75           0.000         0.000         0.000         0.000         0.000
+
+
+           BETA
+              LN75
+              ________
+ D1             0.000
+ D2             0.000
+ D3             0.000
+ F              0.000
+ E1             0.000
+ E2             0.000
+ E3             0.000
+ AGE            0.000
+ EDUC           0.000
+ LN74           0.000
+ LN75           0.000
+
+
+           PSI
+              D1            D2            D3            F             E1
+              ________      ________      ________      ________      ________
+ D1             1.000
+ D2             0.000         1.000
+ D3             0.000         0.000         1.000
+ F              0.000         0.000         0.000         1.000
+ E1             0.000         0.000         0.000         0.000         0.000
+ E2             0.000         0.000         0.000         0.000         0.000
+ E3             0.000         0.000         0.000         0.000         0.000
+ AGE            0.000         0.000         0.000         0.000         0.000
+ EDUC           0.000         0.000         0.000         0.000         0.000
+ LN74           0.000         0.000         0.000         0.000         0.000
+ LN75           0.000         0.000         0.000         0.000         0.000
+
+
+           PSI
+              E2            E3            AGE           EDUC          LN74
+              ________      ________      ________      ________      ________
+ E2             0.000
+ E3             0.000         0.000
+ AGE            0.000         0.000         0.499
+ EDUC           0.000         0.000         0.000         0.499
+ LN74           0.000         0.000         0.000         0.000         7.191
+ LN75           0.000         0.000         0.000         0.000         0.000
+
+
+           PSI
+              LN75
+              ________
+ LN75           6.993
+
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\marcu\dropbox\gitkraken\white-rhino\repositories\causal-common-atoms-mixture\lalonde-pscore\approach1\appro
+
+     Beginning Time:  22:34:59
+        Ending Time:  22:34:59
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen

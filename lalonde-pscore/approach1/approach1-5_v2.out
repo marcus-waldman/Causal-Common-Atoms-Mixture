@@ -1,0 +1,1583 @@
+Mplus VERSION 8.10
+MUTHEN & MUTHEN
+03/31/2025   9:31 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+
+  DATA: FILE = "lalondeQPO.dat";
+
+  VARIABLE:
+  NAMES = age educ ln74 ln75 black hisp married nodegr q1 q2 q3 q4 q5 q6 q7 q8 q9 q10
+       q11 q12 q13 q14 treat lnyobs lny0 lny1;
+  USEV = age-nodegr lny0 lny1;
+  MISSING=.;
+  CLASSES = C(5) A(2);
+  KNOWNCLASS = A(treat=0 treat=1);
+  CENSORED = ln74 (bi) ln75 (bi) lny0 (bi) lny1 (bi);
+  !CATEGORICAL = black-nodegr;
+  AUXILIARY = lnyobs;
+
+
+  ANALYSIS:
+  TYPE = mixture;
+  ALGORITHM = INTEGRATION EM;
+  MITERATIONS = 2000;
+  INTEGRATION = gauss(15);
+  ESTIMATOR = mlr;
+  PROCESSORS = 16;
+  STARTS = 128 32;
+
+
+
+
+  MODEL:
+
+  %OVERALL%
+  A on C age-nodegr;
+
+  age with educ@0;
+  [ln74#1-ln75#1*];
+  [age-ln75*];
+  age-ln75*;
+
+  f0 BY lny0* ln74 ln75 age educ(l0_1-l0_5);
+  f0@1;
+  [f0@0];
+  f0 on black hisp married nodegr (b0_1-b0_4);
+
+  f1 BY lny1* ln74 ln75 age educ (l1_1-l1_5);
+  f1@1;
+  [f1@0];
+  f1 on black hisp married nodegr (b1_1-b1_4);
+
+  f0 with f1@0;
+  [lny0-lny1*];
+  lny0-lny1*;
+
+  !--Class 1--
+  %C#1.A#1%
+  [ln74#1-ln75#1*] (ha_1-ha_2);
+  [age-ln75*] (ma_1-ma_4);
+  age-educ* (va_1-va_2);
+  ln74-ln75* (va_3 va_4);
+  [lny0*] (mu0_a);
+  lny0*;
+
+  %C#1.A#2%
+  [ln74#1-ln75#1*] (ha_1-ha_2);
+  [age-ln75*] (ma_1-ma_4);
+  age-educ* (va_1-va_2);
+  ln74-ln75* (va_3 va_4);
+  [lny1*] (mu1_a);
+  lny1*;
+
+
+  !-- Class 2--
+  %C#2.A#1%
+  [ln74#1-ln75#1*] (hb_1-hb_2);
+  [age-ln75*] (mb_1-mb_4);
+  age-educ* (vb_1-vb_2);
+  ln74-ln75* (vb_3 vb_4);
+  [lny0*] (mu0_b);
+  lny0*;
+
+  %C#2.A#2%
+  [ln74#1-ln75#1*] (hb_1-hb_2);
+  [age-ln75*] (mb_1-mb_4);
+  age-educ* (vb_1-vb_2);
+  ln74-ln75* (vb_3 vb_4);
+  [lny1*] (mu1_b);
+  lny1*;
+
+  !--Class 3--
+  %C#3.A#1%
+  [ln74#1-ln75#1*] (hc_1-hc_2);
+  [age-ln75*] (mc_1-mc_4);
+  age-educ* (vc_1-vc_2);
+  ln74-ln75* (vc_3 vc_4);
+  [lny0*] (mu0_c);
+  lny0*;
+
+
+  %C#3.A#2%
+  [ln74#1-ln75#1*] (hc_1-hc_2);
+  [age-ln75*] (mc_1-mc_4);
+  age-educ* (vc_1-vc_2);
+  ln74-ln75* (vc_3 vc_4);
+  [lny1*] (mu1_c);
+  lny1*;
+
+  !--Class 4--
+  %C#4.A#1%
+  [ln74#1-ln75#1*] (hd_1-hd_2);
+  [age-ln75*] (md_1-md_4);
+  age-educ* (vd_1-vd_2);
+  ln74-ln75* (vd_3 vd_4);
+  [lny0*] (mu0_d);
+  lny0*;
+
+  %C#4.A#2%
+  [ln74#1-ln75#1*] (hd_1-hd_2);
+  [age-ln75*] (md_1-md_4);
+  age-educ* (vd_1-vd_2);
+  ln74-ln75* (vd_3 vd_4);
+  [lny1*] (mu1_d);
+  lny1*;
+
+  !--Class 5--
+  %C#5.A#1%
+  [ln74#1-ln75#1*] (he_1-he_2);
+  [age-ln75*] (me_1-me_4);
+  age-educ* (ve_1-ve_2);
+  ln74-ln75* (ve_3 ve_4);
+  [lny0*] (mu0_e);
+  lny0*;
+
+  %C#5.A#2%
+  [ln74#1-ln75#1*] (he_1-he_2);
+  [age-ln75*] (me_1-me_4);
+  age-educ* (ve_1-ve_2);
+  ln74-ln75* (ve_3 ve_4);
+  [lny1*] (mu1_e);
+  lny1*;
+
+
+  Model Constraint:
+
+  !0 = va_3-va_4;
+  !0 = vb_3-vb_4;
+  !0 = vc_3-vc_4;
+  !0 = vd_3-vd_4;
+  !0 = ve_3-ve_4;
+
+  !0 = ha_1-ha_2;
+  !0 = hb_1-hb_2;
+  !0 = hc_1-hc_2;
+  !0 = hd_1-hd_2;
+  !0 = he_1-he_2;
+
+  !0=va_1-ve_1;
+  !0=vb_1-ve_1;
+  !0=vc_1-ve_1;
+  !0=vd_1-ve_1;
+
+  !0=va_2-ve_2;
+  !0=vb_2-ve_2;
+  !0=vc_2-ve_2;
+  !0=vd_2-ve_2;
+
+
+  !0=va_3-ve_3;
+  !0=vb_3-ve_3;
+  !0=vc_3-ve_3;
+  !0=vd_3-ve_3;
+
+  !0=va_4-ve_4;
+  !0=vb_4-ve_4;
+  !0=vc_4-ve_4;
+  !0=vd_4-ve_4;
+
+  !DO(1,4) 0<15-ta_#;
+  !DO(1,4) 0<15-tb_#;
+  !DO(1,4) 0<15-tc_#;
+  !DO(1,4) 0<15-td_#;
+  !DO(1,4) 0<15-te_#;
+
+  !DO(1,4) 0<ta_#+15;
+  !DO(1,4) 0<tb_#+15;
+  !DO(1,4) 0<tc_#+15;
+  !DO(1,4) 0<td_#+15;
+  !DO(1,4) 0<te_#+15;
+
+  !New(p0_e p1_e);
+  !p0_e = 1 - p0_a - p0_b - p0_c - p0_d;
+  !p1_e = 1 - p1_a - p1_b - p1_c - p1_d;
+
+
+  !New(p_a p_b p_c p_d p_e);
+  !p_a = p0_a + p1_a;
+  !p_b = p0_b + p1_b;
+  !p_c = p0_c + p1_c;
+  !p_d = p0_d + p1_d;
+  !p_e = p0_e + p1_e;
+
+
+  Output:
+  sampstat
+  svalues;
+
+  Savedata:
+  file = "cprobs-approach1-5.dat";
+  save = cprob;
+
+
+
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                    6
+Number of independent variables                                  4
+Number of continuous latent variables                            2
+Number of categorical latent variables                           2
+
+Observed dependent variables
+
+  Continuous
+   AGE         EDUC
+
+  Censored
+   LN74        LN75        LNY0        LNY1
+
+Observed independent variables
+   BLACK       HISP        MARRIED     NODEGR
+
+Observed auxiliary variables
+   LNYOBS
+
+Continuous latent variables
+   F0          F1
+
+Categorical latent variables
+   C           A
+
+  Knownclass            A
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                2000
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                          EM
+Integration Specifications
+  Type                                                GAUSSHERMITE
+  Number of integration points                                  15
+  Dimensions of numerical integration                            2
+  Adaptive quadrature                                           ON
+Random Starts Specifications
+  Number of initial stage random starts                        128
+  Number of final stage optimizations                           32
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+Parameterization                                             LOGIT
+Cholesky                                                       OFF
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+     Number of y missing data patterns           1
+     Number of u missing data patterns           0
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           1.000         1.000
+ BLACK          1.000         1.000         1.000
+ HISP           1.000         1.000         1.000         1.000
+ MARRIED        1.000         1.000         1.000         1.000         1.000
+ NODEGR         1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+SUMMARY OF CENSORED LIMITS
+
+      LN74               0.000
+      LN75               0.000
+      LNY0               0.000
+      LNY1               0.000
+
+
+SAMPLE STATISTICS
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 1
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+               -0.628        -0.253         0.794         0.129         0.142
+
+
+           Means
+              NODEGR
+              ________
+                0.851
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.215
+ EDUC           0.126         0.782
+ BLACK          0.020         0.051         0.164
+ HISP          -0.021        -0.064        -0.103         0.113
+ MARRIED        0.084         0.070         0.019        -0.008         0.122
+ NODEGR        -0.069        -0.211        -0.009         0.018        -0.024
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.127
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.308         1.000
+ BLACK          0.107         0.143         1.000
+ HISP          -0.133        -0.215        -0.757         1.000
+ MARRIED        0.521         0.227         0.135        -0.069         1.000
+ NODEGR        -0.418        -0.670        -0.060         0.152        -0.194
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 2
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+               -0.621        -0.063         0.847         0.054         0.160
+
+
+           Means
+              NODEGR
+              ________
+                0.754
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.201
+ EDUC           0.169         0.836
+ BLACK         -0.017         0.066         0.130
+ HISP          -0.001        -0.052        -0.046         0.051
+ MARRIED        0.072        -0.010        -0.018         0.011         0.134
+ NODEGR        -0.052        -0.284        -0.009         0.013         0.020
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.186
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.411         1.000
+ BLACK         -0.108         0.200         1.000
+ HISP          -0.006        -0.253        -0.564         1.000
+ MARRIED        0.440        -0.029        -0.134         0.128         1.000
+ NODEGR        -0.268        -0.722        -0.061         0.137         0.126
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 3
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+                1.311        -0.967         0.824         0.137         0.050
+
+
+           Means
+              NODEGR
+              ________
+                0.971
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.846
+ EDUC           0.344         1.599
+ BLACK          0.087         0.116         0.145
+ HISP          -0.043        -0.113        -0.113         0.118
+ MARRIED       -0.026         0.037        -0.007         0.009         0.047
+ NODEGR         0.020        -0.063        -0.001         0.002        -0.005
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.028
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.200         1.000
+ BLACK          0.167         0.240         1.000
+ HISP          -0.091        -0.260        -0.861         1.000
+ MARRIED       -0.088         0.134        -0.082         0.117         1.000
+ NODEGR         0.090        -0.296        -0.011         0.036        -0.146
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 4
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+                1.072        -0.475         0.885         0.024         0.141
+
+
+           Means
+              NODEGR
+              ________
+                0.792
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.459
+ EDUC           0.067         2.821
+ BLACK          0.001        -0.073         0.102
+ HISP          -0.025        -0.009        -0.021         0.023
+ MARRIED        0.135        -0.093         0.012         0.000         0.121
+ NODEGR        -0.095        -0.475         0.024         0.005         0.016
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.165
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.033         1.000
+ BLACK          0.002        -0.135         1.000
+ HISP          -0.133        -0.036        -0.435         1.000
+ MARRIED        0.321        -0.159         0.108        -0.001         1.000
+ NODEGR        -0.194        -0.697         0.184         0.079         0.113
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 5
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+                0.194         0.315         0.894         0.056         0.175
+
+
+           Means
+              NODEGR
+              ________
+                0.767
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.657
+ EDUC           0.111         0.283
+ BLACK          0.020        -0.003         0.095
+ HISP          -0.014        -0.023        -0.050         0.053
+ MARRIED        0.073         0.026        -0.004         0.013         0.145
+ NODEGR        -0.084        -0.182         0.025         0.002        -0.007
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.179
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.257         1.000
+ BLACK          0.082        -0.021         1.000
+ HISP          -0.075        -0.187        -0.706         1.000
+ MARRIED        0.238         0.129        -0.036         0.150         1.000
+ NODEGR        -0.246        -0.809         0.190         0.023        -0.041
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 6
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+                0.123         0.512         0.852         0.039         0.190
+
+
+           Means
+              NODEGR
+              ________
+                0.680
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.557
+ EDUC           0.142         0.409
+ BLACK         -0.010         0.028         0.126
+ HISP           0.012        -0.033        -0.034         0.038
+ MARRIED        0.111         0.004         0.006        -0.007         0.154
+ NODEGR        -0.053        -0.247        -0.002         0.013         0.023
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.218
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.298         1.000
+ BLACK         -0.039         0.124         1.000
+ HISP           0.083        -0.262        -0.485         1.000
+ MARRIED        0.380         0.016         0.042        -0.098         1.000
+ NODEGR        -0.153        -0.829        -0.010         0.139         0.127
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 7
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+                0.195         0.113         0.833         0.094         0.276
+
+
+           Means
+              NODEGR
+              ________
+                0.769
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.755
+ EDUC           0.036         0.515
+ BLACK         -0.011         0.024         0.139
+ HISP           0.059        -0.008        -0.079         0.085
+ MARRIED        0.135        -0.045         0.010        -0.026         0.200
+ NODEGR        -0.002        -0.206        -0.028         0.012         0.002
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.178
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.058         1.000
+ BLACK         -0.034         0.091         1.000
+ HISP           0.234        -0.040        -0.722         1.000
+ MARRIED        0.349        -0.140         0.060        -0.199         1.000
+ NODEGR        -0.004        -0.683        -0.180         0.095         0.009
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 8
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+                0.266         0.352         0.826         0.095         0.254
+
+
+           Means
+              NODEGR
+              ________
+                0.548
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.454
+ EDUC          -0.085         0.739
+ BLACK          0.055         0.019         0.144
+ HISP          -0.040        -0.054        -0.079         0.086
+ MARRIED        0.152         0.001         0.043        -0.023         0.190
+ NODEGR         0.050        -0.368        -0.006         0.032         0.007
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.248
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC          -0.146         1.000
+ BLACK          0.217         0.060         1.000
+ HISP          -0.201        -0.213        -0.708         1.000
+ MARRIED        0.519         0.002         0.258        -0.177         1.000
+ NODEGR         0.150        -0.860        -0.030         0.220         0.031
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 9
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+               -0.423         0.253         0.762         0.150         0.143
+
+
+           Means
+              NODEGR
+              ________
+                0.868
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.328
+ EDUC           0.072         0.332
+ BLACK          0.029        -0.009         0.181
+ HISP          -0.047        -0.005        -0.114         0.128
+ MARRIED        0.099         0.001         0.009         0.001         0.122
+ NODEGR        -0.042        -0.130         0.016        -0.001         0.005
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.114
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.219         1.000
+ BLACK          0.118        -0.037         1.000
+ HISP          -0.230        -0.023        -0.752         1.000
+ MARRIED        0.496         0.007         0.058         0.004         1.000
+ NODEGR        -0.217        -0.665         0.114        -0.007         0.046
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+     ESTIMATED SAMPLE STATISTICS FOR CLASS 10
+
+
+           Means
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+               -0.487         0.273         0.789         0.111         0.245
+
+
+           Means
+              NODEGR
+              ________
+                0.680
+
+
+           Covariances
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            0.221
+ EDUC           0.131         0.498
+ BLACK          0.027        -0.086         0.167
+ HISP          -0.029         0.012        -0.088         0.099
+ MARRIED        0.074         0.075        -0.034         0.030         0.185
+ NODEGR        -0.076        -0.255         0.055        -0.016        -0.028
+
+
+           Covariances
+              NODEGR
+              ________
+ NODEGR         0.217
+
+
+           Correlations
+              AGE           EDUC          BLACK         HISP          MARRIED
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           0.394         1.000
+ BLACK          0.143        -0.297         1.000
+ HISP          -0.194         0.054        -0.683         1.000
+ MARRIED        0.367         0.247        -0.194         0.219         1.000
+ NODEGR        -0.347        -0.774         0.288        -0.106        -0.138
+
+
+           Correlations
+              NODEGR
+              ________
+ NODEGR         1.000
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     AGE                   0.000       1.257      -1.179    7.64%      -0.897     -0.334     -0.193
+             445.000       0.998       1.665       4.173    0.22%      -0.052      0.652
+     EDUC                  0.000      -0.774      -4.015    0.22%      -0.667     -0.109     -0.109
+             445.000       0.998       1.816       3.239    0.22%       0.449      1.007
+     BLACK                 0.834      -1.792       0.000   16.63%       1.000      1.000      1.000
+             445.000       0.139       1.213       1.000   83.37%       1.000      1.000
+     HISP                  0.088       2.917       0.000   91.24%       0.000      0.000      0.000
+             445.000       0.080       6.506       1.000    8.76%       0.000      0.000
+     MARRIED               0.169       1.771       0.000   83.15%       0.000      0.000      0.000
+             445.000       0.140       1.136       1.000   16.85%       0.000      0.000
+     NODEGR                0.782      -1.366       0.000   21.80%       0.000      1.000      1.000
+             445.000       0.170      -0.134       1.000   78.20%       1.000      1.000
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+           -2735.889  371246           101
+           -2743.167  794236           127
+           -2752.224  467339           66
+
+Unperturbed starting value run did not converge or was rejected in the third stage.
+
+28 perturbed starting value run(s) did not converge or were rejected in the third stage.
+
+
+
+     WARNING:  THE BEST LOGLIKELIHOOD VALUE WAS NOT REPLICATED.  THE
+     SOLUTION MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.  INCREASE THE
+     NUMBER OF RANDOM STARTS.
+
+     IN THE OPTIMIZATION, ONE OR MORE LOGIT SCALE PARAMETERS APPROACHED EXTREME VALUES
+     OF -15.000 AND 15.000 AND WERE FIXED TO STABILIZE MODEL ESTIMATION.  THESE
+     VALUES IMPLY PROBABILITIES OF 0 AND 1.  IN THE MODEL RESULTS SECTION, THESE
+     PARAMETERS HAVE 0 STANDARD ERRORS AND 999 IN THE Z-SCORE AND P-VALUE COLUMNS.
+
+     THE MODEL ESTIMATION DID NOT TERMINATE NORMALLY DUE TO A NON-POSITIVE
+     DEFINITE FISHER INFORMATION MATRIX.  THIS MAY BE DUE TO THE STARTING VALUES
+     BUT MAY ALSO BE AN INDICATION OF MODEL NONIDENTIFICATION.  THE CONDITION
+     NUMBER IS      -0.430D-19.
+
+     THE STANDARD ERRORS OF THE MODEL PARAMETER ESTIMATES COULD NOT BE
+     COMPUTED.  THIS IS OFTEN DUE TO THE STARTING VALUES BUT MAY ALSO BE
+     AN INDICATION OF MODEL NONIDENTIFICATION.  CHANGE YOUR MODEL AND/OR
+     STARTING VALUES.  PROBLEM INVOLVING THE FOLLOWING PARAMETER:
+     Parameter 4, %C#1.A#1%: [ LNY1 ]
+
+
+
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR EACH LATENT CLASS VARIABLE
+BASED ON THE ESTIMATED MODEL
+
+  Latent Class
+    Variable    Class
+
+    C              1       135.48671          0.30446
+                   2        72.47570          0.16287
+                   3       120.66158          0.27115
+                   4        45.64518          0.10257
+                   5        70.73082          0.15895
+    A              1       260.00000          0.58427
+                   2       185.00000          0.41573
+
+
+LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
+
+  C Classes (Rows) by A Classes (Columns)
+
+            1        2
+
+   1     0.584    0.416
+   2     0.584    0.416
+   3     0.584    0.416
+   4     0.584    0.416
+   5     0.584    0.416
+
+
+C-SPECIFIC CLASSIFICATION RESULTS
+
+Classification Quality for C
+
+     Entropy                         0.761
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3        4        5
+
+    1   0.795    0.042    0.157    0.003    0.003
+    2   0.042    0.915    0.039    0.003    0.000
+    3   0.130    0.078    0.783    0.009    0.000
+    4   0.000    0.018    0.011    0.855    0.115
+    5   0.012    0.009    0.000    0.046    0.932
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3        4        5
+
+    1   0.857    0.019    0.117    0.000    0.006
+    2   0.084    0.766    0.129    0.012    0.009
+    3   0.189    0.020    0.787    0.005    0.000
+    4   0.009    0.004    0.024    0.893    0.070
+    5   0.005    0.000    0.000    0.077    0.917
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3        4        5
+
+    1      4.893    1.094    2.902   -3.710    0.000
+    2      2.251    4.456    2.676    0.291    0.000
+    3     12.149    9.896   13.576    8.425    0.000
+    4     -2.081   -2.874   -1.070    2.545    0.000
+    5     -5.117  -10.866  -13.729   -2.471    0.000
+
+Classification Quality for A
+
+     Entropy                         1.000
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1     13.816    0.000
+    2    -13.816    0.000
+
+
+MODEL RESULTS
+
+                    Estimate
+
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
+
+ F0       BY
+    LNY0               0.027
+    LN74               0.017
+    LN75              -0.082
+    AGE                0.089
+    EDUC               0.253
+
+ F1       BY
+    LNY1              -0.002
+    LN74              -0.029
+    LN75              -0.152
+    AGE                0.000
+    EDUC               0.171
+
+ F0         ON
+    BLACK             -1.042
+    HISP              -2.410
+    MARRIED            6.596
+    NODEGR            -3.446
+
+ F1         ON
+    BLACK              1.648
+    HISP               1.853
+    MARRIED           -8.907
+    NODEGR            -1.847
+
+ F0       WITH
+    F1                 0.000
+
+ AGE      WITH
+    EDUC               0.000
+
+ Means
+    LNY0#1            -0.602
+    LNY1#1            -1.135
+
+ Intercepts
+    F0                 0.000
+    F1                 0.000
+
+ Residual Variances
+    F0                 1.000
+    F1                 1.000
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
+
+ Means
+    LN74#1             3.963
+    LN75#1             1.879
+
+ Intercepts
+    AGE               -0.363
+    EDUC               0.777
+    LN74               8.606
+    LN75               6.351
+    LNY0               8.695
+    LNY1               8.661
+
+ Residual Variances
+    AGE                0.129
+    EDUC               0.332
+    LN74               2.841
+    LN75               0.499
+    LNY0               0.423
+    LNY1               1.013
+
+Latent Class Pattern 1 2
+
+ Means
+    LN74#1             3.963
+    LN75#1             1.879
+
+ Intercepts
+    AGE               -0.363
+    EDUC               0.777
+    LN74               8.606
+    LN75               6.351
+    LNY0               8.565
+    LNY1               8.282
+
+ Residual Variances
+    AGE                0.129
+    EDUC               0.332
+    LN74               2.841
+    LN75               0.499
+    LNY0               2.176
+    LNY1               0.626
+
+Latent Class Pattern 2 1
+
+ Means
+    LN74#1             2.668
+    LN75#1             1.782
+
+ Intercepts
+    AGE                1.474
+    EDUC               0.339
+    LN74               8.478
+    LN75               7.299
+    LNY0               8.987
+    LNY1               8.662
+
+ Residual Variances
+    AGE                1.571
+    EDUC               1.629
+    LN74               0.243
+    LN75               0.174
+    LNY0               0.134
+    LNY1               1.013
+
+Latent Class Pattern 2 2
+
+ Means
+    LN74#1             2.668
+    LN75#1             1.782
+
+ Intercepts
+    AGE                1.474
+    EDUC               0.339
+    LN74               8.478
+    LN75               7.299
+    LNY0               8.563
+    LNY1               8.266
+
+ Residual Variances
+    AGE                1.571
+    EDUC               1.629
+    LN74               0.243
+    LN75               0.174
+    LNY0               2.176
+    LNY1               1.570
+
+Latent Class Pattern 3 1
+
+ Means
+    LN74#1            15.000
+    LN75#1             1.829
+
+ Intercepts
+    AGE                0.383
+    EDUC               1.235
+    LN74               8.647
+    LN75               6.480
+    LNY0               8.234
+    LNY1               8.661
+
+ Residual Variances
+    AGE                0.539
+    EDUC               0.005
+    LN74               0.059
+    LN75               1.276
+    LNY0               1.781
+    LNY1               1.013
+
+Latent Class Pattern 3 2
+
+ Means
+    LN74#1            15.000
+    LN75#1             1.829
+
+ Intercepts
+    AGE                0.383
+    EDUC               1.235
+    LN74               8.647
+    LN75               6.480
+    LNY0               8.559
+    LNY1               9.414
+
+ Residual Variances
+    AGE                0.539
+    EDUC               0.005
+    LN74               0.059
+    LN75               1.276
+    LNY0               2.176
+    LNY1               0.203
+
+Latent Class Pattern 4 1
+
+ Means
+    LN74#1            -2.021
+    LN75#1           -15.000
+
+ Intercepts
+    AGE                0.373
+    EDUC               0.990
+    LN74               9.380
+    LN75               8.208
+    LNY0               8.267
+    LNY1               8.661
+
+ Residual Variances
+    AGE                0.553
+    EDUC               0.176
+    LN74               0.268
+    LN75               0.251
+    LNY0               1.746
+    LNY1               1.013
+
+Latent Class Pattern 4 2
+
+ Means
+    LN74#1            -2.021
+    LN75#1           -15.000
+
+ Intercepts
+    AGE                0.373
+    EDUC               0.990
+    LN74               9.380
+    LN75               8.208
+    LNY0               8.557
+    LNY1               8.552
+
+ Residual Variances
+    AGE                0.553
+    EDUC               0.176
+    LN74               0.268
+    LN75               0.251
+    LNY0               2.176
+    LNY1               1.086
+
+Latent Class Pattern 5 1
+
+ Means
+    LN74#1           -15.000
+    LN75#1            -2.362
+
+ Intercepts
+    AGE               -0.228
+    EDUC               1.182
+    LN74               7.936
+    LN75               7.006
+    LNY0               8.931
+    LNY1               8.663
+
+ Residual Variances
+    AGE                0.202
+    EDUC               0.115
+    LN74               0.772
+    LN75               1.157
+    LNY0               0.511
+    LNY1               1.013
+
+Latent Class Pattern 5 2
+
+ Means
+    LN74#1           -15.000
+    LN75#1            -2.362
+
+ Intercepts
+    AGE               -0.228
+    EDUC               1.182
+    LN74               7.936
+    LN75               7.006
+    LNY0               8.554
+    LNY1               8.413
+
+ Residual Variances
+    AGE                0.202
+    EDUC               0.115
+    LN74               0.772
+    LN75               1.157
+    LNY0               2.176
+    LNY1               0.918
+
+Categorical Latent Variables
+
+ A#1      ON
+    C#1                1.702
+    C#2                0.070
+    C#3                1.567
+    C#4                0.054
+
+ A#1        ON
+    AGE                0.260
+    EDUC               0.011
+    LN74               0.166
+    LN75              -0.046
+    BLACK              0.172
+    HISP               0.861
+    MARRIED           -0.453
+    NODEGR             0.867
+
+ Means
+    C#1                0.637
+    C#2                0.025
+    C#3                0.525
+    C#4               -0.437
+    A#1               -1.660
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     %OVERALL%
+
+     f0 BY lny0;
+     f0 BY ln74;
+     f0 BY ln75;
+     f0 BY age;
+     f0 BY educ;
+     f1 BY lny1;
+     f1 BY ln74;
+     f1 BY ln75;
+     f1 BY age;
+     f1 BY educ;
+
+     f0 ON black;
+     f0 ON hisp;
+     f0 ON married;
+     f0 ON nodegr;
+     f1 ON black;
+     f1 ON hisp;
+     f1 ON married;
+     f1 ON nodegr;
+
+     a#1 ON c#1*1.70204;
+     a#1 ON c#2*0.07027;
+     a#1 ON c#3*1.56736;
+     a#1 ON c#4*0.05390;
+     a#1 ON age*0.25978;
+     a#1 ON educ*0.01100;
+     a#1 ON ln74*0.16598;
+     a#1 ON ln75*-0.04630;
+     a#1 ON black*0.17215;
+     a#1 ON hisp*0.86065;
+     a#1 ON married*-0.45283;
+     a#1 ON nodegr*0.86683;
+
+     [ c#1*0.63735 ];
+     [ c#2*0.02525 ];
+     [ c#3*0.52458 ];
+     [ c#4*-0.43730 ];
+     [ a#1*-1.65973 ];
+
+     f0 BY lny0*0.02704 (l0_1);
+     f0 BY ln74*0.01727 (l0_2);
+     f0 BY ln75*-0.08152 (l0_3);
+     f0 BY age*0.08925 (l0_4);
+     f0 BY educ*0.25272 (l0_5);
+     f1 BY lny1*-0.00246 (l1_1);
+     f1 BY ln74*-0.02944 (l1_2);
+     f1 BY ln75*-0.15158 (l1_3);
+     f1 BY age*-0.00036 (l1_4);
+     f1 BY educ*0.17148 (l1_5);
+
+     f0 ON black*-1.04249 (b0_1);
+     f0 ON hisp*-2.41002 (b0_2);
+     f0 ON married*6.59599 (b0_3);
+     f0 ON nodegr*-3.44584 (b0_4);
+     f1 ON black*1.64811 (b1_1);
+     f1 ON hisp*1.85326 (b1_2);
+     f1 ON married*-8.90700 (b1_3);
+     f1 ON nodegr*-1.84744 (b1_4);
+
+     f0 WITH f1@0;
+     age WITH educ@0;
+
+     [ f0@0 ];
+     [ f1@0 ];
+     [ lny0#1*-0.60218 ] (1);
+     [ lny1#1*-1.13498 ] (3);
+
+     f0@1;
+     f1@1;
+
+
+     %C#1.A#1%
+
+     [ age*-0.36313 ] (ma_1);
+     [ educ*0.77724 ] (ma_2);
+     [ ln74#1*3.96317 ] (ha_1);
+     [ ln74*8.60588 ] (ma_3);
+     [ ln75#1*1.87914 ] (ha_2);
+     [ ln75*6.35101 ] (ma_4);
+     [ lny0*8.69520 ] (mu0_a);
+     [ lny1*8.66142 ];
+
+     age*0.12925 (va_1);
+     educ*0.33156 (va_2);
+     ln74*2.84063 (va_3);
+     ln75*0.49914 (va_4);
+     lny0*0.42312;
+     lny1*1.01298 (8);
+
+     %C#1.A#2%
+
+     [ age*-0.36313 ] (ma_1);
+     [ educ*0.77724 ] (ma_2);
+     [ ln74#1*3.96317 ] (ha_1);
+     [ ln74*8.60588 ] (ma_3);
+     [ ln75#1*1.87914 ] (ha_2);
+     [ ln75*6.35101 ] (ma_4);
+     [ lny0*8.56470 ];
+     [ lny1*8.28243 ] (mu1_a);
+
+     age*0.12925 (va_1);
+     educ*0.33156 (va_2);
+     ln74*2.84063 (va_3);
+     ln75*0.49914 (va_4);
+     lny0*2.17558 (37);
+     lny1*0.62563;
+
+     %C#2.A#1%
+
+     [ age*1.47370 ] (mb_1);
+     [ educ*0.33870 ] (mb_2);
+     [ ln74#1*2.66832 ] (hb_1);
+     [ ln74*8.47814 ] (mb_3);
+     [ ln75#1*1.78152 ] (hb_2);
+     [ ln75*7.29925 ] (mb_4);
+     [ lny0*8.98699 ] (mu0_b);
+     [ lny1*8.66188 ];
+
+     age*1.57116 (vb_1);
+     educ*1.62945 (vb_2);
+     ln74*0.24326 (vb_3);
+     ln75*0.17423 (vb_4);
+     lny0*0.13416;
+     lny1*1.01298 (8);
+
+     %C#2.A#2%
+
+     [ age*1.47370 ] (mb_1);
+     [ educ*0.33870 ] (mb_2);
+     [ ln74#1*2.66832 ] (hb_1);
+     [ ln74*8.47814 ] (mb_3);
+     [ ln75#1*1.78152 ] (hb_2);
+     [ ln75*7.29925 ] (mb_4);
+     [ lny0*8.56314 ];
+     [ lny1*8.26648 ] (mu1_b);
+
+     age*1.57116 (vb_1);
+     educ*1.62945 (vb_2);
+     ln74*0.24326 (vb_3);
+     ln75*0.17423 (vb_4);
+     lny0*2.17558 (37);
+     lny1*1.57021;
+
+     %C#3.A#1%
+
+     [ age*0.38292 ] (mc_1);
+     [ educ*1.23455 ] (mc_2);
+     [ ln74#1*15 ] (hc_1);
+     [ ln74*8.64743 ] (mc_3);
+     [ ln75#1*1.82880 ] (hc_2);
+     [ ln75*6.48034 ] (mc_4);
+     [ lny0*8.23366 ] (mu0_c);
+     [ lny1*8.66092 ];
+
+     age*0.53885 (vc_1);
+     educ*0.00523 (vc_2);
+     ln74*0.05860 (vc_3);
+     ln75*1.27571 (vc_4);
+     lny0*1.78109;
+     lny1*1.01298 (8);
+
+     %C#3.A#2%
+
+     [ age*0.38292 ] (mc_1);
+     [ educ*1.23455 ] (mc_2);
+     [ ln74#1*15 ] (hc_1);
+     [ ln74*8.64743 ] (mc_3);
+     [ ln75#1*1.82880 ] (hc_2);
+     [ ln75*6.48034 ] (mc_4);
+     [ lny0*8.55931 ];
+     [ lny1*9.41373 ] (mu1_c);
+
+     age*0.53885 (vc_1);
+     educ*0.00523 (vc_2);
+     ln74*0.05860 (vc_3);
+     ln75*1.27571 (vc_4);
+     lny0*2.17558 (37);
+     lny1*0.20253;
+
+     %C#4.A#1%
+
+     [ age*0.37330 ] (md_1);
+     [ educ*0.99015 ] (md_2);
+     [ ln74#1*-2.02126 ] (hd_1);
+     [ ln74*9.37967 ] (md_3);
+     [ ln75#1*-15 ] (hd_2);
+     [ ln75*8.20764 ] (md_4);
+     [ lny0*8.26731 ] (mu0_d);
+     [ lny1*8.66114 ];
+
+     age*0.55326 (vd_1);
+     educ*0.17605 (vd_2);
+     ln74*0.26850 (vd_3);
+     ln75*0.25077 (vd_4);
+     lny0*1.74642;
+     lny1*1.01298 (8);
+
+     %C#4.A#2%
+
+     [ age*0.37330 ] (md_1);
+     [ educ*0.99015 ] (md_2);
+     [ ln74#1*-2.02126 ] (hd_1);
+     [ ln74*9.37967 ] (md_3);
+     [ ln75#1*-15 ] (hd_2);
+     [ ln75*8.20764 ] (md_4);
+     [ lny0*8.55672 ];
+     [ lny1*8.55207 ] (mu1_d);
+
+     age*0.55326 (vd_1);
+     educ*0.17605 (vd_2);
+     ln74*0.26850 (vd_3);
+     ln75*0.25077 (vd_4);
+     lny0*2.17558 (37);
+     lny1*1.08569;
+
+     %C#5.A#1%
+
+     [ age*-0.22812 ] (me_1);
+     [ educ*1.18223 ] (me_2);
+     [ ln74#1*-15 ] (he_1);
+     [ ln74*7.93618 ] (me_3);
+     [ ln75#1*-2.36226 ] (he_2);
+     [ ln75*7.00622 ] (me_4);
+     [ lny0*8.93067 ] (mu0_e);
+     [ lny1*8.66303 ];
+
+     age*0.20208 (ve_1);
+     educ*0.11535 (ve_2);
+     ln74*0.77237 (ve_3);
+     ln75*1.15702 (ve_4);
+     lny0*0.51117;
+     lny1*1.01298 (8);
+
+     %C#5.A#2%
+
+     [ age*-0.22812 ] (me_1);
+     [ educ*1.18223 ] (me_2);
+     [ ln74#1*-15 ] (he_1);
+     [ ln74*7.93618 ] (me_3);
+     [ ln75#1*-2.36226 ] (he_2);
+     [ ln75*7.00622 ] (me_4);
+     [ lny0*8.55398 ];
+     [ lny1*8.41269 ] (mu1_e);
+
+     age*0.20208 (ve_1);
+     educ*0.11535 (ve_2);
+     ln74*0.77237 (ve_3);
+     ln75*1.15702 (ve_4);
+     lny0*2.17558 (37);
+     lny1*0.91753;
+
+
+
+SAVEDATA INFORMATION
+
+     Class probabilities were not computed.
+     No data were saved.
+
+
+DIAGRAM INFORMATION
+
+  Mplus diagrams are currently not available for Mixture analysis.
+  No diagram output was produced.
+
+
+     Beginning Time:  21:31:03
+        Ending Time:  23:37:58
+       Elapsed Time:  02:06:55
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen
