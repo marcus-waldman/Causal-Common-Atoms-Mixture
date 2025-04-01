@@ -1,0 +1,406 @@
+Mplus VERSION 8.10
+MUTHEN & MUTHEN
+04/01/2025  11:48 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+
+  DATA: FILE = "lalondeQPO.dat";
+
+  VARIABLE:
+  NAMES = treat ue780 ue781 age educ ue74 ue75 black hisp married q1 q2 q3 q4 q5 q6 q7
+       q8 q9 q10 q11 q12 q13 q14;
+  USEV = ue780-ue781 q1-q14;
+  CATEGORICAL = ue780-ue781;
+  MISSING=.;
+
+  DEFINE:
+
+  ANALYSIS:
+  TYPE = general;
+  ESTIMATOR = mlr;
+  LINK = logit;
+  ALGORITHM = integration;
+  INTEGRATION = gauss(12);
+
+  MODEL:
+  ue780 on q1-q14*;
+
+
+  ue781 on q1-q14*;
+
+
+  OUTPUT:
+  svalues;
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                    2
+Number of independent variables                                 14
+Number of continuous latent variables                            0
+
+Observed dependent variables
+
+  Binary and ordered categorical (ordinal)
+   UE780       UE781
+
+Observed independent variables
+   Q1          Q2          Q3          Q4          Q5          Q6
+   Q7          Q8          Q9          Q10         Q11         Q12
+   Q13         Q14
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Integration Specifications
+  Type                                                GAUSSHERMITE
+  Number of integration points                                  12
+  Dimensions of numerical integration                            0
+  Adaptive quadrature                                           ON
+Link                                                         LOGIT
+Cholesky                                                       OFF
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             2
+     Number of y missing data patterns           0
+     Number of u missing data patterns           2
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR U
+
+
+           Covariance Coverage
+              UE780         UE781
+              ________      ________
+ UE780          0.584
+ UE781          0.000         0.416
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    UE780
+      Category 1    0.354           92.000
+      Category 2    0.350           91.000
+      Category 3    0.296           77.000
+    UE781
+      Category 1    0.243           45.000
+      Category 2    0.378           70.000
+      Category 3    0.378           70.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     Q1                    0.000      -1.257      -4.173    0.22%      -0.652     -0.089      0.193
+             445.000       0.998       1.665       1.179    7.64%       0.334      0.897
+     Q2                    0.000       2.480      -0.965    1.35%      -0.855     -0.498     -0.324
+             445.000       0.998      13.307       7.749    0.22%       0.107      0.959
+     Q3                    0.000       0.756      -3.323    0.22%      -0.817     -0.267     -0.204
+             445.000       0.998       1.895       3.827    0.22%       0.187      0.665
+     Q4                    0.000       2.990      -1.776    0.22%      -0.540     -0.376     -0.286
+             445.000       0.998      12.474       7.069    0.22%      -0.146      0.466
+     Q5                    0.000       1.764      -0.705    0.22%      -0.533     -0.448     -0.415
+             445.000       0.998       1.189       2.496    0.22%      -0.384     -0.246
+     Q6                    0.000       2.782      -0.833    0.22%      -0.464     -0.324     -0.263
+             445.000       0.998       6.110       3.532    0.22%      -0.223     -0.108
+     Q7                    0.000       1.462      -1.109    0.22%      -0.733     -0.473     -0.311
+             445.000       0.998       0.715       2.834    0.22%      -0.191      0.083
+     Q8                    0.000      -0.518      -3.771    0.22%      -0.738     -0.151     -0.012
+             445.000       0.998       1.436       1.861    0.45%       0.260      0.581
+     Q9                    0.000       3.641      -0.858    0.22%      -0.433     -0.353     -0.313
+             445.000       0.998      16.343       7.132    0.22%      -0.286      0.097
+     Q10                   0.000      -2.868     -10.256    0.22%      -0.405     -0.295     -0.243
+             445.000       0.998      30.810       2.493    0.22%      -0.199      0.342
+     Q11                   0.000       2.014      -4.052    0.22%      -0.431     -0.150     -0.098
+             445.000       0.998      12.243       7.507    0.22%      -0.026      0.223
+     Q12                   0.000      -4.585     -11.830    0.22%      -0.309     -0.279     -0.251
+             445.000       0.998      55.245       2.734    0.22%      -0.183      0.435
+     Q13                   0.000       0.711      -2.661    0.22%      -0.576     -0.290     -0.091
+             445.000       0.998       1.441       3.102    0.22%       0.016      0.417
+     Q14                   0.000       1.373      -2.401    0.22%      -0.505     -0.341     -0.302
+             445.000       0.998       2.257       3.424    0.22%      -0.237      0.420
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       32
+
+Loglikelihood
+
+          H0 Value                        -463.552
+          H0 Scaling Correction Factor      0.9133
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                     991.104
+          Bayesian (BIC)                  1122.242
+          Sample-Size Adjusted BIC        1020.688
+            (n* = (n + 2) / 24)
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ UE780      ON
+    Q1                 0.019      0.126      0.148      0.882
+    Q2                 0.169      0.110      1.531      0.126
+    Q3                -0.064      0.126     -0.510      0.610
+    Q4                -0.144      0.135     -1.065      0.287
+    Q5                 0.727      0.273      2.665      0.008
+    Q6                -0.279      0.216     -1.294      0.196
+    Q7                -0.079      0.124     -0.638      0.523
+    Q8                 0.186      0.171      1.086      0.278
+    Q9                 0.192      0.116      1.654      0.098
+    Q10                0.107      0.097      1.105      0.269
+    Q11               -0.072      0.122     -0.589      0.556
+    Q12                0.041      0.102      0.405      0.686
+    Q13                0.100      0.126      0.789      0.430
+    Q14               -0.229      0.134     -1.705      0.088
+
+ UE781      ON
+    Q1                -0.118      0.133     -0.886      0.376
+    Q2                -0.076      0.159     -0.480      0.631
+    Q3                -0.095      0.130     -0.734      0.463
+    Q4                 0.304      0.145      2.091      0.037
+    Q5                 0.025      0.308      0.081      0.935
+    Q6                 0.166      0.263      0.633      0.527
+    Q7                 0.228      0.135      1.689      0.091
+    Q8                -0.062      0.205     -0.301      0.764
+    Q9                 0.081      0.116      0.696      0.486
+    Q10               -0.152      0.163     -0.932      0.351
+    Q11                0.141      0.127      1.106      0.269
+    Q12                0.134      0.087      1.541      0.123
+    Q13               -0.147      0.163     -0.903      0.367
+    Q14                0.157      0.144      1.096      0.273
+
+ Thresholds
+    UE780$1           -0.645      0.138     -4.671      0.000
+    UE780$2            0.938      0.143      6.551      0.000
+    UE781$1           -1.129      0.170     -6.644      0.000
+    UE781$2            0.623      0.168      3.712      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.143E-01
+       (ratio of smallest to largest eigenvalue)
+
+
+RESULTS IN PROBABILITY SCALE
+
+                    Estimate
+
+ UE780
+    Category 1         0.357
+    Category 2         0.348
+    Category 3         0.295
+ UE781
+    Category 1         0.258
+    Category 2         0.386
+    Category 3         0.356
+
+
+LOGISTIC REGRESSION ODDS RATIO RESULTS
+
+                                                95% C.I.
+                    Estimate       S.E.  Lower 2.5% Upper 2.5%
+
+ UE780      ON
+    Q1                 1.019      0.128      0.796      1.303
+    Q2                 1.184      0.130      0.954      1.469
+    Q3                 0.938      0.118      0.733      1.200
+    Q4                 0.866      0.117      0.664      1.129
+    Q5                 2.069      0.564      1.212      3.531
+    Q6                 0.756      0.163      0.496      1.154
+    Q7                 0.924      0.115      0.725      1.178
+    Q8                 1.204      0.206      0.861      1.684
+    Q9                 1.211      0.140      0.965      1.520
+    Q10                1.113      0.108      0.920      1.347
+    Q11                0.931      0.114      0.733      1.182
+    Q12                1.042      0.106      0.853      1.273
+    Q13                1.105      0.140      0.862      1.415
+    Q14                0.796      0.107      0.612      1.035
+
+ UE781      ON
+    Q1                 0.889      0.118      0.685      1.153
+    Q2                 0.926      0.148      0.678      1.266
+    Q3                 0.909      0.118      0.705      1.173
+    Q4                 1.355      0.197      1.019      1.801
+    Q5                 1.025      0.316      0.560      1.877
+    Q6                 1.181      0.310      0.706      1.976
+    Q7                 1.257      0.170      0.964      1.638
+    Q8                 0.940      0.193      0.629      1.405
+    Q9                 1.084      0.126      0.864      1.361
+    Q10                0.859      0.140      0.623      1.183
+    Q11                1.151      0.147      0.897      1.478
+    Q12                1.144      0.100      0.964      1.357
+    Q13                0.863      0.141      0.627      1.188
+    Q14                1.170      0.168      0.883      1.551
+
+
+BRANT WALD TEST FOR PROPORTIONAL ODDS
+
+                                   Degrees of
+                      Chi-Square     Freedom   P-Value
+
+  UE780
+    Overall test          10.425        14      0.731
+    Q1                     3.086         1      0.079
+    Q2                     2.126         1      0.145
+    Q3                     0.473         1      0.491
+    Q4                     0.808         1      0.369
+    Q5                     0.232         1      0.630
+    Q6                     0.034         1      0.854
+    Q7                     0.082         1      0.775
+    Q8                     0.078         1      0.781
+    Q9                     0.127         1      0.722
+    Q10                    0.256         1      0.613
+    Q11                    0.002         1      0.961
+    Q12                    0.351         1      0.554
+    Q13                    1.109         1      0.292
+    Q14                    0.037         1      0.847
+
+  UE781
+    Overall test           8.927        14      0.836
+    Q1                     0.002         1      0.965
+    Q2                     0.003         1      0.959
+    Q3                     0.008         1      0.928
+    Q4                     0.076         1      0.783
+    Q5                     1.288         1      0.256
+    Q6                     0.007         1      0.934
+    Q7                     1.447         1      0.229
+    Q8                     0.265         1      0.607
+    Q9                     0.825         1      0.364
+    Q10                    0.000         1      0.992
+    Q11                    1.342         1      0.247
+    Q12                    0.758         1      0.384
+    Q13                    0.299         1      0.585
+    Q14                    3.538         1      0.060
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     ue780 ON q1*0.01859;
+     ue780 ON q2*0.16854;
+     ue780 ON q3*-0.06413;
+     ue780 ON q4*-0.14402;
+     ue780 ON q5*0.72691;
+     ue780 ON q6*-0.27908;
+     ue780 ON q7*-0.07913;
+     ue780 ON q8*0.18570;
+     ue780 ON q9*0.19170;
+     ue780 ON q10*0.10739;
+     ue780 ON q11*-0.07197;
+     ue780 ON q12*0.04126;
+     ue780 ON q13*0.09972;
+     ue780 ON q14*-0.22876;
+     ue781 ON q1*-0.11757;
+     ue781 ON q2*-0.07650;
+     ue781 ON q3*-0.09538;
+     ue781 ON q4*0.30357;
+     ue781 ON q5*0.02499;
+     ue781 ON q6*0.16616;
+     ue781 ON q7*0.22838;
+     ue781 ON q8*-0.06166;
+     ue781 ON q9*0.08078;
+     ue781 ON q10*-0.15231;
+     ue781 ON q11*0.14095;
+     ue781 ON q12*0.13430;
+     ue781 ON q13*-0.14695;
+     ue781 ON q14*0.15738;
+
+     [ ue780$1*-0.64519 ];
+     [ ue780$2*0.93761 ];
+     [ ue781$1*-1.12908 ];
+     [ ue781$2*0.62292 ];
+
+
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\waldmanm\git-repositories\causal-common-atoms-mixture\lalonde-pscore\approach2\reg.dgm
+
+     Beginning Time:  11:48:11
+        Ending Time:  11:48:11
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen

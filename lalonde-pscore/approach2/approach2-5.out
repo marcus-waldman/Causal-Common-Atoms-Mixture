@@ -1,6 +1,6 @@
 Mplus VERSION 8.10
 MUTHEN & MUTHEN
-04/01/2025  11:09 AM
+04/01/2025  11:55 AM
 
 INPUT INSTRUCTIONS
 
@@ -23,12 +23,10 @@ INPUT INSTRUCTIONS
 
   ANALYSIS:
   TYPE = mixture;
-  ALGORITHM = integration;
-  INTEGRATION = gauss(12);
   ESTIMATOR = mlr;
   LINK = logit;
-  STARTS = 516 64;
-  PROCESSORS = 16;
+  !STARTS = 516 64;
+  !PROCESSORS = 16;
 
   MODEL:
   %OVERALL%
@@ -49,39 +47,42 @@ INPUT INSTRUCTIONS
       A ON q13@-0.07491;
       A ON q14@-0.08308;
 
-      f0 BY ue780@1;
-      f0 BY age@-0.43546;
-      f0 BY educ@0.31375;
-      f0 BY ue74@18.17168;
-      f0 BY ue75@14.98486;
-      f0 BY black@-21.79206;
-      f0 BY hisp@19.57186;
-      f0 BY married@1.03257;
-      [f0*0];
-      f0*0.08685 (vf0);
+     ue780 ON q1@0.01859;
+     ue780 ON q2@0.16854;
+     ue780 ON q3@-0.06413;
+     ue780 ON q4@-0.14402;
+     ue780 ON q5@0.72691;
+     ue780 ON q6@-0.27908;
+     ue780 ON q7@-0.07913;
+     ue780 ON q8@0.18570;
+     ue780 ON q9@0.19170;
+     ue780 ON q10@0.10739;
+     ue780 ON q11@-0.07197;
+     ue780 ON q12@0.04126;
+     ue780 ON q13@0.09972;
+     ue780 ON q14@-0.22876;
 
+     ue781 ON q1@-0.11757;
+     ue781 ON q2@-0.07650;
+     ue781 ON q3@-0.09538;
+     ue781 ON q4@0.30357;
+     ue781 ON q5@0.02499;
+     ue781 ON q6@0.16616;
+     ue781 ON q7@0.22838;
+     ue781 ON q8@-0.06166;
+     ue781 ON q9@0.08078;
+     ue781 ON q10@-0.15231;
+     ue781 ON q11@0.14095;
+     ue781 ON q12@0.13430;
+     ue781 ON q13@-0.14695;
+     ue781 ON q14@0.15738;
 
-      f1 BY ue781@1;
-      f1 BY age@0.52705;
-      f1 BY educ@0.62467;
-      f1 BY ue74@8.60328;
-      f1 BY ue75@7.32400;
-      f1 BY black@53.18915;
-      f1 BY hisp@-51.39886;
-      f1 BY married@1.69261;
-      [f1*0];
-      f1*0.07020 (fv1);
+     [age-educ*];
+     age-educ*;
+     age with educ@0;
 
-      f0 with f1@0;
-
-      [age-educ*];
-      age-educ*;
-
-
-      [ue780$1-ue781$1* ue74$1-married$1*];
-      [ue74$2-ue75$2* ue780$2-ue781$2*];
-
-
+     [ue780$1-ue781$1* ue74$1-married$1*];
+     [ue74$2-ue75$2* ue780$2-ue781$2*];
 
 
   !--Class 1--
@@ -90,7 +91,6 @@ INPUT INSTRUCTIONS
       age-educ* (va_1-va_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1a_1-t1a_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2a_1-t2a_4);
-      [f0-f1*] (ma_f0 ma_f1);
 
 
       %C#1.A#2%
@@ -98,7 +98,7 @@ INPUT INSTRUCTIONS
       age-educ* (va_1-va_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1a_1-t1a_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2a_1-t2a_4);
-      [f0-f1*] (ma_f0 ma_f1);
+
 
   !-- Class 2--
       %C#2.A#1%
@@ -106,14 +106,13 @@ INPUT INSTRUCTIONS
       age-educ* (vb_1-vb_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1b_1-t1b_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2b_1-t2b_4);
-      [f0-f1*] (mb_f0 mb_f1);
 
       %C#2.A#2%
       [age-educ*] (mb_1 mb_2);
       age-educ* (vb_1-vb_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1b_1-t1b_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2b_1-t2b_4);
-      [f0-f1*] (mb_f0 mb_f1);
+
 
   !-- Class 3--
       %C#3.A#1%
@@ -121,14 +120,13 @@ INPUT INSTRUCTIONS
       age-educ* (vc_1-vc_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1c_1-t1c_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2c_1-t2c_4);
-      [f0-f1*] (mc_f0 mc_f1);
 
       %C#3.A#2%
       [age-educ*] (mc_1 mc_2);
       age-educ* (vc_1-vc_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1c_1-t1c_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2c_1-t2c_4);
-      [f0-f1*] (mc_f0 mc_f1);
+
 
   !-- Class 4--
       %C#4.A#1%
@@ -136,43 +134,41 @@ INPUT INSTRUCTIONS
       age-educ* (vd_1-vd_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1d_1-t1d_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2d_1-t2d_4);
-      [f0-f1*] (md_f0 md_f1);
 
       %C#4.A#2%
       [age-educ*] (md_1 md_2);
       age-educ* (vd_1-vd_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1d_1-t1d_7);;
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2d_1-t2d_4);
-      [f0-f1*] (md_f0 md_f1);
+
 
   !-- Class 5--
-  %C#5.A#1%
+      %C#5.A#1%
       [age-educ*] (me_1 me_2);
       age-educ* (ve_1-ve_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1e_1-t1e_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2e_1-t2e_4);
-      [f0-f1@0];
 
       %C#5.A#2%
       [age-educ*] (me_1 me_2);
       age-educ* (ve_1-ve_2);
       [ue780$1-ue781$1* ue74$1-married$1*] (t1e_1-t1e_7);
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2e_1-t2e_4);
-      [f0-f1@0];
+
 
 
   Model Prior:
   g1-g4~N(0,1);
 
-  DO(1,7) diff(t1a_#,t1e_#)~N(0,1);
-  DO(1,7) diff(t1b_#,t1e_#)~N(0,1);
-  DO(1,7) diff(t1c_#,t1e_#)~N(0,1);
-  DO(1,7) diff(t1d_#,t1e_#)~N(0,1);
+  DO(1,7) diff(t1a_#,t1e_#)~N(0,10);
+  DO(1,7) diff(t1b_#,t1e_#)~N(0,10);
+  DO(1,7) diff(t1c_#,t1e_#)~N(0,10);
+  DO(1,7) diff(t1d_#,t1e_#)~N(0,10);
 
-  DO(1,4) diff(t2a_#,t2e_#)~N(0,1);
-  DO(1,4) diff(t2b_#,t2e_#)~N(0,1);
-  DO(1,4) diff(t2c_#,t2e_#)~N(0,1);
-  DO(1,4) diff(t2d_#,t2e_#)~N(0,1);
+  DO(1,4) diff(t2a_#,t2e_#)~N(0,10);
+  DO(1,4) diff(t2b_#,t2e_#)~N(0,10);
+  DO(1,4) diff(t2c_#,t2e_#)~N(0,10);
+  DO(1,4) diff(t2d_#,t2e_#)~N(0,10);
 
 
   Model Constraint:
@@ -180,16 +176,6 @@ INPUT INSTRUCTIONS
   DO(1,2) 0 = vb_#-ve_#;
   DO(1,2) 0 = vc_#-ve_#;
   DO(1,2) 0 = vd_#-ve_#;
-
-  0 = ma_f0;
-  0 = mb_f0;
-  0 = mc_f0;
-  0 = md_f0;
-
-  0 = ma_f1;
-  0 = mb_f1;
-  0 = mc_f1;
-  0 = md_f1;
 
   !DO(1,5) 0 < 10 - t1a_#;
   !DO(1,5) 0 < 10 - t1b_#;

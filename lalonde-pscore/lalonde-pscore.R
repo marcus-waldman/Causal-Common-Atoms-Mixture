@@ -105,26 +105,34 @@ Qt = Q %>% dplyr::mutate(treat = lalonde$treat)
 glm3 = glm(treat~.,data= Qt, family = "binomial")
 logLik(glm3)-logLik(glm1) #identical
 
-median_re75 = with(lalonde %>% dplyr::filter(re75!=0 & treat==1), mean(re75))
-median_re74 = with(lalonde %>% dplyr::filter(re74!=0 & treat==1), mean(re74))
-median_re780 = with(lalonde %>% dplyr::filter(re78!=0 & treat==0), mean(re78))
-median_re781 = with(lalonde %>% dplyr::filter(re78!=0 & treat==1), mean(re78))
+median_re75 = with(lalonde %>% dplyr::filter(re75!=0 & treat==1), median(re75))
+median_re74 = with(lalonde %>% dplyr::filter(re74!=0 & treat==1), median(re74))
+median_re78 = with(lalonde %>% dplyr::filter(re78!=0 & treat==1), median(re78))
+
 
 
 
 mplus_dat = lalonde %>% 
   dplyr::mutate(ue74 = ifelse(re74==0,0, ifelse(re74>0 & re74<=median_re74,1,2)) ) %>% 
-  dplyr::mutate(ue75 = ifelse(re75==0,0, ifelse(re75>0 & re75<=median_re75,1,2))) %>% 
-  dplyr::mutate(ue780 = NA, ue780 = ifelse(re78==0 & treat==0,0, ifelse(re78>0 & re78<=median_re780 & treat==0,1,2))) %>%
-  dplyr::mutate(ue781 = NA, ue781 = ifelse(re78==0 & treat==1,0, ifelse(re78>0 re78<=median_re781 & treat==1,1,2))) 
-  dplyr::mutate(ue781 = ifelse(re78==0,0, ifelse(re78<=median_re78,1,2)), ue780 = ifelse(treat==1, NA, ue780)) %>%
-  dplyr::select(age,educ,re74,re75,black,hisp,married) %>%
+  dplyr::mutate(ue75 = ifelse(re75==0,0, ifelse(re75>0 & re75<=median_re75,1,2)) ) %>% 
+  dplyr::mutate(
+      ue780 = NA,
+      ue780 = ifelse(treat==0 & re78==0, 0, ue780), 
+      ue780 = ifelse(treat==0 & re78>0, 1, ue780), 
+      ue780 = ifelse(treat==0 & re78>median_re78, 2, ue780)
+  ) %>% 
+  dplyr::mutate(
+    ue781 = NA,
+    ue781 = ifelse(treat==1 & re78==0, 0, ue781), 
+    ue781 = ifelse(treat==1 & re78>0, 1, ue781), 
+    ue781 = ifelse(treat==1 & re78>median_re78, 2, ue781)
+  ) %>% 
+  dplyr::select(treat, ue780, ue781,age,educ,ue74,ue75,black,hisp,married) %>%
   dplyr::bind_cols(Q) %>% 
-  mutate(treat=lalonde$treat, lnyobs = log(lalonde$re78+1), lny0 = ifelse(treat==0,lnyobs,NA), lny1 = ifelse(treat==1,lnyobs,NA)) %>% 
   dplyr::mutate(age = scale(age), educ = scale(educ))
 
 
-setwd("C:/Users/waldmanm/git-repositories/Causal-Common-Atoms-Mixture/lalonde-pscore/approach1/")
+setwd("C:/Users/waldmanm/git-repositories/Causal-Common-Atoms-Mixture/lalonde-pscore/approach2/")
 
 MplusAutomation::prepareMplusData(mplus_dat, filename = "lalondeQPO.dat")
 
