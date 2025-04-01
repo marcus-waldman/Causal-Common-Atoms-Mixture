@@ -134,59 +134,72 @@ mplus_dat = lalonde %>%
 
 setwd("C:/Users/waldmanm/git-repositories/Causal-Common-Atoms-Mixture/lalonde-pscore/approach2/")
 
-MplusAutomation::prepareMplusData(mplus_dat, filename = "lalondeQPO.dat")
+#MplusAutomation::prepareMplusData(mplus_dat, filename = "lalondeQPO.dat")
 
 
+# Read in 5 class model
 
-lalonde = read.table("data/Asst4Data_2014_Obs.txt", header=T, quote="\"") %>% 
-  dplyr::relocate(RE78:HISPANIC,U74,U75)
-names(lalonde) = tolower(names(lalonde))
+mod = MplusAutomation::readModels(target = getwd(), filefilter = "approach2-5")
 
+tmp1 = mod$savedata %>% dplyr::mutate(rid = 1:n()) %>% 
+  dplyr::filter(A==1) %>% 
+  dplyr::select(rid,CPROB1,CPROB3,CPROB5,CPROB7,CPROB9) %>% 
+  dplyr::rename(pi1 = CPROB1, pi2 = CPROB3, pi3 = CPROB5, pi4 = CPROB7, pi5 = CPROB9)
 
-X = lalonde %>% dplyr::select(educ:re75, -u74, -u75) %>% 
-  dplyr::mutate(re74 = log(re74 + 1), re75 = log(re75+1)) %>% 
-  dplyr::mutate(across(educ:age, scale)) %>% 
-  dplyr::mutate(across(re74:re75, function(x){scale(x, center = F, scale = T)}))
+tmp2 = mod$savedata %>% dplyr::mutate(rid = 1:n()) %>% 
+  dplyr::filter(A==2) %>% 
+  dplyr::select(rid,CPROB2,CPROB4,CPROB6,CPROB8,CPROB10) %>% 
+  dplyr::rename(pi1 = CPROB2, pi2 = CPROB4, pi3 = CPROB6, pi4 = CPROB8, pi5 = CPROB10)
 
-#QR = qr(X)  
-#Q = qr.Q(QR) %>% as.data.frame()
-#names(Q) = paste0("q",1:ncol(Q))
-#R = qr.R(QR)
-
-# Let's remove observations without common support
-dat = lalonde %>% dplyr::select(re78, treat) %>% dplyr::bind_cols(X)
-
-
-fit = glm(treat~., data = dat %>% dplyr::select(-re78, -re74, -age), family = "binomial")
-dat = dat %>% dplyr::mutate(e = qlogis(fit$fitted.values), e = scale(e))
-
-ggplot(dat, aes(e)) + 
-  geom_histogram() +
-  facet_grid(treat~., scale="free_y")
+pis = tmp1 %>% dplyr::bind_rows(tmp2) %>% dplyr::arrange(rid) %>% 
+  dplyr::mutate(sum_pi = pi1+pi2+pi3+pi4+pi5) %>% 
+  dplyr::mutate(pi1 = pi1/sum_pi, pi2 = pi2/sum_pi, pi3 = pi3/sum_pi, pi4 = pi4/sum_pi, pi5 = pi5/sum_pi) %>% 
+  dplyr::mutate(sum_pi = pi1+pi2+pi3+pi4+pi5) 
   
-# Indicator for outside of common support
-e1_min = with(dat %>% dplyr::filter(treat==1), min(e))
-e1_max = with(dat %>% dplyr::filter(treat==1), max(e))
 
-dat = dat %>% 
-  dplyr::mutate(lout = as.integer(e<e1_min), rout = as.integer(e>e1_max)) %>% 
-  dplyr::mutate(u = ifelse(lout==1,0,1), 
-                u = ifelse(rout==1,2,u))
+lalonde = lalonde %>% dplyr::bind_cols(pis %>% dplyr::select(pi1:pi5))
 
-
-mplus_dat = dat %>% dplyr::select(re78, treat, u, e, educ, re75)
-
-# let's get the minimum
-with(mplus_dat %>% dplyr::filter(e<e1_min), mean(e))
-
-median_re75 = with(mplus_dat %>% dplyr::filter(re75!=0 & treat==1), mean(re75))
+gamma_hat = mod$parameters$unstandardized %>% 
+  dplyr::filter(paramHeader == "A#1.ON") %>% 
+  dplyr::bind_rows(
+    mod$parameters$unstandardized %>% 
+      dplyr::filter(param == "A#1")
+  )
 
 
-# Quantiles
-mplus_dat = mplus_dat %>%
-  dplyr::mutate(re75 = ifelse(re75==0,0,re75), 
-                re75 = ifelse(re75>0 & re75<=median_re75, .1, re75), 
-                re75 = ifelse(re75>median_re75, .2, re75), 
-                re75 = re75*10)
+X1 = data.frame(c1=1,c2=0,c3 = 0, c4=0) %>% dplyr::bind_cols(Q) %>% dplyr::mutate(intercpt = 1) %>% as.matrix()
+X2 = data.frame(c1=0,c2=1,c3 = 0, c4=0) %>% dplyr::bind_cols(Q)%>% dplyr::mutate(intercpt = 1) %>% as.matrix()
+X3 = data.frame(c1=0,c2=0,c3 = 1, c4=0) %>% dplyr::bind_cols(Q) %>% dplyr::mutate(intercpt = 1) %>% as.matrix()
+X4 = data.frame(c1=0,c2=0,c3 = 0, c4=1) %>% dplyr::bind_cols(Q) %>% dplyr::mutate(intercpt = 1) %>% as.matrix()
+X5 = data.frame(c1=0,c2=0,c3 = 0, c4=0) %>% dplyr::bind_cols(Q) %>% dplyr::mutate(intercpt = 1) %>% as.matrix()
 
-MplusAutomation::prepareMplusData(df = mplus_dat, filename = "data/lalonde_obs.dat")
+lalonde = lalonde %>% 
+  dplyr::mutate(
+    e1 = X1 %*% gamma_hat$est,
+    e2 = X2 %*% gamma_hat$est,
+    e3 = X3 %*% gamma_hat$est,
+    e4 = X4 %*% gamma_hat$est,
+    e5 = X5 %*% gamma_hat$est
+  )
+
+lalonde = lalonde %>% 
+  dplyr::mutate(e_new =plogis( pi1*e1 + pi2*e2 + pi3*e3 + pi4*e4 + pi5*e5) )
+
+
+ggplot(lalonde, aes(x= e, y = e_new)) + geom_point()
+
+ggplot(lalonde %>% dplyr::mutate(Arm = ifelse(treat==1,"A=1","A=0")) %>% dplyr::select(Arm,e,e_new) %>% tidyr::pivot_longer(e:e_new, values_to = "e")) +
+  geom_histogram(aes(e)) +
+  facet_grid(Arm~name)
+  
+lalonde = lalonde %>% dplyr::mutate(
+  iptw_new = (n_a/N)/(treat+1-e_new), iptw_new = iptw_new/mean(iptw_new)
+)
+
+
+ggplot(lalonde %>% dplyr::mutate(Arm = ifelse(treat==1,"A=1","A=0")) %>% dplyr::select(Arm,iptw,iptw_new) %>% tidyr::pivot_longer(iptw:iptw_new, values_to = "w")) +
+  geom_histogram(aes(w)) +
+  facet_grid(name~Arm, scales = "free_x") 
+
+
+ggplot(lalonde %>% dplyr::select(e,e_new) %>% tidyr::pivot_longer(names_to = ""),)
