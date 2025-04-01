@@ -21,7 +21,8 @@ ALGORITHM = integration;
 INTEGRATION = gauss(12);
 ESTIMATOR = mlr;
 LINK = logit;
-!STARTS = 0;
+STARTS = 516 64;
+PROCESSORS = 16;
 
 MODEL:
 %OVERALL%
