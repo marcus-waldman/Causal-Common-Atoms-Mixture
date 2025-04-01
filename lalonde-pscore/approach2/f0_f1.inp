@@ -1,0 +1,32 @@
+TITLE: Your title goes here
+
+DATA: FILE = "lalondeQPO.dat";
+
+VARIABLE: 
+NAMES = treat ue780 ue781 age educ ue74 ue75 black hisp married q1 q2 q3 q4 q5 q6 q7
+     q8 q9 q10 q11 q12 q13 q14; 
+USEV = ue780-married;
+CATEGORICAL = ue780-ue781 ue74-married;
+MISSING=.;
+
+DEFINE:
+notreat = 1-treat;
+
+ANALYSIS:
+TYPE = general;
+ESTIMATOR = mlr;
+LINK = logit;
+ALGORITHM = integration;
+INTEGRATION = gauss(12);
+
+MODEL:
+f0 by ue780@1 age-married*;
+f0*;
+
+f1 by ue781@1 age-married*;
+f1*;
+
+f0 with f1@0;
+
+OUTPUT:
+svalues;

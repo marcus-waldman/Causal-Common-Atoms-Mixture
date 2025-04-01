@@ -1,0 +1,441 @@
+Mplus VERSION 8.10
+MUTHEN & MUTHEN
+04/01/2025  10:50 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+
+  DATA: FILE = "lalondeQPO.dat";
+
+  VARIABLE:
+  NAMES = treat ue780 ue781 age educ ue74 ue75 black hisp married q1 q2 q3 q4 q5 q6 q7
+       q8 q9 q10 q11 q12 q13 q14;
+  USEV = ue780-married;
+  CATEGORICAL = ue780-ue781 ue74-married;
+  MISSING=.;
+
+  DEFINE:
+  notreat = 1-treat;
+
+  ANALYSIS:
+  TYPE = general;
+  ESTIMATOR = mlr;
+  LINK = logit;
+  ALGORITHM = integration;
+  INTEGRATION = gauss(12);
+
+  MODEL:
+  f0 by ue780@1 age-married*;
+  f0*;
+
+  f1 by ue781@1 age-married*;
+  f1*;
+
+  f0 with f1@0;
+
+  OUTPUT:
+  svalues;
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                    9
+Number of independent variables                                  0
+Number of continuous latent variables                            2
+
+Observed dependent variables
+
+  Continuous
+   AGE         EDUC
+
+  Binary and ordered categorical (ordinal)
+   UE780       UE781       UE74        UE75        BLACK       HISP
+   MARRIED
+
+Continuous latent variables
+   F0          F1
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Integration Specifications
+  Type                                                GAUSSHERMITE
+  Number of integration points                                  12
+  Dimensions of numerical integration                            2
+  Adaptive quadrature                                           ON
+Link                                                         LOGIT
+Cholesky                                                       OFF
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             2
+     Number of y missing data patterns           1
+     Number of u missing data patterns           2
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              UE780         UE781         UE74          UE75          BLACK
+              ________      ________      ________      ________      ________
+ UE780          0.584
+ UE781          0.000         0.416
+ UE74           0.584         0.416         1.000
+ UE75           0.584         0.416         1.000         1.000
+ BLACK          0.584         0.416         1.000         1.000         1.000
+ HISP           0.584         0.416         1.000         1.000         1.000
+ MARRIED        0.584         0.416         1.000         1.000         1.000
+ AGE            0.584         0.416         1.000         1.000         1.000
+ EDUC           0.584         0.416         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              HISP          MARRIED       AGE           EDUC
+              ________      ________      ________      ________
+ HISP           1.000
+ MARRIED        1.000         1.000
+ AGE            1.000         1.000         1.000
+ EDUC           1.000         1.000         1.000         1.000
+
+
+     PROPORTION OF DATA PRESENT FOR U
+
+
+           Covariance Coverage
+              UE780         UE781         UE74          UE75          BLACK
+              ________      ________      ________      ________      ________
+ UE780          0.584
+ UE781          0.000         0.416
+ UE74           0.584         0.416         1.000
+ UE75           0.584         0.416         1.000         1.000
+ BLACK          0.584         0.416         1.000         1.000         1.000
+ HISP           0.584         0.416         1.000         1.000         1.000
+ MARRIED        0.584         0.416         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              HISP          MARRIED
+              ________      ________
+ HISP           1.000
+ MARRIED        1.000         1.000
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              AGE           EDUC
+              ________      ________
+ AGE            1.000
+ EDUC           1.000         1.000
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    UE780
+      Category 1    0.354           92.000
+      Category 2    0.350           91.000
+      Category 3    0.296           77.000
+    UE781
+      Category 1    0.243           45.000
+      Category 2    0.378           70.000
+      Category 3    0.378           70.000
+    UE74
+      Category 1    0.733          326.000
+      Category 2    0.130           58.000
+      Category 3    0.137           61.000
+    UE75
+      Category 1    0.649          289.000
+      Category 2    0.184           82.000
+      Category 3    0.166           74.000
+    BLACK
+      Category 1    0.166           74.000
+      Category 2    0.834          371.000
+    HISP
+      Category 1    0.912          406.000
+      Category 2    0.088           39.000
+    MARRIED
+      Category 1    0.831          370.000
+      Category 2    0.169           75.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     AGE                   0.000       1.257      -1.179    7.64%      -0.897     -0.334     -0.193
+             445.000       0.998       1.665       4.173    0.22%      -0.052      0.652
+     EDUC                  0.000      -0.774      -4.015    0.22%      -0.667     -0.109     -0.109
+             445.000       0.998       1.816       3.239    0.22%       0.449      1.007
+
+     WARNING: THE MODEL ESTIMATION HAS REACHED A SADDLE POINT OR A POINT WHERE THE
+     OBSERVED AND THE EXPECTED INFORMATION MATRICES DO NOT MATCH.
+     AN ADJUSTMENT TO THE ESTIMATION OF THE INFORMATION MATRIX HAS BEEN MADE.
+     THE CONDITION NUMBER IS      -0.258D-02.
+     THE PROBLEM MAY ALSO BE RESOLVED BY DECREASING THE VALUE OF THE
+     MCONVERGENCE OR LOGCRITERION OPTIONS OR BY CHANGING THE STARTING VALUES
+     OR BY INCREASING THE NUMBER OF INTEGRATION POINTS OR BY USING THE MLF ESTIMATOR.
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       31
+
+Loglikelihood
+
+          H0 Value                       -2786.828
+          H0 Scaling Correction Factor      0.9888
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    5635.657
+          Bayesian (BIC)                  5762.697
+          Sample-Size Adjusted BIC        5664.316
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit for the Binary and Ordered Categorical
+(Ordinal) Outcomes
+
+          Pearson Chi-Square
+
+          Value                            446.243
+          Degrees of Freedom                   624
+          P-Value                           1.0000
+
+          Likelihood Ratio Chi-Square
+
+          Value                            202.771
+          Degrees of Freedom                   624
+          P-Value                           1.0000
+
+Chi-Square Test for MCAR under the Unrestricted Latent Class Indicator Model
+
+          Pearson Chi-Square
+
+          Value                             38.377
+          Degrees of freedom cannot be computed for this model.
+
+          Likelihood Ratio Chi-Square
+
+          Value                             46.416
+          Degrees of freedom cannot be computed for this model.
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ F0       BY
+    UE780              1.000      0.000    999.000    999.000
+    AGE               -0.435      0.363     -1.201      0.230
+    EDUC               0.314      0.257      1.222      0.222
+    UE74              18.172     27.763      0.655      0.513
+    UE75              14.985     10.678      1.403      0.161
+    BLACK            -21.792      7.121     -3.060      0.002
+    HISP              19.572      7.062      2.772      0.006
+    MARRIED            1.033      0.646      1.598      0.110
+
+ F1       BY
+    UE781              1.000      0.000    999.000    999.000
+    AGE                0.527      0.354      1.490      0.136
+    EDUC               0.625      0.263      2.372      0.018
+    UE74               8.603     10.806      0.796      0.426
+    UE75               7.324      7.948      0.921      0.357
+    BLACK             53.189     12.439      4.276      0.000
+    HISP             -51.399      9.090     -5.654      0.000
+    MARRIED            1.693      1.058      1.599      0.110
+
+ F0       WITH
+    F1                 0.000      0.000    999.000    999.000
+
+ Intercepts
+    AGE                0.003      0.047      0.056      0.955
+    EDUC               0.003      0.047      0.071      0.943
+
+ Thresholds
+    UE780$1           -0.627      0.132     -4.733      0.000
+    UE780$2            0.873      0.138      6.337      0.000
+    UE781$1           -1.141      0.174     -6.544      0.000
+    UE781$2            0.506      0.153      3.299      0.001
+    UE74$1             3.828      4.436      0.863      0.388
+    UE74$2             6.566      7.585      0.866      0.387
+    UE75$1             2.021      1.774      1.140      0.254
+    UE75$2             4.972      4.201      1.184      0.237
+    BLACK$1          -15.534      3.930     -3.953      0.000
+    HISP$1            20.396      3.134      6.509      0.000
+    MARRIED$1          1.679      0.151     11.152      0.000
+
+ Variances
+    F0                 0.087      0.053      1.632      0.103
+    F1                 0.070      0.010      6.863      0.000
+
+ Residual Variances
+    AGE                0.961      0.093     10.358      0.000
+    EDUC               0.962      0.092     10.409      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix             -0.258E-02
+       (ratio of smallest to largest eigenvalue)
+
+
+RESULTS IN PROBABILITY SCALE
+
+                    Estimate
+
+ UE780
+    Category 1         0.351
+    Category 2         0.351
+    Category 3         0.298
+ UE781
+    Category 1         0.245
+    Category 2         0.376
+    Category 3         0.378
+ UE74
+    Category 1         0.735
+    Category 2         0.124
+    Category 3         0.141
+ UE75
+    Category 1         0.653
+    Category 2         0.180
+    Category 3         0.167
+ BLACK
+    Category 1         0.160
+    Category 2         0.840
+ HISP
+    Category 1         0.914
+    Category 2         0.086
+ MARRIED
+    Category 1         0.830
+    Category 2         0.170
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     f0 BY ue780@1;
+     f0 BY age*-0.43546;
+     f0 BY educ*0.31375;
+     f0 BY ue74*18.17168;
+     f0 BY ue75*14.98486;
+     f0 BY black*-21.79206;
+     f0 BY hisp*19.57186;
+     f0 BY married*1.03257;
+     f1 BY ue781@1;
+     f1 BY age*0.52705;
+     f1 BY educ*0.62467;
+     f1 BY ue74*8.60328;
+     f1 BY ue75*7.32400;
+     f1 BY black*53.18915;
+     f1 BY hisp*-51.39886;
+     f1 BY married*1.69261;
+
+     f0 WITH f1@0;
+
+     [ age*0.00267 ];
+     [ educ*0.00337 ];
+
+     [ ue780$1*-0.62672 ];
+     [ ue780$2*0.87253 ];
+     [ ue781$1*-1.14089 ];
+     [ ue781$2*0.50606 ];
+     [ ue74$1*3.82786 ];
+     [ ue74$2*6.56611 ];
+     [ ue75$1*2.02122 ];
+     [ ue75$2*4.97245 ];
+     [ black$1*-15.53377 ];
+     [ hisp$1*20.39648 ];
+     [ married$1*1.67897 ];
+
+     age*0.96121;
+     educ*0.96232;
+     f0*0.08685;
+     f1*0.07020;
+
+
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\waldmanm\git-repositories\causal-common-atoms-mixture\lalonde-pscore\approach2\f0_f1.dgm
+
+     Beginning Time:  10:50:34
+        Ending Time:  10:50:35
+       Elapsed Time:  00:00:01
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen

@@ -98,16 +98,27 @@ eigen(t(Q) %*% Q,symmetric = T, only.values = T) #Yes, returns unitary
 
 Q = data.frame(Q)
 names(Q) = paste0("q",1:ncol(Q))
+Q = Q %>% dplyr::mutate(across(everything(),scale))
 
 
 Qt = Q %>% dplyr::mutate(treat = lalonde$treat)
 glm3 = glm(treat~.,data= Qt, family = "binomial")
 logLik(glm3)-logLik(glm1) #identical
 
+median_re75 = with(lalonde %>% dplyr::filter(re75!=0 & treat==1), mean(re75))
+median_re74 = with(lalonde %>% dplyr::filter(re74!=0 & treat==1), mean(re74))
+median_re780 = with(lalonde %>% dplyr::filter(re78!=0 & treat==0), mean(re78))
+median_re781 = with(lalonde %>% dplyr::filter(re78!=0 & treat==1), mean(re78))
 
-mplus_dat = lalonde %>% dplyr::select(age,educ,re74,re75,black,hisp,married,nodegr) %>%
-  dplyr::mutate(re74 = log(re74+1), re75 = log(re75 + 1)) %>% 
-  dplyr::rename(ln74 = re74, ln75 = re75) %>% 
+
+
+mplus_dat = lalonde %>% 
+  dplyr::mutate(ue74 = ifelse(re74==0,0, ifelse(re74>0 & re74<=median_re74,1,2)) ) %>% 
+  dplyr::mutate(ue75 = ifelse(re75==0,0, ifelse(re75>0 & re75<=median_re75,1,2))) %>% 
+  dplyr::mutate(ue780 = NA, ue780 = ifelse(re78==0 & treat==0,0, ifelse(re78>0 & re78<=median_re780 & treat==0,1,2))) %>%
+  dplyr::mutate(ue781 = NA, ue781 = ifelse(re78==0 & treat==1,0, ifelse(re78>0 re78<=median_re781 & treat==1,1,2))) 
+  dplyr::mutate(ue781 = ifelse(re78==0,0, ifelse(re78<=median_re78,1,2)), ue780 = ifelse(treat==1, NA, ue780)) %>%
+  dplyr::select(age,educ,re74,re75,black,hisp,married) %>%
   dplyr::bind_cols(Q) %>% 
   mutate(treat=lalonde$treat, lnyobs = log(lalonde$re78+1), lny0 = ifelse(treat==0,lnyobs,NA), lny1 = ifelse(treat==1,lnyobs,NA)) %>% 
   dplyr::mutate(age = scale(age), educ = scale(educ))

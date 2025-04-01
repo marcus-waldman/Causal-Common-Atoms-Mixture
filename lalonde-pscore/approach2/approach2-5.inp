@@ -1,0 +1,214 @@
+TITLE: Your title goes here
+
+DATA: FILE = "lalondeQPO.dat";
+
+VARIABLE: 
+NAMES = treat ue780 ue781 age educ ue74 ue75 black hisp married q1 q2 q3 q4 q5 q6 q7
+     q8 q9 q10 q11 q12 q13 q14; 
+USEV = ue780-q14 notreat;
+!USEV = treat q1-q14;
+CATEGORICAL = ue780 ue781 ue74-married;
+CLASSES = C(5) A(2);
+KNOWNCLASS = A(notreat=0, notreat=1);
+MISSING=.;
+
+DEFINE:
+notreat = 1-treat;
+
+ANALYSIS:
+TYPE = mixture;
+ALGORITHM = integration;
+INTEGRATION = gauss(12);
+ESTIMATOR = mlr;
+LINK = logit;
+!STARTS = 0;
+
+MODEL:
+%OVERALL%
+    A on C (g1-g4);
+
+    A ON q1@0.11256;
+    A ON q2@0.07853;
+    A ON q3@0.13306;
+    A ON q4@-0.30643;
+    A ON q5@-0.31147;
+    A ON q6@0.38802;
+    A ON q7@-0.06486;
+    A ON q8@-0.17240;
+    A ON q9@0.05434;
+    A ON q10@-0.15906;
+    A ON q11@-0.11731;
+    A ON q12@-0.10661;
+    A ON q13@-0.07491;
+    A ON q14@-0.08308;
+
+    f0 BY ue780@1;
+    f0 BY age@-0.43546;
+    f0 BY educ@0.31375;
+    f0 BY ue74@18.17168;
+    f0 BY ue75@14.98486;
+    f0 BY black@-21.79206;
+    f0 BY hisp@19.57186;
+    f0 BY married@1.03257;
+    [f0*0];
+    f0*0.08685 (vf0);
+   
+     
+    f1 BY ue781@1;
+    f1 BY age@0.52705;
+    f1 BY educ@0.62467;
+    f1 BY ue74@8.60328;
+    f1 BY ue75@7.32400;
+    f1 BY black@53.18915;
+    f1 BY hisp@-51.39886;
+    f1 BY married@1.69261;
+    [f1*0];
+    f1*0.07020 (fv1);
+
+    f0 with f1@0;
+
+    [age-educ*];
+    age-educ*;
+
+
+    [ue780$1-ue781$1* ue74$1-married$1*];
+    [ue74$2-ue75$2* ue780$2-ue781$2*];
+
+
+
+
+!--Class 1--
+    %C#1.A#1%
+    [age-educ*] (ma_1 ma_2);
+    age-educ* (va_1-va_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1a_1-t1a_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2a_1-t2a_4);
+    [f0-f1*] (ma_f0 ma_f1);
+
+
+    %C#1.A#2%
+    [age-educ*] (ma_1 ma_2);
+    age-educ* (va_1-va_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1a_1-t1a_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2a_1-t2a_4);
+    [f0-f1*] (ma_f0 ma_f1);
+
+!-- Class 2--
+    %C#2.A#1%
+    [age-educ*] (mb_1 mb_2);
+    age-educ* (vb_1-vb_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1b_1-t1b_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2b_1-t2b_4);
+    [f0-f1*] (mb_f0 mb_f1);
+
+    %C#2.A#2%
+    [age-educ*] (mb_1 mb_2);
+    age-educ* (vb_1-vb_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1b_1-t1b_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2b_1-t2b_4);
+    [f0-f1*] (mb_f0 mb_f1);
+
+!-- Class 3--
+    %C#3.A#1%
+    [age-educ*] (mc_1 mc_2);
+    age-educ* (vc_1-vc_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1c_1-t1c_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2c_1-t2c_4);
+    [f0-f1*] (mc_f0 mc_f1);
+
+    %C#3.A#2%
+    [age-educ*] (mc_1 mc_2);
+    age-educ* (vc_1-vc_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1c_1-t1c_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2c_1-t2c_4);
+    [f0-f1*] (mc_f0 mc_f1);
+
+!-- Class 4--
+    %C#4.A#1%
+    [age-educ*] (md_1 md_2);
+    age-educ* (vd_1-vd_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1d_1-t1d_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2d_1-t2d_4);
+    [f0-f1*] (md_f0 md_f1);
+
+    %C#4.A#2%
+    [age-educ*] (md_1 md_2);
+    age-educ* (vd_1-vd_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1d_1-t1d_7);;
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2d_1-t2d_4);
+    [f0-f1*] (md_f0 md_f1);
+
+!-- Class 5--
+%C#5.A#1%
+    [age-educ*] (me_1 me_2);
+    age-educ* (ve_1-ve_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1e_1-t1e_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2e_1-t2e_4);
+    [f0-f1@0];
+
+    %C#5.A#2%
+    [age-educ*] (me_1 me_2);
+    age-educ* (ve_1-ve_2);
+    [ue780$1-ue781$1* ue74$1-married$1*] (t1e_1-t1e_7);
+    [ue74$2-ue75$2* ue780$2-ue781$2*] (t2e_1-t2e_4);
+    [f0-f1@0];
+
+
+Model Prior: 
+g1-g4~N(0,1);
+
+DO(1,7) diff(t1a_#,t1e_#)~N(0,1);
+DO(1,7) diff(t1b_#,t1e_#)~N(0,1);
+DO(1,7) diff(t1c_#,t1e_#)~N(0,1);
+DO(1,7) diff(t1d_#,t1e_#)~N(0,1);
+
+DO(1,4) diff(t2a_#,t2e_#)~N(0,1);
+DO(1,4) diff(t2b_#,t2e_#)~N(0,1);
+DO(1,4) diff(t2c_#,t2e_#)~N(0,1);
+DO(1,4) diff(t2d_#,t2e_#)~N(0,1);
+
+
+Model Constraint:
+DO(1,2) 0 = va_#-ve_#;
+DO(1,2) 0 = vb_#-ve_#;
+DO(1,2) 0 = vc_#-ve_#;
+DO(1,2) 0 = vd_#-ve_#;
+
+0 = ma_f0;
+0 = mb_f0;
+0 = mc_f0;
+0 = md_f0;
+
+0 = ma_f1;
+0 = mb_f1;
+0 = mc_f1;
+0 = md_f1;
+
+!DO(1,5) 0 < 10 - t1a_#;
+!DO(1,5) 0 < 10 - t1b_#;
+!Do(1,5) 0 < 10 - t1c_#;
+!Do(1,5) 0 < 10 - t1d_#;
+!Do(1,5) 0 < 10 - t1e_#;
+
+!DO(1,5) 0 < t1a_# + 10;
+!DO(1,5) 0 < t1b_# + 10;
+!Do(1,5) 0 < t1c_# + 10;
+!Do(1,5) 0 < t1d_# + 10;
+!Do(1,5) 0 < t1e_# + 10;
+
+!DO(1,2) 0 < 10 - t2a_#;
+!DO(1,2) 0 < 10 - t2b_#;
+!Do(1,2) 0 < 10 - t2c_#;
+!Do(1,2) 0 < 10 - t2d_#;
+!Do(1,2) 0 < 10 - t2e_#;
+
+!DO(1,2) 0 < t2a_# + 10;
+!DO(1,2) 0 < t2b_# + 10;
+!Do(1,2) 0 < t2c_# + 10;
+!Do(1,2) 0 < t2d_# + 10;
+!Do(1,2) 0 < t2e_# + 10;
+
+
+
+OUTPUT:
+svalues;
