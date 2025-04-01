@@ -1,12 +1,14 @@
 Mplus VERSION 8.10
 MUTHEN & MUTHEN
-04/01/2025  11:55 AM
+04/01/2025   1:46 PM
 
 INPUT INSTRUCTIONS
 
   TITLE: Your title goes here
 
-  DATA: FILE = "lalondeQPO.dat";
+  DATA:
+  FILE = "lalondeQPO.dat";
+  VARIANCES = NOCHECK;
 
   VARIABLE:
   NAMES = treat ue780 ue781 age educ ue74 ue75 black hisp married q1 q2 q3 q4 q5 q6 q7
@@ -25,57 +27,27 @@ INPUT INSTRUCTIONS
   TYPE = mixture;
   ESTIMATOR = mlr;
   LINK = logit;
-  !STARTS = 516 64;
-  !PROCESSORS = 16;
+  !STARTS = 0;
+  STARTS = 2048 256;
+  PROCESSORS = 16;
+  MITERATIONS = 5000;
+
 
   MODEL:
   %OVERALL%
+
+      [ c#1*0 ] (lo1);
+      [ c#2*0 ] (lo2);
+      [ c#3*0 ] (lo3);
+      [ c#4*0 ] (lo4);
+      [ a#1*0 ] (g00);
+
       A on C (g1-g4);
 
-      A ON q1@0.11256;
-      A ON q2@0.07853;
-      A ON q3@0.13306;
-      A ON q4@-0.30643;
-      A ON q5@-0.31147;
-      A ON q6@0.38802;
-      A ON q7@-0.06486;
-      A ON q8@-0.17240;
-      A ON q9@0.05434;
-      A ON q10@-0.15906;
-      A ON q11@-0.11731;
-      A ON q12@-0.10661;
-      A ON q13@-0.07491;
-      A ON q14@-0.08308;
+      A ON q1-q14* (g5-g18);
+      ue780 ON q1-q14* (b0_1-b0_14);
+      ue781 ON q1-q14* (b1_1-b1_14);
 
-     ue780 ON q1@0.01859;
-     ue780 ON q2@0.16854;
-     ue780 ON q3@-0.06413;
-     ue780 ON q4@-0.14402;
-     ue780 ON q5@0.72691;
-     ue780 ON q6@-0.27908;
-     ue780 ON q7@-0.07913;
-     ue780 ON q8@0.18570;
-     ue780 ON q9@0.19170;
-     ue780 ON q10@0.10739;
-     ue780 ON q11@-0.07197;
-     ue780 ON q12@0.04126;
-     ue780 ON q13@0.09972;
-     ue780 ON q14@-0.22876;
-
-     ue781 ON q1@-0.11757;
-     ue781 ON q2@-0.07650;
-     ue781 ON q3@-0.09538;
-     ue781 ON q4@0.30357;
-     ue781 ON q5@0.02499;
-     ue781 ON q6@0.16616;
-     ue781 ON q7@0.22838;
-     ue781 ON q8@-0.06166;
-     ue781 ON q9@0.08078;
-     ue781 ON q10@-0.15231;
-     ue781 ON q11@0.14095;
-     ue781 ON q12@0.13430;
-     ue781 ON q13@-0.14695;
-     ue781 ON q14@0.15738;
 
      [age-educ*];
      age-educ*;
@@ -156,55 +128,61 @@ INPUT INSTRUCTIONS
       [ue74$2-ue75$2* ue780$2-ue781$2*] (t2e_1-t2e_4);
 
 
-
   Model Prior:
-  g1-g4~N(0,1);
+      g00~N(0,1);
+      g1-g18~N(0,1);
+      b0_1-b0_14~N(0,1);
+      b1_1-b1_14~N(0,1);
 
-  DO(1,7) diff(t1a_#,t1e_#)~N(0,10);
-  DO(1,7) diff(t1b_#,t1e_#)~N(0,10);
-  DO(1,7) diff(t1c_#,t1e_#)~N(0,10);
-  DO(1,7) diff(t1d_#,t1e_#)~N(0,10);
+      DO(1,2) ma_#~N(0,1);
+      DO(1,2) mb_#~N(0,1);
+      DO(1,2) mc_#~N(0,1);
+      DO(1,2) md_#~N(0,1);
+      DO(1,2) me_#~N(0,1);
 
-  DO(1,4) diff(t2a_#,t2e_#)~N(0,10);
-  DO(1,4) diff(t2b_#,t2e_#)~N(0,10);
-  DO(1,4) diff(t2c_#,t2e_#)~N(0,10);
-  DO(1,4) diff(t2d_#,t2e_#)~N(0,10);
+      DO(1,7) t1a_#~N(0,1);
+      DO(1,7) t1b_#~N(0,1);
+      DO(1,7) t1c_#~N(0,1);
+      DO(1,7) t1d_#~N(0,1);
+      DO(1,7) t1e_#~N(0,1);
+
+      DO(1,4) t2a_#~N(0,1);
+      DO(1,4) t2b_#~N(0,1);
+      DO(1,4) t2c_#~N(0,1);
+      DO(1,4) t2d_#~N(0,1);
+      DO(1,4) t2e_#~N(0,1);
+
+      !DO(1,7) diff(t1a_#,t1e_#)~N(0,1);
+      !DO(1,7) diff(t1b_#,t1e_#)~N(0,1);
+      !DO(1,7) diff(t1c_#,t1e_#)~N(0,1);
+      !DO(1,7) diff(t1d_#,t1e_#)~N(0,1);
+
+      !DO(1,4) diff(t2a_#,t2e_#)~N(0,1);
+      !DO(1,4) diff(t2b_#,t2e_#)~N(0,1);
+      !DO(1,4) diff(t2c_#,t2e_#)~N(0,1);
+      !DO(1,4) diff(t2d_#,t2e_#)~N(0,1);
+
 
 
   Model Constraint:
-  DO(1,2) 0 = va_#-ve_#;
-  DO(1,2) 0 = vb_#-ve_#;
-  DO(1,2) 0 = vc_#-ve_#;
-  DO(1,2) 0 = vd_#-ve_#;
+      ! Means must sum to sample average (1)
+      DO(1,2) 0 = ma_# + mb_# + mc_# + md_# + me_#;
 
-  !DO(1,5) 0 < 10 - t1a_#;
-  !DO(1,5) 0 < 10 - t1b_#;
-  !Do(1,5) 0 < 10 - t1c_#;
-  !Do(1,5) 0 < 10 - t1d_#;
-  !Do(1,5) 0 < 10 - t1e_#;
-
-  !DO(1,5) 0 < t1a_# + 10;
-  !DO(1,5) 0 < t1b_# + 10;
-  !Do(1,5) 0 < t1c_# + 10;
-  !Do(1,5) 0 < t1d_# + 10;
-  !Do(1,5) 0 < t1e_# + 10;
-
-  !DO(1,2) 0 < 10 - t2a_#;
-  !DO(1,2) 0 < 10 - t2b_#;
-  !Do(1,2) 0 < 10 - t2c_#;
-  !Do(1,2) 0 < 10 - t2d_#;
-  !Do(1,2) 0 < 10 - t2e_#;
-
-  !DO(1,2) 0 < t2a_# + 10;
-  !DO(1,2) 0 < t2b_# + 10;
-  !Do(1,2) 0 < t2c_# + 10;
-  !Do(1,2) 0 < t2d_# + 10;
-  !Do(1,2) 0 < t2e_# + 10;
-
+      ! Variances constrained to be all equal
+      DO(1,2) 0 = va_#-ve_#;
+      DO(1,2) 0 = vb_#-ve_#;
+      DO(1,2) 0 = vc_#-ve_#;
+      DO(1,2) 0 = vd_#-ve_#;
 
 
   OUTPUT:
-  svalues;
+      svalues;
+      NOCHISQUARE;
+      NOSERROR;
+
+  SAVEDATA:
+      FILE = "cprobs-approach2-5.dat";
+      SAVE = cprob;
 
 
 
@@ -214,3 +192,1609 @@ INPUT READING TERMINATED NORMALLY
 
 Your title goes here
 
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         445
+
+Number of dependent variables                                    9
+Number of independent variables                                 14
+Number of continuous latent variables                            0
+Number of categorical latent variables                           2
+
+Observed dependent variables
+
+  Continuous
+   AGE         EDUC
+
+  Binary and ordered categorical (ordinal)
+   UE780       UE781       UE74        UE75        BLACK       HISP
+   MARRIED
+
+Observed independent variables
+   Q1          Q2          Q3          Q4          Q5          Q6
+   Q7          Q8          Q9          Q10         Q11         Q12
+   Q13         Q14
+
+Categorical latent variables
+   C           A
+
+  Knownclass            A
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                5000
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Number of initial stage random starts                       2048
+  Number of final stage optimizations                          256
+  Number of initial stage iterations                            10
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+Parameterization                                             LOGIT
+Link                                                         LOGIT
+
+Input data file(s)
+  lalondeQPO.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             2
+     Number of y missing data patterns           1
+     Number of u missing data patterns           2
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              UE780         UE781         UE74          UE75          BLACK
+              ________      ________      ________      ________      ________
+ UE780          0.584
+ UE781          0.000         0.416
+ UE74           0.584         0.416         1.000
+ UE75           0.584         0.416         1.000         1.000
+ BLACK          0.584         0.416         1.000         1.000         1.000
+ HISP           0.584         0.416         1.000         1.000         1.000
+ MARRIED        0.584         0.416         1.000         1.000         1.000
+ AGE            0.584         0.416         1.000         1.000         1.000
+ EDUC           0.584         0.416         1.000         1.000         1.000
+ Q1             0.584         0.416         1.000         1.000         1.000
+ Q2             0.584         0.416         1.000         1.000         1.000
+ Q3             0.584         0.416         1.000         1.000         1.000
+ Q4             0.584         0.416         1.000         1.000         1.000
+ Q5             0.584         0.416         1.000         1.000         1.000
+ Q6             0.584         0.416         1.000         1.000         1.000
+ Q7             0.584         0.416         1.000         1.000         1.000
+ Q8             0.584         0.416         1.000         1.000         1.000
+ Q9             0.584         0.416         1.000         1.000         1.000
+ Q10            0.584         0.416         1.000         1.000         1.000
+ Q11            0.584         0.416         1.000         1.000         1.000
+ Q12            0.584         0.416         1.000         1.000         1.000
+ Q13            0.584         0.416         1.000         1.000         1.000
+ Q14            0.584         0.416         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              HISP          MARRIED       AGE           EDUC          Q1
+              ________      ________      ________      ________      ________
+ HISP           1.000
+ MARRIED        1.000         1.000
+ AGE            1.000         1.000         1.000
+ EDUC           1.000         1.000         1.000         1.000
+ Q1             1.000         1.000         1.000         1.000         1.000
+ Q2             1.000         1.000         1.000         1.000         1.000
+ Q3             1.000         1.000         1.000         1.000         1.000
+ Q4             1.000         1.000         1.000         1.000         1.000
+ Q5             1.000         1.000         1.000         1.000         1.000
+ Q6             1.000         1.000         1.000         1.000         1.000
+ Q7             1.000         1.000         1.000         1.000         1.000
+ Q8             1.000         1.000         1.000         1.000         1.000
+ Q9             1.000         1.000         1.000         1.000         1.000
+ Q10            1.000         1.000         1.000         1.000         1.000
+ Q11            1.000         1.000         1.000         1.000         1.000
+ Q12            1.000         1.000         1.000         1.000         1.000
+ Q13            1.000         1.000         1.000         1.000         1.000
+ Q14            1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              Q2            Q3            Q4            Q5            Q6
+              ________      ________      ________      ________      ________
+ Q2             1.000
+ Q3             1.000         1.000
+ Q4             1.000         1.000         1.000
+ Q5             1.000         1.000         1.000         1.000
+ Q6             1.000         1.000         1.000         1.000         1.000
+ Q7             1.000         1.000         1.000         1.000         1.000
+ Q8             1.000         1.000         1.000         1.000         1.000
+ Q9             1.000         1.000         1.000         1.000         1.000
+ Q10            1.000         1.000         1.000         1.000         1.000
+ Q11            1.000         1.000         1.000         1.000         1.000
+ Q12            1.000         1.000         1.000         1.000         1.000
+ Q13            1.000         1.000         1.000         1.000         1.000
+ Q14            1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              Q7            Q8            Q9            Q10           Q11
+              ________      ________      ________      ________      ________
+ Q7             1.000
+ Q8             1.000         1.000
+ Q9             1.000         1.000         1.000
+ Q10            1.000         1.000         1.000         1.000
+ Q11            1.000         1.000         1.000         1.000         1.000
+ Q12            1.000         1.000         1.000         1.000         1.000
+ Q13            1.000         1.000         1.000         1.000         1.000
+ Q14            1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              Q12           Q13           Q14
+              ________      ________      ________
+ Q12            1.000
+ Q13            1.000         1.000
+ Q14            1.000         1.000         1.000
+
+
+     PROPORTION OF DATA PRESENT FOR U
+
+
+           Covariance Coverage
+              UE780         UE781         UE74          UE75          BLACK
+              ________      ________      ________      ________      ________
+ UE780          0.584
+ UE781          0.000         0.416
+ UE74           0.584         0.416         1.000
+ UE75           0.584         0.416         1.000         1.000
+ BLACK          0.584         0.416         1.000         1.000         1.000
+ HISP           0.584         0.416         1.000         1.000         1.000
+ MARRIED        0.584         0.416         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              HISP          MARRIED
+              ________      ________
+ HISP           1.000
+ MARRIED        1.000         1.000
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              AGE           EDUC          Q1            Q2            Q3
+              ________      ________      ________      ________      ________
+ AGE            1.000
+ EDUC           1.000         1.000
+ Q1             1.000         1.000         1.000
+ Q2             1.000         1.000         1.000         1.000
+ Q3             1.000         1.000         1.000         1.000         1.000
+ Q4             1.000         1.000         1.000         1.000         1.000
+ Q5             1.000         1.000         1.000         1.000         1.000
+ Q6             1.000         1.000         1.000         1.000         1.000
+ Q7             1.000         1.000         1.000         1.000         1.000
+ Q8             1.000         1.000         1.000         1.000         1.000
+ Q9             1.000         1.000         1.000         1.000         1.000
+ Q10            1.000         1.000         1.000         1.000         1.000
+ Q11            1.000         1.000         1.000         1.000         1.000
+ Q12            1.000         1.000         1.000         1.000         1.000
+ Q13            1.000         1.000         1.000         1.000         1.000
+ Q14            1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              Q4            Q5            Q6            Q7            Q8
+              ________      ________      ________      ________      ________
+ Q4             1.000
+ Q5             1.000         1.000
+ Q6             1.000         1.000         1.000
+ Q7             1.000         1.000         1.000         1.000
+ Q8             1.000         1.000         1.000         1.000         1.000
+ Q9             1.000         1.000         1.000         1.000         1.000
+ Q10            1.000         1.000         1.000         1.000         1.000
+ Q11            1.000         1.000         1.000         1.000         1.000
+ Q12            1.000         1.000         1.000         1.000         1.000
+ Q13            1.000         1.000         1.000         1.000         1.000
+ Q14            1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              Q9            Q10           Q11           Q12           Q13
+              ________      ________      ________      ________      ________
+ Q9             1.000
+ Q10            1.000         1.000
+ Q11            1.000         1.000         1.000
+ Q12            1.000         1.000         1.000         1.000
+ Q13            1.000         1.000         1.000         1.000         1.000
+ Q14            1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              Q14
+              ________
+ Q14            1.000
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    UE780
+      Category 1    0.354           92.000
+      Category 2    0.350           91.000
+      Category 3    0.296           77.000
+    UE781
+      Category 1    0.243           45.000
+      Category 2    0.378           70.000
+      Category 3    0.378           70.000
+    UE74
+      Category 1    0.733          326.000
+      Category 2    0.130           58.000
+      Category 3    0.137           61.000
+    UE75
+      Category 1    0.649          289.000
+      Category 2    0.184           82.000
+      Category 3    0.166           74.000
+    BLACK
+      Category 1    0.166           74.000
+      Category 2    0.834          371.000
+    HISP
+      Category 1    0.912          406.000
+      Category 2    0.088           39.000
+    MARRIED
+      Category 1    0.831          370.000
+      Category 2    0.169           75.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     AGE                   0.000       1.257      -1.179    7.64%      -0.897     -0.334     -0.193
+             445.000       0.998       1.665       4.173    0.22%      -0.052      0.652
+     EDUC                  0.000      -0.774      -4.015    0.22%      -0.667     -0.109     -0.109
+             445.000       0.998       1.816       3.239    0.22%       0.449      1.007
+     Q1                    0.000      -1.257      -4.173    0.22%      -0.652     -0.089      0.193
+             445.000       0.998       1.665       1.179    7.64%       0.334      0.897
+     Q2                    0.000       2.480      -0.965    1.35%      -0.855     -0.498     -0.324
+             445.000       0.998      13.307       7.749    0.22%       0.107      0.959
+     Q3                    0.000       0.756      -3.323    0.22%      -0.817     -0.267     -0.204
+             445.000       0.998       1.895       3.827    0.22%       0.187      0.665
+     Q4                    0.000       2.990      -1.776    0.22%      -0.540     -0.376     -0.286
+             445.000       0.998      12.474       7.069    0.22%      -0.146      0.466
+     Q5                    0.000       1.764      -0.705    0.22%      -0.533     -0.448     -0.415
+             445.000       0.998       1.189       2.496    0.22%      -0.384     -0.246
+     Q6                    0.000       2.782      -0.833    0.22%      -0.464     -0.324     -0.263
+             445.000       0.998       6.110       3.532    0.22%      -0.223     -0.108
+     Q7                    0.000       1.462      -1.109    0.22%      -0.733     -0.473     -0.311
+             445.000       0.998       0.715       2.834    0.22%      -0.191      0.083
+     Q8                    0.000      -0.518      -3.771    0.22%      -0.738     -0.151     -0.012
+             445.000       0.998       1.436       1.861    0.45%       0.260      0.581
+     Q9                    0.000       3.641      -0.858    0.22%      -0.433     -0.353     -0.313
+             445.000       0.998      16.343       7.132    0.22%      -0.286      0.097
+     Q10                   0.000      -2.868     -10.256    0.22%      -0.405     -0.295     -0.243
+             445.000       0.998      30.810       2.493    0.22%      -0.199      0.342
+     Q11                   0.000       2.014      -4.052    0.22%      -0.431     -0.150     -0.098
+             445.000       0.998      12.243       7.507    0.22%      -0.026      0.223
+     Q12                   0.000      -4.585     -11.830    0.22%      -0.309     -0.279     -0.251
+             445.000       0.998      55.245       2.734    0.22%      -0.183      0.435
+     Q13                   0.000       0.711      -2.661    0.22%      -0.576     -0.290     -0.091
+             445.000       0.998       1.441       3.102    0.22%       0.016      0.417
+     Q14                   0.000       1.373      -2.401    0.22%      -0.505     -0.341     -0.302
+             445.000       0.998       2.257       3.424    0.22%      -0.237      0.420
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+
+427 perturbed starting value run(s) did not converge or were rejected in the third stage.
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+           -3224.450  642909           251
+           -3224.769  773195           849
+           -3225.110  392407           221
+           -3227.218  370481           742
+           -3228.720  423661           875
+
+251 perturbed starting value run(s) did not converge or were rejected in the third stage.
+
+
+
+     WARNING:  THE BEST LOGLIKELIHOOD VALUE WAS NOT REPLICATED.  THE
+     SOLUTION MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.  INCREASE THE
+     NUMBER OF RANDOM STARTS.
+
+
+  ERROR OCCURRED IN THE BRANT WALD TEST FOR PROPORTIONAL ODDS FOR UE74.
+
+  ERROR OCCURRED IN THE BRANT WALD TEST FOR PROPORTIONAL ODDS FOR UE75.
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+     WARNING:  THE SAMPLE CORRELATION OF Q1 AND AGE IS -1.000.
+
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                      116
+
+Loglikelihood
+
+          H0 Value                       -3224.450
+
+Information Criteria
+
+          Akaike (AIC)                    6680.899
+          Bayesian (BIC)                  7156.276
+          Sample-Size Adjusted BIC        6788.142
+            (n* = (n + 2) / 24)
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR EACH LATENT CLASS VARIABLE
+BASED ON THE ESTIMATED MODEL
+
+  Latent Class
+    Variable    Class
+
+    C              1         0.00000          0.00000
+                   2        39.46158          0.08868
+                   3       104.06855          0.23386
+                   4        41.28831          0.09278
+                   5       260.18155          0.58468
+    A              1       185.00000          0.41573
+                   2       260.00000          0.58427
+
+
+LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
+EVALUATED AT THE COVARIATE SAMPLE MEANS
+
+     MEAN/PROBABILITY PROFILES FOR C
+                       Latent class
+                     1      2      3      4      5
+     UE780
+       Category 1  0.500  0.234  0.442  0.449  0.318
+       Category 2  0.000  0.421  0.349  0.190  0.370
+       Category 3  0.500  0.346  0.209  0.361  0.312
+     UE781
+       Category 1  0.500  0.199  0.264  0.246  0.269
+       Category 2  0.000  0.566  0.414  0.442  0.323
+       Category 3  0.500  0.235  0.322  0.312  0.408
+     UE74
+       Category 1  0.500  0.639  0.120  0.818  0.942
+       Category 2  0.000  0.217  0.386  0.057  0.029
+       Category 3  0.500  0.144  0.494  0.125  0.029
+     UE75
+       Category 1  0.500  0.617  0.051  0.776  0.852
+       Category 2  0.000  0.149  0.422  0.048  0.116
+       Category 3  0.500  0.234  0.528  0.176  0.033
+     BLACK
+       Category 1  0.500  0.927  0.125  0.154  0.083
+       Category 2  0.500  0.073  0.875  0.846  0.917
+     HISP
+       Category 1  0.500  0.129  0.959  0.912  0.983
+       Category 2  0.500  0.871  0.041  0.088  0.017
+     MARRIED
+       Category 1  0.500  0.782  0.759  0.732  0.863
+       Category 2  0.500  0.218  0.241  0.268  0.137
+     AGE          -1.436 -0.416 -0.178  2.253 -0.224
+     EDUC          0.492 -0.486  0.229 -0.257  0.023
+
+
+LOGISTIC REGRESSION ODDS RATIO RESULTS
+
+                    Estimate
+
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
+
+ UE780      ON
+    Q1                 1.010
+    Q2                 1.144
+    Q3                 0.912
+    Q4                 0.883
+    Q5                 2.083
+    Q6                 0.690
+    Q7                 0.943
+    Q8                 1.203
+    Q9                 1.359
+    Q10                1.205
+    Q11                0.956
+    Q12                1.089
+    Q13                1.181
+    Q14                0.832
+
+ UE781      ON
+    Q1                 0.871
+    Q2                 0.957
+    Q3                 0.924
+    Q4                 1.333
+    Q5                 1.090
+    Q6                 1.231
+    Q7                 1.260
+    Q8                 0.963
+    Q9                 1.118
+    Q10                0.896
+    Q11                1.165
+    Q12                1.165
+    Q13                0.900
+    Q14                1.156
+
+Categorical Latent Variables
+
+ A#1      ON
+    Q1                 1.264
+    Q2                 0.708
+    Q3                 0.814
+    Q4                 1.412
+    Q5                 1.238
+    Q6                 0.433
+    Q7                 1.070
+    Q8                 1.177
+    Q9                 0.944
+    Q10                1.174
+    Q11                1.129
+    Q12                1.095
+    Q13                1.053
+    Q14                1.096Ö%¼ÓÀÀ
+
+
+LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
+
+  C Classes (Rows) by A Classes (Columns)
+
+            1        2
+
+   1     0.416    0.584
+   2     0.416    0.584
+   3     0.416    0.584
+   4     0.416    0.584
+   5     0.416    0.584
+
+
+C-SPECIFIC CLASSIFICATION RESULTS
+
+Classification Quality for C
+
+     Entropy                         0.896
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3        4        5
+
+    1   0.000    0.000    0.000    0.000    0.000
+    2   0.000    0.929    0.037    0.007    0.026
+    3   0.000    0.004    0.938    0.012    0.046
+    4   0.000    0.000    0.011    0.930    0.059
+    5   0.000    0.007    0.032    0.013    0.948
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3        4        5
+
+    1   0.000    0.055    0.022    0.000    0.032
+    2   0.000    0.945    0.010    0.000    0.045
+    3   0.000    0.014    0.900    0.004    0.082
+    4   0.000    0.007    0.030    0.878    0.085
+    5   0.000    0.004    0.018    0.009    0.969
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3        4        5
+
+    1    -10.360    0.548   -0.373  -10.360    0.000
+    2    -10.720    3.038   -1.550   -4.840    0.000
+    3    -11.316   -1.750    2.394   -3.011    0.000
+    4    -11.354   -2.473   -1.060    2.332    0.000
+    5    -13.784   -5.474   -4.005   -4.700    0.000
+
+Classification Quality for A
+
+     Entropy                         1.000
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   1.000    0.000
+    2   0.000    1.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1     13.816    0.000
+    2    -13.816    0.000
+
+
+MODEL RESULTS
+
+                    Estimate
+
+Parameters in the Overall Part of the Model (Parameters Equal in All of the Classes)
+
+ UE780      ON
+    Q1                 0.010
+    Q2                 0.135
+    Q3                -0.092
+    Q4                -0.125
+    Q5                 0.734
+    Q6                -0.370
+    Q7                -0.059
+    Q8                 0.185
+    Q9                 0.307
+    Q10                0.186
+    Q11               -0.045
+    Q12                0.085
+    Q13                0.166
+    Q14               -0.183
+
+ UE781      ON
+    Q1                -0.138
+    Q2                -0.044
+    Q3                -0.079
+    Q4                 0.288
+    Q5                 0.086
+    Q6                 0.208
+    Q7                 0.231
+    Q8                -0.038
+    Q9                 0.112
+    Q10               -0.109
+    Q11                0.153
+    Q12                0.153
+    Q13               -0.105
+    Q14                0.145
+
+ AGE      WITH
+    EDUC               0.000
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
+
+ Means
+    AGE               -1.436
+    EDUC               0.492
+
+ Thresholds
+    UE780$1            0.000
+    UE780$2            0.000
+    UE781$1            0.000
+    UE781$2            0.000
+    UE74$1             0.000
+    UE74$2             0.000
+    UE75$1             0.000
+    UE75$2             0.000
+    BLACK$1            0.000
+    HISP$1             0.000
+    MARRIED$1          0.000
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 1 2
+
+ Means
+    AGE               -1.436
+    EDUC               0.492
+
+ Thresholds
+    UE780$1            0.000
+    UE780$2            0.000
+    UE781$1            0.000
+    UE781$2            0.000
+    UE74$1             0.000
+    UE74$2             0.000
+    UE75$1             0.000
+    UE75$2             0.000
+    BLACK$1            0.000
+    HISP$1             0.000
+    MARRIED$1          0.000
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 2 1
+
+ Means
+    AGE               -0.416
+    EDUC              -0.486
+
+ Thresholds
+    UE780$1           -1.188
+    UE780$2            0.639
+    UE781$1           -1.391
+    UE781$2            1.179
+    UE74$1             0.571
+    UE74$2             1.785
+    UE75$1             0.478
+    UE75$2             1.184
+    BLACK$1            2.538
+    HISP$1            -1.909
+    MARRIED$1          1.279
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 2 2
+
+ Means
+    AGE               -0.416
+    EDUC              -0.486
+
+ Thresholds
+    UE780$1           -1.188
+    UE780$2            0.639
+    UE781$1           -1.391
+    UE781$2            1.179
+    UE74$1             0.571
+    UE74$2             1.785
+    UE75$1             0.478
+    UE75$2             1.184
+    BLACK$1            2.538
+    HISP$1            -1.909
+    MARRIED$1          1.279
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 3 1
+
+ Means
+    AGE               -0.178
+    EDUC               0.229
+
+ Thresholds
+    UE780$1           -0.233
+    UE780$2            1.331
+    UE781$1           -1.026
+    UE781$2            0.745
+    UE74$1            -1.990
+    UE74$2             0.025
+    UE75$1            -2.931
+    UE75$2            -0.111
+    BLACK$1           -1.947
+    HISP$1             3.162
+    MARRIED$1          1.149
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 3 2
+
+ Means
+    AGE               -0.178
+    EDUC               0.229
+
+ Thresholds
+    UE780$1           -0.233
+    UE780$2            1.331
+    UE781$1           -1.026
+    UE781$2            0.745
+    UE74$1            -1.990
+    UE74$2             0.025
+    UE75$1            -2.931
+    UE75$2            -0.111
+    BLACK$1           -1.947
+    HISP$1             3.162
+    MARRIED$1          1.149
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 4 1
+
+ Means
+    AGE                2.253
+    EDUC              -0.257
+
+ Thresholds
+    UE780$1           -0.206
+    UE780$2            0.569
+    UE781$1           -1.120
+    UE781$2            0.793
+    UE74$1             1.504
+    UE74$2             1.947
+    UE75$1             1.242
+    UE75$2             1.547
+    BLACK$1           -1.706
+    HISP$1             2.338
+    MARRIED$1          1.006
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 4 2
+
+ Means
+    AGE                2.253
+    EDUC              -0.257
+
+ Thresholds
+    UE780$1           -0.206
+    UE780$2            0.569
+    UE781$1           -1.120
+    UE781$2            0.793
+    UE74$1             1.504
+    UE74$2             1.947
+    UE75$1             1.242
+    UE75$2             1.547
+    BLACK$1           -1.706
+    HISP$1             2.338
+    MARRIED$1          1.006
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 5 1
+
+ Means
+    AGE               -0.224
+    EDUC               0.023
+
+ Thresholds
+    UE780$1           -0.763
+    UE780$2            0.791
+    UE781$1           -1.000
+    UE781$2            0.373
+    UE74$1             2.793
+    UE74$2             3.515
+    UE75$1             1.747
+    UE75$2             3.384
+    BLACK$1           -2.397
+    HISP$1             4.039
+    MARRIED$1          1.843
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Latent Class Pattern 5 2
+
+ Means
+    AGE               -0.224
+    EDUC               0.023
+
+ Thresholds
+    UE780$1           -0.763
+    UE780$2            0.791
+    UE781$1           -1.000
+    UE781$2            0.373
+    UE74$1             2.793
+    UE74$2             3.515
+    UE75$1             1.747
+    UE75$2             3.384
+    BLACK$1           -2.397
+    HISP$1             4.039
+    MARRIED$1          1.843
+
+ Variances
+    AGE                0.474
+    EDUC               0.958
+
+Categorical Latent Variables
+
+ A#1      ON
+    C#1               -0.082
+    C#2                2.038
+    C#3                0.107
+    C#4                1.921
+
+ A#1        ON
+    Q1                 0.235
+    Q2                -0.346
+    Q3                -0.206
+    Q4                 0.345
+    Q5                 0.213
+    Q6                -0.836
+    Q7                 0.068
+    Q8                 0.163
+    Q9                -0.058
+    Q10                0.161
+    Q11                0.121
+    Q12                0.091
+    Q13                0.052
+    Q14                0.092
+
+ Means
+    C#1              -29.134
+    C#2               -1.889
+    C#3               -0.914
+    C#4               -1.840
+    A#1               -0.747
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.000E+00
+       (ratio of smallest to largest eigenvalue)
+
+
+RESULTS IN PROBABILITY SCALE AVERAGED OVER THE COVARIATE SAMPLE DISTRIBUTION FOR THE CLASS PATTERNS
+
+                    Estimate
+
+Latent Class Pattern 1 1
+
+ UE780
+    Category 1         0.324
+    Category 2         0.000
+    Category 3         0.676
+ UE781
+    Category 1         0.402
+    Category 2         0.000
+    Category 3         0.598
+ UE74
+    Category 1         0.500
+    Category 2         0.000
+    Category 3         0.500
+ UE75
+    Category 1         0.500
+    Category 2         0.000
+    Category 3         0.500
+ BLACK
+    Category 1         0.500
+    Category 2         0.500
+ HISP
+    Category 1         0.500
+    Category 2         0.500
+ MARRIED
+    Category 1         0.500
+    Category 2         0.500
+
+Latent Class Pattern 1 2
+
+ UE780
+    Category 1         0.319
+    Category 2         0.000
+    Category 3         0.681
+ UE781
+    Category 1         0.361
+    Category 2         0.000
+    Category 3         0.639
+ UE74
+    Category 1         0.500
+    Category 2         0.000
+    Category 3         0.500
+ UE75
+    Category 1         0.500
+    Category 2         0.000
+    Category 3         0.500
+ BLACK
+    Category 1         0.500
+    Category 2         0.500
+ HISP
+    Category 1         0.500
+    Category 2         0.500
+ MARRIED
+    Category 1         0.500
+    Category 2         0.500
+
+Latent Class Pattern 2 1
+
+ UE780
+    Category 1         0.153
+    Category 2         0.356
+    Category 3         0.491
+ UE781
+    Category 1         0.113
+    Category 2         0.481
+    Category 3         0.406
+ UE74
+    Category 1         0.639
+    Category 2         0.217
+    Category 3         0.144
+ UE75
+    Category 1         0.617
+    Category 2         0.149
+    Category 3         0.234
+ BLACK
+    Category 1         0.927
+    Category 2         0.073
+ HISP
+    Category 1         0.129
+    Category 2         0.871
+ MARRIED
+    Category 1         0.782
+    Category 2         0.218
+
+Latent Class Pattern 2 2
+
+ UE780
+    Category 1         0.179
+    Category 2         0.374
+    Category 3         0.446
+ UE781
+    Category 1         0.117
+    Category 2         0.502
+    Category 3         0.381
+ UE74
+    Category 1         0.639
+    Category 2         0.217
+    Category 3         0.144
+ UE75
+    Category 1         0.617
+    Category 2         0.149
+    Category 3         0.234
+ BLACK
+    Category 1         0.927
+    Category 2         0.073
+ HISP
+    Category 1         0.129
+    Category 2         0.871
+ MARRIED
+    Category 1         0.782
+    Category 2         0.218
+
+Latent Class Pattern 3 1
+
+ UE780
+    Category 1         0.355
+    Category 2         0.346
+    Category 3         0.299
+ UE781
+    Category 1         0.265
+    Category 2         0.389
+    Category 3         0.346
+ UE74
+    Category 1         0.120
+    Category 2         0.386
+    Category 3         0.494
+ UE75
+    Category 1         0.051
+    Category 2         0.422
+    Category 3         0.528
+ BLACK
+    Category 1         0.125
+    Category 2         0.875
+ HISP
+    Category 1         0.959
+    Category 2         0.041
+ MARRIED
+    Category 1         0.759
+    Category 2         0.241
+
+Latent Class Pattern 3 2
+
+ UE780
+    Category 1         0.342
+    Category 2         0.349
+    Category 3         0.309
+ UE781
+    Category 1         0.264
+    Category 2         0.386
+    Category 3         0.349
+ UE74
+    Category 1         0.120
+    Category 2         0.386
+    Category 3         0.494
+ UE75
+    Category 1         0.051
+    Category 2         0.422
+    Category 3         0.528
+ BLACK
+    Category 1         0.125
+    Category 2         0.875
+ HISP
+    Category 1         0.959
+    Category 2         0.041
+ MARRIED
+    Category 1         0.759
+    Category 2         0.241
+
+Latent Class Pattern 4 1
+
+ UE780
+    Category 1         0.433
+    Category 2         0.174
+    Category 3         0.392
+ UE781
+    Category 1         0.209
+    Category 2         0.397
+    Category 3         0.394
+ UE74
+    Category 1         0.818
+    Category 2         0.057
+    Category 3         0.125
+ UE75
+    Category 1         0.776
+    Category 2         0.048
+    Category 3         0.176
+ BLACK
+    Category 1         0.154
+    Category 2         0.846
+ HISP
+    Category 1         0.912
+    Category 2         0.088
+ MARRIED
+    Category 1         0.732
+    Category 2         0.268
+
+Latent Class Pattern 4 2
+
+ UE780
+    Category 1         0.393
+    Category 2         0.176
+    Category 3         0.431
+ UE781
+    Category 1         0.264
+    Category 2         0.419
+    Category 3         0.317
+ UE74
+    Category 1         0.818
+    Category 2         0.057
+    Category 3         0.125
+ UE75
+    Category 1         0.776
+    Category 2         0.048
+    Category 3         0.176
+ BLACK
+    Category 1         0.154
+    Category 2         0.846
+ HISP
+    Category 1         0.912
+    Category 2         0.088
+ MARRIED
+    Category 1         0.732
+    Category 2         0.268
+
+Latent Class Pattern 5 1
+
+ UE780
+    Category 1         0.398
+    Category 2         0.343
+    Category 3         0.258
+ UE781
+    Category 1         0.298
+    Category 2         0.312
+    Category 3         0.390
+ UE74
+    Category 1         0.942
+    Category 2         0.029
+    Category 3         0.029
+ UE75
+    Category 1         0.852
+    Category 2         0.116
+    Category 3         0.033
+ BLACK
+    Category 1         0.083
+    Category 2         0.917
+ HISP
+    Category 1         0.983
+    Category 2         0.017
+ MARRIED
+    Category 1         0.863
+    Category 2         0.137
+
+Latent Class Pattern 5 2
+
+ UE780
+    Category 1         0.382
+    Category 2         0.349
+    Category 3         0.269
+ UE781
+    Category 1         0.322
+    Category 2         0.317
+    Category 3         0.361
+ UE74
+    Category 1         0.942
+    Category 2         0.029
+    Category 3         0.029
+ UE75
+    Category 1         0.852
+    Category 2         0.116
+    Category 3         0.033
+ BLACK
+    Category 1         0.083
+    Category 2         0.917
+ HISP
+    Category 1         0.983
+    Category 2         0.017
+ MARRIED
+    Category 1         0.863
+    Category 2         0.137
+
+
+BRANT WALD TEST FOR PROPORTIONAL ODDS
+
+                                   Degrees of
+                      Chi-Square     Freedom   P-Value
+
+  UE780
+    Overall test          10.425        14      0.731
+    Q1                     3.086         1      0.079
+    Q2                     2.126         1      0.145
+    Q3                     0.473         1      0.491
+    Q4                     0.808         1      0.369
+    Q5                     0.232         1      0.630
+    Q6                     0.034         1      0.854
+    Q7                     0.082         1      0.775
+    Q8                     0.078         1      0.781
+    Q9                     0.127         1      0.722
+    Q10                    0.256         1      0.613
+    Q11                    0.002         1      0.961
+    Q12                    0.351         1      0.554
+    Q13                    1.109         1      0.292
+    Q14                    0.037         1      0.847
+
+  UE781
+    Overall test           8.919        14      0.836
+    Q1                     0.000         1      0.997
+    Q2                     0.000         1      0.997
+    Q3                     0.000         1      0.996
+    Q4                     0.002         1      0.962
+    Q5                     0.024         1      0.878
+    Q6                     0.000         1      0.997
+    Q7                     1.447         1      0.229
+    Q8                     0.265         1      0.607
+    Q9                     0.825         1      0.364
+    Q10                    0.000         1      0.992
+    Q11                    1.342         1      0.247
+    Q12                    0.758         1      0.384
+    Q13                    0.299         1      0.585
+    Q14                    3.538         1      0.060
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     %OVERALL%
+
+     ue780 ON q1;
+     ue780 ON q2;
+     ue780 ON q3;
+     ue780 ON q4;
+     ue780 ON q5;
+     ue780 ON q6;
+     ue780 ON q7;
+     ue780 ON q8;
+     ue780 ON q9;
+     ue780 ON q10;
+     ue780 ON q11;
+     ue780 ON q12;
+     ue780 ON q13;
+     ue780 ON q14;
+     ue781 ON q1;
+     ue781 ON q2;
+     ue781 ON q3;
+     ue781 ON q4;
+     ue781 ON q5;
+     ue781 ON q6;
+     ue781 ON q7;
+     ue781 ON q8;
+     ue781 ON q9;
+     ue781 ON q10;
+     ue781 ON q11;
+     ue781 ON q12;
+     ue781 ON q13;
+     ue781 ON q14;
+
+     a#1 ON c#1*-0.08168 (g1);
+     a#1 ON c#2*2.03834 (g2);
+     a#1 ON c#3*0.10742 (g3);
+     a#1 ON c#4*1.92061 (g4);
+     a#1 ON q1*0.23453 (g5);
+     a#1 ON q2*-0.34582 (g6);
+     a#1 ON q3*-0.20597 (g7);
+     a#1 ON q4*0.34528 (g8);
+     a#1 ON q5*0.21315 (g9);
+     a#1 ON q6*-0.83592 (g10);
+     a#1 ON q7*0.06777 (g11);
+     a#1 ON q8*0.16276 (g12);
+     a#1 ON q9*-0.05764 (g13);
+     a#1 ON q10*0.16058 (g14);
+     a#1 ON q11*0.12120 (g15);
+     a#1 ON q12*0.09058 (g16);
+     a#1 ON q13*0.05199 (g17);
+     a#1 ON q14            j,~qn”¸@mÖ%¼ÓÀÀ*0.09167 (g18);
+
+     [ c#1*-29.13377 ] (lo1);
+     [ c#2*-1.88899 ] (lo2);
+     [ c#3*-0.91387 ] (lo3);
+     [ c#4*-1.83982 ] (lo4);
+     [ a#1*-0.74674 ] (g00);
+
+     ue780 ON q1*0.00956 (b0_1);
+     ue780 ON q2*0.13466 (b0_2);
+     ue780 ON q3*-0.09233 (b0_3);
+     ue780 ON q4*-0.12486 (b0_4);
+     ue780 ON q5*0.73403 (b0_5);
+     ue780 ON q6*-0.37042 (b0_6);
+     ue780 ON q7*-0.05877 (b0_7);
+     ue780 ON q8*0.18490 (b0_8);
+     ue780 ON q9*0.30680 (b0_9);
+     ue780 ON q10*0.18637 (b0_10);
+     ue780 ON q11*-0.04524 (b0_11);
+     ue780 ON q12*0.08520 (b0_12);
+     ue780 ON q13*0.16630 (b0_13);
+     ue780 ON q14*-0.18343 (b0_14);
+     ue781 ON q1*-0.13806 (b1_1);
+     ue781 ON q2*-0.04379 (b1_2);
+     ue781 ON q3*-0.07921 (b1_3);
+     ue781 ON q4*0.28779 (b1_4);
+     ue781 ON q5*0.08597 (b1_5);
+     ue781 ON q6*0.20755 (b1_6);
+     ue781 ON q7*0.23087 (b1_7);
+     ue781 ON q8*-0.03811 (b1_8);
+     ue781 ON q9*0.11194 (b1_9);
+     ue781 ON q10*-0.10938 (b1_10);
+     ue781 ON q11*0.15276 (b1_11);
+     ue781 ON q12*0.15269 (b1_12);
+     ue781 ON q13*-0.10483 (b1_13);
+     ue781 ON q14*0.14532 (b1_14);
+
+     age WITH educ@0;
+
+
+     %C#1.A#1%
+
+     [ age*-1.43571 ] (ma_1);
+     [ educ*0.49168 ] (ma_2);
+
+     [ ue780$1*0 ] (t1a_1);
+     [ ue780$2*0 ] (t2a_3);
+     [ ue781$1*0 ] (t1a_2);
+     [ ue781$2*0 ] (t2a_4);
+     [ ue74$1*0 ] (t1a_3);
+     [ ue74$2*0 ] (t2a_1);
+     [ ue75$1*0 ] (t1a_4);
+     [ ue75$2*0 ] (t2a_2);
+     [ black$1*0 ] (t1a_5);
+     [ hisp$1*0 ] (t1a_6);
+     [ married$1*0 ] (t1a_7);
+
+     age*0.47437 (va_1);
+     educ*0.95818 (va_2);
+
+     %C#1.A#2%
+
+     [ age*-1.43571 ] (ma_1);
+     [ educ*0.49168 ] (ma_2);
+
+     [ ue780$1*0 ] (t1a_1);
+     [ ue780$2*0 ] (t2a_3);
+     [ ue781$1*0 ] (t1a_2);
+     [ ue781$2*0 ] (t2a_4);
+     [ ue74$1*0 ] (t1a_3);
+     [ ue74$2*0 ] (t2a_1);
+     [ ue75$1*0 ] (t1a_4);
+     [ ue75$2*0 ] (t2a_2);
+     [ black$1*0 ] (t1a_5);
+     [ hisp$1*0 ] (t1a_6);
+     [ married$1*0 ] (t1a_7);
+
+     age*0.47437 (va_1);
+     educ*0.95818 (va_2);
+
+     %C#2.A#1%
+
+     [ age*-0.41596 ] (mb_1);
+     [ educ*-0.48629 ] (mb_2);
+
+     [ ue780$1*-1.18789 ] (t1b_1);
+     [ ue780$2*0.63859 ] (t2b_3);
+     [ ue781$1*-1.39111 ] (t1b_2);
+     [ ue781$2*1.17943 ] (t2b_4);
+     [ ue74$1*0.57138 ] (t1b_3);
+     [ ue74$2*1.78474 ] (t2b_1);
+     [ ue75$1*0.47750 ] (t1b_4);
+     [ ue75$2*1.18406 ] (t2b_2);
+     [ black$1*2.53758 ] (t1b_5);
+     [ hisp$1*-1.90936 ] (t1b_6);
+     [ married$1*1.27859 ] (t1b_7);
+
+     age*0.47437 (vb_1);
+     educ*0.95818 (vb_2);
+
+     %C#2.A#2%
+
+     [ age*-0.41596 ] (mb_1);
+     [ educ*-0.48629 ] (mb_2);
+
+     [ ue780$1*-1.18789 ] (t1b_1);
+     [ ue780$2*0.63859 ] (t2b_3);
+     [ ue781$1*-1.39111 ] (t1b_2);
+     [ ue781$2*1.17943 ] (t2b_4);
+     [ ue74$1*0.57138 ] (t1b_3);
+     [ ue74$2*1.78474 ] (t2b_1);
+     [ ue75$1*0.47750 ] (t1b_4);
+     [ ue75$2*1.18406 ] (t2b_2);
+     [ black$1*2.53758 ] (t1b_5);
+     [ hisp$1*-1.90936 ] (t1b_6);
+     [ married$1*1.27859 ] (t1b_7);
+
+     age*0.47437 (vb_1);
+     educ*0.95818 (vb_2);
+
+     %C#3.A#1%
+
+     [ age*-0.17818 ] (mc_1);
+     [ educ*0.22868 ] (mc_2);
+
+     [ ue780$1*-0.23296 ] (t1c_1);
+     [ ue780$2*1.33131 ] (t2c_3);
+     [ ue781$1*-1.02643 ] (t1c_2);
+     [ ue781$2*0.74537 ] (t2c_4);
+     [ ue74$1*-1.98974 ] (t1c_3);
+     [ ue74$2*0.02500 ] (t2c_1);
+     [ ue75$1*-2.93095 ] (t1c_4);
+     [ ue75$2*-0.11083 ] (t2c_2);
+     [ black$1*-1.94664 ] (t1c_5);
+     [ hisp$1*3.16185 ] (t1c_6);
+     [ married$1*1.14876 ] (t1c_7);
+
+     age*0.47437 (vc_1);
+     educ*0.95818 (vc_2);
+
+     %C#3.A#2%
+
+     [ age*-0.17818 ] (mc_1);
+     [ educ*0.22868 ] (mc_2);
+
+     [ ue780$1*-0.23296 ] (t1c_1);
+     [ ue780$2*1.33131 ] (t2c_3);
+     [ ue781$1*-1.02643 ] (t1c_2);
+     [ ue781$2*0.74537 ] (t2c_4);
+     [ ue74$1*-1.98974 ] (t1c_3);
+     [ ue74$2*0.02500 ] (t2c_1);
+     [ ue75$1*-2.93095 ] (t1c_4);
+     [ ue75$2*-0.11083 ] (t2c_2);
+     [ black$1*-1.94664 ] (t1c_5);
+     [ hisp$1*3.16185 ] (t1c_6);
+     [ married$1*1.14876 ] (t1c_7);
+
+     age*0.47437 (vc_1);
+     educ*0.95818 (vc_2);
+
+     %C#4.A#1%
+
+     [ age*2.25346 ] (md_1);
+     [ educ*-0.25669 ] (md_2);
+
+     [ ue780$1*-0.20621 ] (t1d_1);
+     [ ue780$2*0.56912 ] (t2d_3);
+     [ ue781$1*-1.11998 ] (t1d_2);
+     [ ue781$2*0.79268 ] (t2d_4);
+     [ ue74$1*1.50449 ] (t1d_3);
+     [ ue74$2*1.94703 ] (t2d_1);
+     [ ue75$1*1.24227 ] (t1d_4);
+     [ ue75$2*1.54671 ] (t2d_2);
+     [ black$1*-1.70555 ] (t1d_5);
+     [ hisp$1*2.33835 ] (t1d_6);
+     [ married$1*1.00570 ] (t1d_7);
+
+     age*0.47437 (vd_1);
+     educ*0.95818 (vd_2);
+
+     %C#4.A#2%
+
+     [ age*2.25346 ] (md_1);
+     [ educ*-0.25669 ] (md_2);
+
+     [ ue780$1*-0.20621 ] (t1d_1);
+     [ ue780$2*0.56912 ] (t2d_3);
+     [ ue781$1*-1.11998 ] (t1d_2);
+     [ ue781$2*0.79268 ] (t2d_4);
+     [ ue74$1*1.50449 ] (t1d_3);
+     [ ue74$2*1.94703 ] (t2d_1);
+     [ ue75$1*1.24227 ] (t1d_4);
+     [ ue75$2*1.54671 ] (t2d_2);
+     [ black$1*-1.70555 ] (t1d_5);
+     [ hisp$1*2.33835 ] (t1d_6);
+     [ married$1*1.00570 ] (t1d_7);
+
+     age*0.47437 (vd_1);
+     educ*0.95818 (vd_2);
+
+     %C#5.A#1%
+
+     [ age*-0.22360 ] (me_1);
+     [ educ*0.02262 ] (me_2);
+
+     [ ue780$1*-0.76284 ] (t1e_1);
+     [ ue780$2*0.79060 ] (t2e_3);
+     [ ue781$1*-0.99982 ] (t1e_2);
+     [ ue781$2*0.37343 ] (t2e_4);
+     [ ue74$1*2.79311 ] (t1e_3);
+     [ ue74$2*3.51493 ] (t2e_1);
+     [ ue75$1*1.74707 ] (t1e_4);
+     [ ue75$2*3.38400 ] (t2e_2);
+     [ black$1*-2.39728 ] (t1e_5);
+     [ hisp$1*4.03870 ] (t1e_6);
+     [ married$1*1.84325 ] (t1e_7);
+
+     age*0.47437 (ve_1);
+     educ*0.95818 (ve_2);
+
+     %C#5.A#2%
+
+     [ age*-0.22360 ] (me_1);
+     [ educ*0.02262 ] (me_2);
+
+     [ ue780$1*-0.76284 ] (t1e_1);
+     [ ue780$2*0.79060 ] (t2e_3);
+     [ ue781$1*-0.99982 ] (t1e_2);
+     [ ue781$2*0.37343 ] (t2e_4);
+     [ ue74$1*2.79311 ] (t1e_3);
+     [ ue74$2*3.51493 ] (t2e_1);
+     [ ue75$1*1.74707 ] (t1e_4);
+     [ ue75$2*3.38400 ] (t2e_2);
+     [ black$1*-2.39728 ] (t1e_5);
+     [ hisp$1*4.03870 ] (t1e_6);
+     [ married$1*1.84325 ] (t1e_7);
+
+     age*0.47437 (ve_1);
+     educ*0.95818 (ve_2);
+
+
+Available post-processing tools
+
+  Conditional probabilities for the latent class indicators
+  Conditional probabilities and odds for the latent class variables
+
+SAVEDATA INFORMATION
+
+
+  Save file
+    cprobs-approach2-5.dat
+
+  Order and format of variables
+
+    UE780          F10.3
+    UE781          F10.3
+    UE74           F10.3
+    UE75           F10.3
+    BLACK          F10.3
+    HISP           F10.3
+    MARRIED        F10.3
+    AGE            F10.3
+    EDUC           F10.3
+    Q1             F10.3
+    Q2             F10.3
+    Q3             F10.3
+    Q4             F10.3
+    Q5             F10.3
+    Q6             F10.3
+    Q7             F10.3
+    Q8             F10.3
+    Q9             F10.3
+    Q10            F10.3
+    Q11            F10.3
+    Q12            F10.3
+    Q13            F10.3
+    Q14            F10.3
+    CPROB1         F10.3
+    CPROB2         F10.3
+    CPROB3         F10.3
+    CPROB4         F10.3
+    CPROB5         F10.3
+    CPROB6         F10.3
+    CPROB7         F10.3
+    CPROB8         F10.3
+    CPROB9         F10.3
+    CPROB10        F10.3
+    C              F10.3
+    A              F10.3
+    MLCJOINT       F10.3
+    NOTREAT        I2
+
+  Save file format
+    36F10.3 I2
+
+  Save file record length    10000
+
+  Save missing symbol        *
+
+
+DIAGRAM INFORMATION
+
+  Mplus diagrams are currently not available for Mixture analysis.
+  No diagram output was produced.
+
+
+     Beginning Time:  13:46:15
+        Ending Time:  14:06:06
+       Elapsed Time:  00:19:51
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2023 Muthen & Muthen
